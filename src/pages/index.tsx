@@ -1,4 +1,6 @@
+import { Header } from "@/modules/Header";
 import Head from "next/head";
+import { ReactNode } from "react";
 
 export default function Home() {
 	return (
@@ -19,3 +21,10 @@ export default function Home() {
 		</>
 	);
 }
+
+Home.getLayout = (page: ReactNode) => (
+	<>
+	<Header/>
+		{page}
+	</>
+);

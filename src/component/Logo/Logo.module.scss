@@ -1,0 +1,21 @@
+.logo {
+    width: initial;
+    height: initial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #E6F7FF;
+
+    border: 1px ;
+
+    &__title {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 22px;
+
+        color: #1890FF;
+    }
+}
