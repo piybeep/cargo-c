@@ -59,13 +59,6 @@
       margin: 0;
     }
   }
-
-  &__logo {
-    width: 46px;
-    height: 46px;
-    background: #e6f7ff;
-    border: 1.4375px dashed #91d5ff;
-  }
 }
 
 .button {
@@ -88,12 +81,5 @@
       display: flex;
       column-gap: 10px;
     }
-  }
-
-  &__logo {
-    width: 22px;
-    height: 22px;
-    background: #e6f7ff;
-    border: 0.6875px dashed #91d5ff;
   }
 }

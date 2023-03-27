@@ -4,13 +4,14 @@ import { Typography, Button, Input } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { Checkbox } from 'antd'
 import { useForm, Controller } from 'react-hook-form'
+import { Logo } from '@/component/Logo'
 
 const { Title, Text, Link } = Typography
 interface AuthInputs {
   email: string
   password: string
 }
-const Auth = () => {
+export const Auth = () => {
   const { control, handleSubmit } = useForm<AuthInputs>()
 
   const Submit = (data: AuthInputs) => {
@@ -22,7 +23,7 @@ const Auth = () => {
       <div className={s.formCont}>
         <div className={s.title}>
           <div className={s.title__top}>
-            <div className={s.title__logo}></div>
+            <Logo size='large' />
             <Title level={1}>Логистика</Title>
           </div>
           <Text type='secondary'>
@@ -76,7 +77,7 @@ const Auth = () => {
       <div className={s.footer}>
         <div className={s.footer__top}>
           <div className={s.footer__top_mod}>
-            <div className={s.footer__logo}></div>
+            <Logo size='small' />
             <Text type='secondary'>Название компании</Text>
           </div>
           <Text type='secondary'>Сделано в студии piybeep.</Text>
@@ -86,5 +87,3 @@ const Auth = () => {
     </div>
   )
 }
-
-export default Auth

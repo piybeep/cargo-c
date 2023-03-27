@@ -1,4 +1,4 @@
-import Auth from '@/app/screens/Auth/Auth'
+import {Auth} from '@/modules/Auth/'
 import React from 'react'
 import { AppPage } from './_app'
 
