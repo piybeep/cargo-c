@@ -15,7 +15,7 @@ export function Header({ ...props }: HeaderProps) {
             <div className={s.menu}>
                 <div className={s.info}>
                         <div className={s.logo}>
-                            <Logo/>
+                            <Logo size='default'/>
                             <Link href="https://ant.design" target="_blank">
                                 Название компании
                             </Link>

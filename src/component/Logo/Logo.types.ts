@@ -1,3 +1,3 @@
 export interface LogoProps {
-    size?: 32 | 46 
+    size: 'small' | 'default' | 'large'
 }
