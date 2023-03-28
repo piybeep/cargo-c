@@ -12,6 +12,17 @@ body {
 
 	background-color: #F0F2F5;
 }
+.wrapper{
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	min-width: 320px;
+}
+
+main{
+	flex: 1 0 auto;
+}
+
 
 a {
 	color: inherit;

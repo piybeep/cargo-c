@@ -1,15 +1,15 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
 import { ReactNode } from "react";
 
-export default function Home() {
+export default function Projects() {
 	return (
 		<main>
-			in dev
+            Projects
 		</main>
 	);
 }
 
-Home.getLayout = (page: ReactNode) => (
+Projects.getLayout = (page: ReactNode) => (
 	<BaseLayout>
 		{page}
 	</BaseLayout>
