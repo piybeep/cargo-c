@@ -23,7 +23,7 @@ export function Header({ ...props }: HeaderProps) {
                         <Text>Текущий проект: Тестовый проект №1</Text>
                 </div>
 
-                <Button type="link">
+                <Button href='/login' type="link">
                     Выйти
                     <ExportOutlined />
                 </Button>
