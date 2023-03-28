@@ -1,0 +1,55 @@
+.wrapper {
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+}
+
+.link {
+	display: flex;
+	width: fit-content;
+
+	padding: 0px 20px;
+
+	&:hover,
+	.link__icon,
+	.link__text {
+		color: #1890ff;
+	}
+
+	&__active {
+		color: #1890ff;
+	}
+}
+
+.info {
+	display: flex;
+	align-items: center;
+	column-gap: 12px;
+
+	width: fit-content;
+
+	padding: 12px 0px;
+
+	cursor: pointer;
+
+	border-top: 2px solid transparent;
+
+	transition: 0.2s;
+
+	&__active {
+		border-top: 2px solid #1890ff;
+	}
+
+	&__icon {
+		transition: 0.2s;
+
+		color: inherit;
+	}
+
+	&__text {
+		transition: 0.2s;
+
+		color: inherit;
+	}
+}
