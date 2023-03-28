@@ -16,7 +16,7 @@ export function Header({ ...props }: HeaderProps) {
                 <div className={s.info}>
                         <div className={s.logo}>
                             <Logo size='default'/>
-                            <Link href="https://ant.design" target="_blank">
+                            <Link style={{cursor:'default'}}>
                                 Название компании
                             </Link>
                         </div>
