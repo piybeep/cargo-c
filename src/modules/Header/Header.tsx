@@ -11,7 +11,7 @@ import s from './Header.module.scss'
 export function Header({ ...props }: HeaderProps) {
     const { Link, Text } = Typography
     return (
-        <div className={s.wrapper}>
+        <header className={s.wrapper}>
             <div className={s.menu}>
                 <div className={s.info}>
                         <div className={s.logo}>
@@ -28,6 +28,6 @@ export function Header({ ...props }: HeaderProps) {
                     <ExportOutlined />
                 </Button>
             </div>
-        </div>
+        </header>
     );
 };

@@ -1,15 +1,15 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
 import { ReactNode } from "react";
 
-export default function Home() {
+export default function Transport() {
 	return (
 		<main>
-			in dev
+            Transport
 		</main>
 	);
 }
 
-Home.getLayout = (page: ReactNode) => (
+Transport.getLayout = (page: ReactNode) => (
 	<BaseLayout>
 		{page}
 	</BaseLayout>
