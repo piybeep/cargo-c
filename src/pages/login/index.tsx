@@ -1,6 +1,6 @@
 import {Auth} from '@/modules/Auth/'
 import React from 'react'
-import { AppPage } from './_app'
+import { AppPage } from '../_app'
 
 const AuthPage: AppPage = () => {
   return <Auth />
