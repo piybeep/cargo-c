@@ -15,10 +15,18 @@
 	.link__icon,
 	.link__text {
 		color: #1890ff;
+
+		g{
+			stroke: #1890ff;
+		}
 	}
 
 	&__active {
 		color: #1890ff;
+
+		.link__icon, g{
+				stroke: #1890ff;
+		}
 	}
 }
 
@@ -41,10 +49,8 @@
 		border-top: 2px solid #1890ff;
 	}
 
-	&__icon {
+	&__icon g{
 		transition: 0.2s;
-
-		color: inherit;
 	}
 
 	&__text {
