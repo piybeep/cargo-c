@@ -1,7 +1,7 @@
 import React from "react";
 import s from "./Auth.module.scss";
 import { Typography, Button, Input } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { Checkbox } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { Logo } from "@/component";
@@ -42,7 +42,7 @@ export const Auth = () => {
 									width={"100%"}
 									size="large"
 									placeholder="Почта"
-									prefix={<UserOutlined />}
+									prefix={<MailOutlined style={{color:'#1890FF',fontSize:'18px'}}/>}
 								/>
 							)}
 						/>
@@ -55,7 +55,7 @@ export const Auth = () => {
 									width={"100%"}
 									size="large"
 									placeholder="Пароль"
-									prefix={<LockOutlined />}
+									prefix={<LockOutlined style={{color:'#1890FF',fontSize:'18px'}}/>}
 								/>
 							)}
 						/>
