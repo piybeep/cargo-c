@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import { useForm, Controller } from "react-hook-form";
 
 import { Typography, Input, Radio, Select, Button, Modal, Space } from "antd";
-import { SearchOutlined, CheckOutlined } from "@ant-design/icons";
+import { SearchOutlined, CheckOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 
 import { PorjectsProps } from "./ProjectsList.types";
 
 import s from "./ProjectsList.module.scss";
-import { useRouter } from "next/router";
 
 export function ProjectsList({ ...props }: PorjectsProps) {
-    const route = useRouter()
+    const router = useRouter()
 
     const { Title, Text } = Typography;
     const { Search } = Input;
@@ -52,6 +52,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     ]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
     const { control, handleSubmit, setValue } = useForm();
 
@@ -60,39 +61,60 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     };
 
     const edit = (id: number) => {
-        route.push({
+        router.push({
             pathname: '/projects',
-            query: {edit: id}
+            query: { edit: id }
         })
         setValue(
             "title",
-                localStorage.find((current) => {
-                    return current.id === id;
-                })?.title ?? ""
+            localStorage.find((current) => {
+                return current.id === id;
+            })?.title ?? ""
         );
         setIsModalOpen(true);
         console.log("Изменить этот проект");
     };
 
-    const copy = () => {
+    const copy = (text: any) => {
+        console.log(text);
         console.log("Скопировать этот проект");
-    };
-
-    const remove = () => {
-        console.log("Удалить этот проект");
+        navigator.clipboard.writeText(text)
     };
 
     const close = () => {
         setIsModalOpen(false);
 
-        route.replace('/projects', undefined, { shallow: true });
+        router.replace('/projects', undefined, { shallow: true });
     };
 
     const onSubmit = (data: any) => {
         console.log(data);
-        setLocalStorage(localStorage.map(item => item.id == Number(route.query.edit) && item.title != data.title ? {...item, title: data.title} : item))
+        setLocalStorage(localStorage.map(item => item.id == Number(router.query.edit) && item.title != data.title ? { ...item, title: data.title } : item))
         close()
     };
+
+    const remove = () => {
+        console.log(router.query.remove)
+        setLocalStorage(localStorage.filter(current => current.id != Number(router.query.remove)))
+        close()
+    }
+
+    const confirm = (id: number) => {
+        router.push({
+            pathname: '/projects',
+            query: { remove: id }
+        })
+
+        Modal.confirm({
+            title: 'Вы уверены, что хотите удалить этот проект?',
+            icon: <ExclamationCircleOutlined />,
+            onCancel: () => close(),
+            onOk: () => remove(),
+            maskClosable: true,
+            okText: 'Да',
+            cancelText: 'Отмена',
+        });
+    }
 
     return (
         <div className={s.wrapper}>
@@ -100,6 +122,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 title="Название"
                 open={isModalOpen}
                 footer={null}
+                mask={false}
                 onCancel={close}
             >
                 <form className={s.input} onSubmit={handleSubmit(onSubmit)}>
@@ -122,6 +145,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                     </Space.Compact>
                 </form>
             </Modal>
+
             <div className={s.header}>
                 <div className={s.header__search}>
                     <Title level={5} className={s.header__title}>
@@ -217,7 +241,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                                 </svg>
 
                                 <svg
-                                    onClick={copy}
+                                    onClick={() => copy(current.title)}
                                     className={s.menu__svg}
                                     width="24"
                                     height="24"
@@ -247,7 +271,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                                 </svg>
 
                                 <svg
-                                    onClick={remove}
+                                    onClick={() => confirm(current.id)}
                                     className={s.menu__svg}
                                     width="24"
                                     height="24"
