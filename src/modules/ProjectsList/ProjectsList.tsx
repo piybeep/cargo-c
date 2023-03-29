@@ -109,7 +109,15 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             title: 'Вы уверены, что хотите удалить этот проект?',
             icon: <ExclamationCircleOutlined />,
             onCancel: () => close(),
-            onOk: () => remove(),
+            // Костыль
+            onOk: () => {
+                setLocalStorage(localStorage.filter(current => current.id != id))
+                close()
+            },
+            // Костыль
+            // Не работает, но так должно быть
+            // onOk: () => remove},
+            // Не работает, но так должно быть
             maskClosable: true,
             okText: 'Да',
             cancelText: 'Отмена',
