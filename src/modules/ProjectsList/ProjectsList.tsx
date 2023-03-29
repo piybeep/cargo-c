@@ -84,6 +84,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const close = () => {
         setIsModalOpen(false);
+
+        route.replace('/projects', undefined, { shallow: true });
     };
 
     const onSubmit = (data: any) => {
