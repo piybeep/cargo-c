@@ -5,8 +5,11 @@ import { useForm, Controller } from "react-hook-form";
 
 import { Typography, Input, Radio, Select, Button, Modal, Space } from "antd";
 import { SearchOutlined, CheckOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import Icon from "@ant-design/icons/lib/components/Icon";
 
 import { PorjectsProps } from "./ProjectsList.types";
+
+import svgAdd from "../../../public/svg/add";
 
 import s from "./ProjectsList.module.scss";
 
@@ -16,8 +19,18 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const { Title, Text } = Typography;
     const { Search } = Input;
 
-    const onSearch = (e: any) => {
-        console.log(e);
+    const onSearch = (text: string) => {
+        if (text) {
+            let arr:any = []
+            localStorage.map(current => {
+                if (current.title.toLocaleLowerCase().includes(text.toLocaleLowerCase())){
+                    arr.push(current)
+                }
+            })
+            setSortLocalStorage(arr)
+        } else {
+            setSortLocalStorage(localStorage)
+        }
     };
 
     const options = [
@@ -51,8 +64,10 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         },
     ]);
 
+    const [sortLocalStorage, setSortLocalStorage] = useState(localStorage)
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+    const [isAddModalOpen, setAddIsModalOpen] = useState(false);
 
     const { control, handleSubmit, setValue } = useForm();
 
@@ -83,6 +98,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const close = () => {
         setIsModalOpen(false);
+        setAddIsModalOpen(false);
+
+        setValue(
+            'title', ''
+        )
 
         router.replace('/projects', undefined, { shallow: true });
     };
@@ -92,6 +112,17 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         setLocalStorage(localStorage.map(item => item.id == Number(router.query.edit) && item.title != data.title ? { ...item, title: data.title } : item))
         close()
     };
+
+    const addProject = (data: any) => {
+        if (data.title) {
+            console.log(data);
+            const newProject = { id: router.query.add, title: data.title, date: '21.01.2023' }
+            setLocalStorage([...localStorage, newProject])
+            close()
+        } else {
+            console.log('Введите название')
+        }
+    }
 
     const remove = () => {
         console.log(router.query.remove)
@@ -124,6 +155,10 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         });
     }
 
+    useEffect(() => {
+        setSortLocalStorage(localStorage)
+    }, [localStorage])
+
     return (
         <div className={s.wrapper}>
             <Modal
@@ -153,6 +188,35 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                     </Space.Compact>
                 </form>
             </Modal>
+
+            <Modal
+                title="Название"
+                open={isAddModalOpen}
+                footer={null}
+                mask={false}
+                onCancel={close}
+            >
+                <form className={s.input} onSubmit={handleSubmit(addProject)}>
+                    <Space.Compact style={{ width: "100%" }}>
+                        <Controller
+                            name="title"
+                            control={control}
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    placeholder="Новый проект"
+                                />
+                            )}
+                        />
+                        <Button
+                            htmlType="submit"
+                            type="primary"
+                            icon={<CheckOutlined />}
+                        ></Button>
+                    </Space.Compact>
+                </form>
+            </Modal>
+
 
             <div className={s.header}>
                 <div className={s.header__search}>
@@ -194,7 +258,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 </div>
             </div>
             <div className={s.list}>
-                {localStorage.map((current) => {
+                {sortLocalStorage.map((current) => {
                     return (
                         <div key={current.id} className={s.list__item}>
                             <svg
@@ -332,6 +396,12 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         </div>
                     );
                 })}
+            </div>
+
+            <div className={s.add}>
+                <Button type="primary" className={s.add__button} onClick={() => { setAddIsModalOpen(true), router.push({ pathname: '/projects', query: { add: localStorage.length } }) }}>
+                    <Icon component={svgAdd} />
+                    Добавить новый проект</Button>
             </div>
         </div>
     );

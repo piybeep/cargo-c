@@ -102,3 +102,18 @@
         cursor: pointer;
     }
 }
+
+.add{
+    display: flex;
+    justify-content: center;
+
+    &__button{
+        display: flex;
+        align-items: center;
+    }
+
+    svg{
+        width: 18px;
+        height: 18px;
+    }
+}
