@@ -7,3 +7,10 @@
   background: #ffffff;
   border-radius: 8px;
 }
+
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  row-gap: 28px;
+  margin-top: 28px;
+}
