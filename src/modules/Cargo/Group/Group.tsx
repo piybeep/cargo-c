@@ -3,6 +3,7 @@ import s from './Group.module.scss'
 import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
 import Tool from './Tool/Tool'
+import Footer from './Footer/Footer'
 
 const Group = () => {
   return (
@@ -16,6 +17,7 @@ const Group = () => {
         <GroupEl />
         <GroupEl />
       </div>
+      <Footer/>
     </div>
   )
 }
