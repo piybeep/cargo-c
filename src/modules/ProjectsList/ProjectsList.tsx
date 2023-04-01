@@ -21,9 +21,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const onSearch = (text: string) => {
         if (text) {
-            let arr:any = []
+            let arr: any = []
             localStorage.map(current => {
-                if (current.title.toLocaleLowerCase().includes(text.toLocaleLowerCase())){
+                if (current.title.toLocaleLowerCase().includes(text.toLocaleLowerCase())) {
                     arr.push(current)
                 }
             })
@@ -69,6 +69,19 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setAddIsModalOpen] = useState(false);
 
+    // для контроля размеров
+    const [windowWidth, setWindowWidth] = useState('default')
+
+    useEffect(() => {
+        if (window) {
+            if (window.innerWidth > 660) {
+                setWindowWidth('default')
+            } else {
+                setWindowWidth('small')
+            }
+        }
+    }, [])
+
     const { control, handleSubmit, setValue } = useForm();
 
     const open = () => {
@@ -90,10 +103,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         console.log("Изменить этот проект");
     };
 
-    const copy = (text: any) => {
-        console.log(text);
-        console.log("Скопировать этот проект");
-        navigator.clipboard.writeText(text)
+    const copy = (project: any) => {
+        const newProject = { id: localStorage.length, title: project.title, date: project.date }
+        setLocalStorage([...localStorage, newProject])
     };
 
     const close = () => {
@@ -116,7 +128,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const addProject = (data: any) => {
         if (data.title) {
             console.log(data);
-            const newProject = { id: router.query.add, title: data.title, date: '21.01.2023' }
+            const newProject = { id: Number(router.query.add), title: data.title, date: '21.01.2023' }
             setLocalStorage([...localStorage, newProject])
             close()
         } else {
@@ -125,9 +137,12 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     }
 
     const remove = () => {
-        console.log(router.query.remove)
-        setLocalStorage(localStorage.filter(current => current.id != Number(router.query.remove)))
-        close()
+        setLocalStorage(() => {
+            const id = Number(router.query.remove)
+            console.log(id)
+            close()
+            return localStorage.filter(current => current.id != id)
+        })
     }
 
     const confirm = (id: number) => {
@@ -140,15 +155,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             title: 'Вы уверены, что хотите удалить этот проект?',
             icon: <ExclamationCircleOutlined />,
             onCancel: () => close(),
-            // Костыль
             onOk: () => {
-                setLocalStorage(localStorage.filter(current => current.id != id))
-                close()
+                remove()
             },
-            // Костыль
-            // Не работает, но так должно быть
-            // onOk: () => remove},
-            // Не работает, но так должно быть
             maskClosable: true,
             okText: 'Да',
             cancelText: 'Отмена',
@@ -162,10 +171,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     return (
         <div className={s.wrapper}>
             <Modal
-                title="Название"
+                title="Переименовать"
                 open={isModalOpen}
                 footer={null}
-                mask={false}
+                className={s.modal}
+                mask={true}
                 onCancel={close}
             >
                 <form className={s.input} onSubmit={handleSubmit(onSubmit)}>
@@ -193,7 +203,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 title="Название"
                 open={isAddModalOpen}
                 footer={null}
-                mask={false}
+                className={s.modal}
+                mask={true}
                 onCancel={close}
             >
                 <form className={s.input} onSubmit={handleSubmit(addProject)}>
@@ -253,10 +264,16 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         options={options}
                         onChange={onChangeSort}
                         value={sort}
+                        // Поправить, пока не понимаю, заменил типы SizeType на string
+                        size={windowWidth}
+                        // Поправить, пока не понимаю, заменил типы SizeType на string
+                        buttonStyle={windowWidth === 'small' ? 'solid' : 'outline'}
+                        className={s.header__group}
                         optionType="button"
                     />
                 </div>
             </div>
+
             <div className={s.list}>
                 {sortLocalStorage.map((current) => {
                     return (
@@ -278,9 +295,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                             </svg>
                             <div className={s.list__info}>
                                 <Title level={5}>{current.title}</Title>
-                                <Text type="secondary">{current.date}</Text>
+                                <Text className={s.list__text} type="secondary">{current.date}</Text>
                             </div>
-                            <Button onClick={open}>Открыть</Button>
+                            <Button className={s.list__open} onClick={open}>Открыть</Button>
                             <div className={s.menu}>
                                 <svg
                                     onClick={() => edit(current.id)}
@@ -313,7 +330,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                                 </svg>
 
                                 <svg
-                                    onClick={() => copy(current.title)}
+                                    onClick={() => copy(current)}
                                     className={s.menu__svg}
                                     width="24"
                                     height="24"

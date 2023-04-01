@@ -34,6 +34,8 @@
 
     &__title {
         margin: 0px !important;
+
+        min-width: fit-content;
     }
 
     &__input {
@@ -51,6 +53,7 @@
 
     &__select {
         div {
+            min-width: 140px;
             padding-left: 0px !important;
         }
     }
@@ -66,54 +69,176 @@
 
     // cursor: pointer;
 
-    &__item{
+    &__item {
         display: flex;
         align-items: center;
         column-gap: 16px;
 
         padding: 16px 0px;
 
-        &:hover{
-            .list__svg{
+        &:hover {
+            .list__svg {
                 fill: transparent;
             }
         }
     }
 
-    &__svg{
+    &__svg {
         transition: .2s;
     }
 
-    &__info{
+    &__info {
         width: 100%;
         max-width: 958px;
     }
 
-    &__button{
+    &__button {
         transition: .2s;
     }
 
 }
-.menu{
+
+.menu {
     display: flex;
     column-gap: 12px;
 
-    &__svg{
+    &__svg {
         cursor: pointer;
     }
 }
 
-.add{
+.remove {
+    width: 100% !important;
+    max-width: 440px;
+}
+
+.add {
     display: flex;
     justify-content: center;
 
-    &__button{
+    &__button {
         display: flex;
         align-items: center;
     }
 
-    svg{
+    svg {
         width: 18px;
         height: 18px;
     }
+}
+
+.modal {
+    max-width: 400px;
+
+        form{
+            margin-top: 40px;
+        }
+}
+
+@media screen and (max-width: 660px) {
+    .header {
+        background-color: transparent;
+
+        &__title {
+            display: none;
+        }
+
+        &__sort {
+            flex-direction: column-reverse;
+            align-items: flex-end;
+            row-gap: 20px;
+
+            padding-top: 10px;
+            padding-bottom: 0px;
+        }
+
+        &__search {
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        &__select {
+            max-width: 120px;
+
+            span {
+                font-size: 12px;
+            }
+        }
+
+        &__group {
+            display: flex;
+            column-gap: 6px;
+            width: 100%;
+
+            span {
+                font-size: 12px;
+            }
+
+            label {
+                border-radius: 20px !important;
+
+                &::before {
+                    display: none !important;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .list {
+
+        &__open {
+            display: none;
+        }
+    }
+}
+
+@media screen and (max-width: 430px) {
+    .header {
+        padding: 0px;
+
+        &__input {
+            padding: 0px 16px;
+        }
+
+        &__sort {
+            padding-left: 16px;
+        }
+
+        &__group {
+            overflow-x: scroll;
+
+            label {
+                min-width: fit-content;
+            }
+
+            padding-bottom: 10px;
+        }
+
+        &__select {
+            margin-right: 16px;
+        }
+    }
+
+    .list {
+        padding: 0px 12px;
+
+        &__item {
+            column-gap: 12px;
+
+            padding: 12px 0px;
+        }
+
+        &__text {
+            font-size: 12px;
+        }
+    }
+
+    .modal{
+        max-width: 288px;
+
+        padding: 16px;
+    }
+
 }

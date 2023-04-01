@@ -59,3 +59,31 @@
 		color: inherit;
 	}
 }
+
+
+@media screen and (max-width: 680px){
+	.wrapper{
+		column-gap: 8px;
+	}
+
+	.link{
+		padding: 0px;
+	}
+
+	.info{
+		border-top: 0px;
+
+		flex-direction: column;
+		row-gap: 5px;
+
+		padding: 8px;
+
+		&__text{
+			font-size: 10px;
+		}
+
+		&__icon{
+			scale: 1.2;
+		}
+	}
+}
