@@ -7,8 +7,6 @@ import Image from 'next/image'
 
 const Footer = () => {
 
-  console.log(saveSvg)
-
   return (
     <div className={s.cont}>
       <Button icon={<FileAddOutlined />}>Из файла</Button>
