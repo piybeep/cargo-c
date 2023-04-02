@@ -20,8 +20,9 @@ const gridSize = 200; // размер сетки
 const gridSizeCell = 50; // размер ячейки сетки
 const planeSize = 200; // размер поля
 const boxSize = gridSize / gridSizeCell; // размер блока
+const settings = {};
 
-// Блоки
+let camera;
 
 const render = () => {
   // update the picking ray with the camera and pointer position
@@ -43,10 +44,11 @@ const render = () => {
 };
 
 export const init = (settings) => {
+  settings = settings;
   // Создание сцены
   const scene = new THREE.Scene();
   // Создание камеры
-  const camera = new THREE.PerspectiveCamera(75, settings.width / settings.height, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(75, settings.width / settings.height, 0.1, 1000);
   // Создание сетки
   const grid = new THREE.GridHelper(gridSize, gridSizeCell, "#bbb", "#bbb");
   scene.add(grid);
@@ -197,79 +199,71 @@ export const init = (settings) => {
     }
   };
 
+  function onPointerDown(event) {
+    pointer.set((event.clientX / settings.width) * 2 - 1, -((event.clientY - 64) / settings.height) * 2 + 1);
+
+    raycaster.setFromCamera(pointer, camera);
+
+    const intersects = raycaster.intersectObjects(objects, false);
+
+    if (intersects.length > 0) {
+      const intersect = intersects[0];
+
+      if (isShiftDown) {
+        if (intersect.object !== plane) {
+          scene.remove(intersect.object);
+
+          objects.splice(objects.indexOf(intersect.object), 1);
+        }
+
+        // create cube
+      } else {
+        const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
+        cubeGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+        cubeMaterial = new THREE.MeshBasicMaterial({
+          color: colors[0],
+          opacity: 0.6,
+          transparent: true,
+        });
+        const voxel = new THREE.Mesh(cubeGeo, cubeMaterial);
+
+        // voxel.material.color.set(colors[Math.floor(Math.random() * 5)])
+        // console.log(voxel.setColorAt)
+        voxel.position.copy(intersect.point).add(intersect.face.normal);
+        voxel.position
+          .divideScalar(boxSize)
+          .floor()
+          .multiplyScalar(boxSize)
+          .addScalar(boxSize / 2);
+        scene.add(voxel);
+
+        const edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(boxSize, boxSize, boxSize));
+        const line2 = new THREE.LineSegments(
+          edges2,
+          new THREE.LineBasicMaterial({
+            color: "black",
+          })
+        );
+        line2.position.copy(intersect.point).add(intersect.face.normal);
+        line2.position
+          .divideScalar(boxSize)
+          .floor()
+          .multiplyScalar(boxSize)
+          .addScalar(boxSize / 2);
+        scene.add(line2);
+
+        objects.push(voxel);
+        console.log(objects);
+      }
+
+      render();
+    }
+  }
+
   window.addEventListener("dblclick", onPointerDown);
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("wheel", onScroll);
   window.addEventListener("keyup", onKeyUp);
 
   window.requestAnimationFrame(render);
-};
-
-export function onPointerDown(event) {
-  pointer.set((event.clientX / settings.width) * 2 - 1, -(event.clientY / settings.height) * 2 + 1);
-
-  setColor(colorBlock);
-}
-
-export const setColor = (color) => {
-  console.log("+");
-  raycaster.setFromCamera(pointer, camera);
-
-  const intersects = raycaster.intersectObjects(objects, false);
-  console.log(intersects);
-
-  if (intersects.length > 0) {
-    const intersect = intersects[0];
-
-    // delete cube
-
-    if (isShiftDown) {
-      if (intersect.object !== plane) {
-        scene.remove(intersect.object);
-
-        objects.splice(objects.indexOf(intersect.object), 1);
-      }
-
-      // create cube
-    } else {
-      const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
-      cubeGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-      cubeMaterial = new THREE.MeshBasicMaterial({
-        color: colors[color],
-        opacity: 0.6,
-        transparent: true,
-      });
-      const voxel = new THREE.Mesh(cubeGeo, cubeMaterial);
-
-      // voxel.material.color.set(colors[Math.floor(Math.random() * 5)])
-      // console.log(voxel.setColorAt)
-      voxel.position.copy(intersect.point).add(intersect.face.normal);
-      voxel.position
-        .divideScalar(boxSize)
-        .floor()
-        .multiplyScalar(boxSize)
-        .addScalar(boxSize / 2);
-      scene.add(voxel);
-
-      const edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(boxSize, boxSize, boxSize));
-      const line2 = new THREE.LineSegments(
-        edges2,
-        new THREE.LineBasicMaterial({
-          color: "black",
-        })
-      );
-      line2.position.copy(intersect.point).add(intersect.face.normal);
-      line2.position
-        .divideScalar(boxSize)
-        .floor()
-        .multiplyScalar(boxSize)
-        .addScalar(boxSize / 2);
-      scene.add(line2);
-
-      objects.push(voxel);
-      console.log(objects);
-    }
-
-    render();
-  }
 };
