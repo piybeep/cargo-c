@@ -12,6 +12,7 @@ import { PorjectsProps } from "./ProjectsList.types";
 import svgAdd from "../../../public/svg/add";
 
 import s from "./ProjectsList.module.scss";
+import classNames from "classnames";
 
 export function ProjectsList({ ...props }: PorjectsProps) {
     const router = useRouter()
@@ -116,7 +117,13 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             'title', ''
         )
 
+        let routerCurrentId = router.query.currentId
+
         router.replace('/projects', undefined, { shallow: true });
+        router.push({
+            pathname: 'projects',
+            query: {currentId: routerCurrentId}
+        })
     };
 
     const onSubmit = (data: any) => {
@@ -167,6 +174,15 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     useEffect(() => {
         setSortLocalStorage(localStorage)
     }, [localStorage])
+
+    useEffect(() => {
+        if (!router.query.currentId){
+            router.push({
+                pathname: '/projects',
+                query: {currentId: localStorage.length - 1}
+            })
+        }
+    }, [])
 
     return (
         <div className={s.wrapper}>
@@ -277,7 +293,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             <div className={s.list}>
                 {sortLocalStorage.map((current) => {
                     return (
-                        <div key={current.id} className={s.list__item}>
+                        <div onClick={() => router.push({pathname: '/projects', query: {currentId: current.id}})} key={current.id} className={classNames(s.list__item, {
+                            [s.list__item_active]: Number(router.query.currentId) == current.id
+                        })}>
                             <svg
                                 className={s.list__svg}
                                 width="34"

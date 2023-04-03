@@ -65,20 +65,23 @@
     background-color: #FFFFFF;
     border-radius: 8px;
 
-    padding: 0px 24px;
-
-    // cursor: pointer;
-
     &__item {
         display: flex;
         align-items: center;
         column-gap: 16px;
 
-        padding: 16px 0px;
+        padding: 16px 24px;
 
-        &:hover {
-            .list__svg {
+        &_active{
+            background-color: #F5F5F5;
+
+            .list__svg{
                 fill: transparent;
+            }
+
+            .list__open{
+                opacity: 0;
+                visibility: hidden;
             }
         }
     }
@@ -222,12 +225,11 @@
     }
 
     .list {
-        padding: 0px 12px;
 
         &__item {
             column-gap: 12px;
 
-            padding: 12px 0px;
+            padding: 12px 12px;
         }
 
         &__text {
