@@ -3,6 +3,8 @@ import { Button, Typography } from 'antd';
 import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
+import { useState } from 'react';
+import classNames from 'classnames';
 
 
 export function Transport({ ...props }: TransportProps) {
@@ -29,6 +31,29 @@ export function Transport({ ...props }: TransportProps) {
         }
     ]
 
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
+    const [activeMenu, setActiveMenu] = useState(null);
+
+
+    function handleTouchStart(e: any) {
+        setTouchStart(e.targetTouches[0].clientX);
+    }
+
+    function handleTouchMove(e: any) {
+        setTouchEnd(e.targetTouches[0].clientX);
+    }
+
+    function handleTouchEnd(index: any) {
+        if (touchStart - touchEnd > 150) {
+            setActiveMenu(index)
+        }
+
+        if (touchStart - touchEnd < -150) {
+            setActiveMenu(null)
+        }
+    }
+
     return (
         <div className={s.wrapper}>
             <div className={s.header}>
@@ -37,9 +62,12 @@ export function Transport({ ...props }: TransportProps) {
 
             <div className={s.list}>
                 {
-                    data.map(current => {
+                    data.map((current, index) => {
                         return (
-                            <div className={s.item}>
+                            <div key={current.id} className={classNames(s.item, {
+                                [s.item__active]: activeMenu == index
+                            })}
+                                onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={() => handleTouchEnd(index)}>
                                 <img src="#" alt="Картинка" />
                                 <div className={s.item__info}>
                                     <Title level={5}>{current.title}</Title>
@@ -76,7 +104,7 @@ export function Transport({ ...props }: TransportProps) {
             </div>
             <div className={s.buttons}>
                 <Button className={s.buttons__button} type='primary'>Добавить транспорт вручную</Button>
-                <Button className={s.buttons__button} type='primary' style={{backgroundColor: '#389E0D'}}>Добавить из шаблона</Button>
+                <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>Добавить из шаблона</Button>
             </div>
         </div>
     );
