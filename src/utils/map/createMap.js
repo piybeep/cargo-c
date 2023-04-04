@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Renderer from "./renderer";
+import Cargo from "./cargo";
 
 export class MapCargo {
   // Настройки
@@ -137,43 +138,10 @@ export class MapCargo {
 
         // create cube
       } else {
-        const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
-        this.cubeGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
-        this.cubeMaterial = new THREE.MeshBasicMaterial({
-          color: colors[0],
-          opacity: 0.6,
-          transparent: true,
-        });
-        this.voxel = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-
-        // voxel.material.color.set(colors[Math.floor(Math.random() * 5)])
-        // console.log(voxel.setColorAt)
-        this.voxel.position.copy(this.intersect.point).add(this.intersect.face.normal);
-        this.voxel.position
-          .divideScalar(this.#boxSize)
-          .floor()
-          .multiplyScalar(this.#boxSize)
-          .addScalar(this.#boxSize / 2);
-        this.scene.add(this.voxel);
-
-        this.edges2 = new THREE.EdgesGeometry(
-          new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize)
-        );
-        this.line2 = new THREE.LineSegments(
-          this.edges2,
-          new THREE.LineBasicMaterial({
-            color: "black",
-          })
-        );
-        this.line2.position.copy(this.intersect.point).add(this.intersect.face.normal);
-        this.line2.position
-          .divideScalar(this.#boxSize)
-          .floor()
-          .multiplyScalar(this.#boxSize)
-          .addScalar(this.#boxSize / 2);
-        this.scene.add(this.line2);
-
-        this.#objects.push(this.voxel);
+        this.block = new Cargo({ size: this.#boxSize, intersect: this.intersect, scene: this.scene });
+        this.block.create();
+        console.log(this.block.cargo);
+        this.#objects.push(this.block.cargo);
       }
 
       this.render();
