@@ -3,12 +3,14 @@ import { HeaderProps } from './Header.types';
 import { Logo } from '../../component/Logo';
 
 import { Button } from 'antd';
-import { ExportOutlined } from '@ant-design/icons'
 import { Typography } from 'antd';
+
+import { useProjects } from '@/zustand/projects';
 
 import s from './Header.module.scss'
 
 export function Header({ ...props }: HeaderProps) {
+    const selectProject = useProjects(state => state.selectProject)
     const { Link, Text } = Typography
     return (
         <header className={s.wrapper}>
@@ -20,7 +22,10 @@ export function Header({ ...props }: HeaderProps) {
                             Название компании
                         </Link>
                     </div>
-                    <Text>Текущий проект: Тестовый проект №1</Text>
+                    <div className={s.logo__title}>
+                        <Text>Текущий проект: </Text>
+                        <Link href="/projects">{selectProject[0]?.title}</Link>
+                    </div>
                 </div>
 
                 <Button className={s.button} href='/login' type="link">
