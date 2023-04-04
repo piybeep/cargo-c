@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import { useInformer } from "@/store/figure-types";
 
-import { init, setColorBlock } from "@/utils/createMap";
+import { MapCargo } from "@/utils/map/createMap";
 
 // styles
 import style from "./Map.module.scss";
 
 const Map = () => {
-  const figure = useInformer((state: any) => state.id);
+  // const figure = useInformer((state: any) => state.id);
 
   useEffect(() => {
+    // Получить размеры canvas
     const width: number | undefined = document.querySelector(`.${style["canvas-field"]}`)?.clientWidth;
     const height: number | undefined = document.querySelector(`.${style["canvas-field"]}`)?.clientHeight;
 
@@ -18,12 +19,10 @@ const Map = () => {
       height,
     };
 
-    init(settings);
+    // Создание холста
+    const field = new MapCargo(settings);
+    field.create();
   }, []);
-
-  useEffect(() => {
-    setColorBlock(figure);
-  }, [figure]);
 
   return (
     <div className={style["canvas-field"]}>

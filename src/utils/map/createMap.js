@@ -1,0 +1,365 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import Renderer from "./renderer";
+
+export class MapCargo {
+  // Настройки
+  #raycaster = new THREE.Raycaster();
+  #isShiftDown = false;
+  #plane = null;
+  // #cubeGeo = null;
+  // #cubeMaterial = null;
+  // #rollOverMesh = null;
+  // #rollOverMaterial = null;
+  #camera = null;
+  #objects = [];
+  renderer;
+
+  // Конфигурация холста
+  #width = 0; // Ширина холста
+  #height = 0; // Высота холста
+
+  // Конфигурация сетки
+  #gridSize = 200; // размер
+  #gridSizeCell = 50; // размер ячейки
+  #gridColorLine = "#bbb"; // цвет осей
+  #gridColorCell = "#bbb"; // цвет ячейки
+
+  // Конфигурация объектов
+  #planeSize = 200; // размер поля
+  #boxSize = this.#gridSize / this.#gridSizeCell; //  размер блока
+
+  constructor(params) {
+    this.#width = params.width;
+    this.#height = params.height;
+  }
+
+  create() {
+    // Создание сцены
+    this.scene = new THREE.Scene();
+
+    // Создание камеры
+    this.camera = new THREE.PerspectiveCamera(75, this.#width / this.#height, 0.1, 1000);
+
+    // Создание сетки
+    this.grid = new THREE.GridHelper(
+      this.#gridSize,
+      this.#gridSizeCell,
+      this.#gridColorLine,
+      this.#gridColorCell
+    );
+    this.scene.add(this.grid);
+
+    this.canvas = document.querySelector("#canvas");
+
+    this.renderer = new Renderer({ canvas: this.canvas, width: this.#width, height: this.#height }).renderer;
+    this.pointer = new THREE.Vector2();
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = false;
+    this.controls.enableZoom = true;
+    this.controls.enablePan = true;
+    this.controls.minDistance = 20;
+    this.controls.maxDistance = 200;
+
+    this.geometry = new THREE.PlaneGeometry(this.#planeSize, this.#planeSize);
+    this.geometry.rotateX(-Math.PI / 2);
+
+    this.plane = new THREE.Mesh(this.geometry, new THREE.MeshBasicMaterial({ visible: false }));
+    this.scene.add(this.plane);
+
+    this.#objects.push(this.plane);
+
+    // roll-over helpers
+    this.rollOverGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
+    this.rollOverMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      opacity: 0.5,
+      transparent: true,
+    });
+    this.rollOverMesh = new THREE.Mesh(this.rollOverGeo, this.rollOverMaterial);
+    this.scene.add(this.rollOverMesh);
+
+    this.camera.position.set(20, 50, 40);
+    this.controls.update();
+
+    window.addEventListener("dblclick", (e) => this.onPointerDown(e));
+    window.addEventListener("pointermove", (e) => this.onPointerMove(e));
+    window.addEventListener("wheel", () => this.onScroll());
+    window.requestAnimationFrame(() => this.render());
+  }
+
+  render() {
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  onScroll() {
+    this.render();
+  }
+
+  onPointerMove(event) {
+    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
+
+    this.#raycaster.setFromCamera(this.pointer, this.camera);
+
+    this.intersects = this.#raycaster.intersectObjects(this.#objects, false);
+
+    if (this.intersects.length > 0) {
+      this.intersect = this.intersects[0];
+
+      this.rollOverMesh.position.copy(this.intersect.point).add(this.intersect.face.normal);
+      this.rollOverMesh.position
+        .divideScalar(this.#boxSize)
+        .floor()
+        .multiplyScalar(this.#boxSize)
+        .addScalar(this.#boxSize / 2);
+
+      this.render();
+    }
+  }
+
+  onPointerDown(event) {
+    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
+
+    this.#raycaster.setFromCamera(this.pointer, this.camera);
+
+    this.intersects = this.#raycaster.intersectObjects(this.#objects, false);
+
+    if (this.intersects.length > 0) {
+      this.intersect = this.intersects[0];
+
+      if (this.#isShiftDown) {
+        if (this.intersect.object !== this.plane) {
+          this.scene.remove(this.intersect.object);
+
+          this.#objects.splice(this.#objects.indexOf(this.intersect.object), 1);
+        }
+
+        // create cube
+      } else {
+        const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
+        this.cubeGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
+        this.cubeMaterial = new THREE.MeshBasicMaterial({
+          color: colors[0],
+          opacity: 0.6,
+          transparent: true,
+        });
+        this.voxel = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
+
+        // voxel.material.color.set(colors[Math.floor(Math.random() * 5)])
+        // console.log(voxel.setColorAt)
+        this.voxel.position.copy(this.intersect.point).add(this.intersect.face.normal);
+        this.voxel.position
+          .divideScalar(this.#boxSize)
+          .floor()
+          .multiplyScalar(this.#boxSize)
+          .addScalar(this.#boxSize / 2);
+        this.scene.add(this.voxel);
+
+        this.edges2 = new THREE.EdgesGeometry(
+          new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize)
+        );
+        this.line2 = new THREE.LineSegments(
+          this.edges2,
+          new THREE.LineBasicMaterial({
+            color: "black",
+          })
+        );
+        this.line2.position.copy(this.intersect.point).add(this.intersect.face.normal);
+        this.line2.position
+          .divideScalar(this.#boxSize)
+          .floor()
+          .multiplyScalar(this.#boxSize)
+          .addScalar(this.#boxSize / 2);
+        this.scene.add(this.line2);
+
+        this.#objects.push(this.voxel);
+      }
+
+      this.render();
+    }
+  }
+}
+
+// let pointer = new THREE.Vector2(),
+//   raycaster,
+//   isShiftDown = false;
+// let plane;
+// let cubeGeo, cubeMaterial;
+// let objects = [];
+// let rollOverMesh, rollOverMaterial;
+// let colorBlock = 0;
+// let camera;
+
+// export const setColorBlock = (color) => {
+//   colorBlock = color;
+// };
+
+// // Конфиг
+// const gridSize = 200; // размер сетки
+// const gridSizeCell = 50; // размер ячейки сетки
+// const planeSize = 200; // размер поля
+// const boxSize = gridSize / gridSizeCell; // размер блока
+
+// export const init = (settings) => {
+//   settings = settings;
+//   // Создание сцены
+//   const scene = new THREE.Scene();
+//   // Создание камеры
+//   camera = new THREE.PerspectiveCamera(75, settings.width / settings.height, 0.1, 1000);
+//   // Создание сетки
+//   const grid = new THREE.GridHelper(gridSize, gridSizeCell, "red", "#bbb");
+//   scene.add(grid);
+
+//   // Рендер
+//   const canvas = document.querySelector("#canvas");
+//   const renderer = new THREE.WebGLRenderer({
+//     antialias: true,
+//     canvas,
+//   });
+
+//   renderer.setPixelRatio(window.devicePixelRatio);
+//   renderer.setSize(settings.width, settings.height);
+//   renderer.setClearColor("#fff", 1);
+
+//   const controls = new OrbitControls(camera, renderer.domElement);
+//   controls.enableDamping = false;
+//   controls.enableZoom = true;
+//   controls.enablePan = true;
+//   controls.minDistance = 20;
+//   controls.maxDistance = 200;
+
+//   raycaster = new THREE.Raycaster();
+
+//   const geometry = new THREE.PlaneGeometry(planeSize, planeSize);
+//   geometry.rotateX(-Math.PI / 2);
+
+//   plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ visible: false }));
+//   scene.add(plane);
+
+//   objects.push(plane);
+
+//   // roll-over helpers
+//   const rollOverGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+//   rollOverMaterial = new THREE.MeshBasicMaterial({
+//     color: 0xff0000,
+//     opacity: 0.5,
+//     transparent: true,
+//   });
+//   rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+//   scene.add(rollOverMesh);
+
+//   camera.position.set(20, 50, 40);
+//   controls.update();
+
+//   const render = () => {
+//     renderer.render(scene, camera);
+//   };
+
+//   function onScroll(event) {
+//     render();
+//   }
+//   //
+//   function onPointerMove(event) {
+//     pointer.set((event.clientX / settings.width) * 2 - 1, -((event.clientY - 64) / settings.height) * 2 + 1);
+
+//     raycaster.setFromCamera(pointer, camera);
+
+//     const intersects = raycaster.intersectObjects(objects, false);
+
+//     if (intersects.length > 0) {
+//       const intersect = intersects[0];
+
+//       rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
+//       rollOverMesh.position
+//         .divideScalar(boxSize)
+//         .floor()
+//         .multiplyScalar(boxSize)
+//         .addScalar(boxSize / 2);
+
+//       render();
+//     }
+//   }
+//   //
+
+//   const onKeyUp = (e) => {
+//     switch (e.key) {
+//       case "c":
+//         console.log(objects);
+//         objects = [];
+//         render();
+//         break;
+
+//       default:
+//         render();
+//     }
+//   };
+
+//   function onPointerDown(event) {
+//     pointer.set((event.clientX / settings.width) * 2 - 1, -((event.clientY - 64) / settings.height) * 2 + 1);
+
+//     raycaster.setFromCamera(pointer, camera);
+
+//     const intersects = raycaster.intersectObjects(objects, false);
+
+//     if (intersects.length > 0) {
+//       const intersect = intersects[0];
+
+//       if (isShiftDown) {
+//         if (intersect.object !== plane) {
+//           scene.remove(intersect.object);
+
+//           objects.splice(objects.indexOf(intersect.object), 1);
+//         }
+
+//         // create cube
+//       } else {
+//         const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
+//         cubeGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+//         cubeMaterial = new THREE.MeshBasicMaterial({
+//           color: colors[0],
+//           opacity: 0.6,
+//           transparent: true,
+//         });
+//         const voxel = new THREE.Mesh(cubeGeo, cubeMaterial);
+
+//         // voxel.material.color.set(colors[Math.floor(Math.random() * 5)])
+//         // console.log(voxel.setColorAt)
+//         voxel.position.copy(intersect.point).add(intersect.face.normal);
+//         voxel.position
+//           .divideScalar(boxSize)
+//           .floor()
+//           .multiplyScalar(boxSize)
+//           .addScalar(boxSize / 2);
+//         scene.add(voxel);
+
+//         const edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(boxSize, boxSize, boxSize));
+//         const line2 = new THREE.LineSegments(
+//           edges2,
+//           new THREE.LineBasicMaterial({
+//             color: "black",
+//           })
+//         );
+//         line2.position.copy(intersect.point).add(intersect.face.normal);
+//         line2.position
+//           .divideScalar(boxSize)
+//           .floor()
+//           .multiplyScalar(boxSize)
+//           .addScalar(boxSize / 2);
+//         scene.add(line2);
+
+//         objects.push(voxel);
+//         console.log(objects);
+//       }
+
+//       render();
+//     }
+//   }
+
+//   window.addEventListener("dblclick", onPointerDown);
+//   window.addEventListener("pointermove", onPointerMove);
+//   window.addEventListener("wheel", onScroll);
+//   window.addEventListener("keyup", onKeyUp);
+
+//   window.requestAnimationFrame(render);
+// };
