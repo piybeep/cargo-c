@@ -27,7 +27,7 @@ export class MapCargo {
   #gridColorCell = "#bbb"; // цвет ячейки
 
   // Конфигурация объектов
-  #planeSize = 200; // размер поля
+  #planeSize = this.#gridSize; // размер поля
   #boxSize = this.#gridSize / this.#gridSizeCell; //  размер блока
 
   constructor(params) {
