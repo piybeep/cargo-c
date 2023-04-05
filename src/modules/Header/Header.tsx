@@ -5,7 +5,7 @@ import { Logo } from '../../component/Logo';
 import { Button } from 'antd';
 import { Typography } from 'antd';
 
-import { useProjects } from '@/zustand/projects';
+import { useProjects } from '@/store';
 
 import s from './Header.module.scss'
 
@@ -24,7 +24,7 @@ export function Header({ ...props }: HeaderProps) {
                     </div>
                     <div className={s.logo__title}>
                         <Text>Текущий проект: </Text>
-                        <Link href="/projects">{selectProject[0]?.title}</Link>
+                        <Link href="/projects">{selectProject?.title}</Link>
                     </div>
                 </div>
 

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { useForm, Controller } from "react-hook-form";
 
-import { useProjects } from '../../zustand/projects'
+import { useProjects } from "@/store";
 
 import { Typography, Input, Radio, Select, Button, Modal, Space } from "antd";
 import { SearchOutlined, CheckOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
@@ -15,6 +15,7 @@ import svgAdd from "../../../public/svg/add";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
+import { SizeType } from "antd/es/config-provider/SizeContext";
 
 export function ProjectsList({ ...props }: PorjectsProps) {
     const router = useRouter()
@@ -25,22 +26,20 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     // zustand
     const {
         projects,
-        useAddProject,
-        useRemoveProject,
-        useCopyProject,
-        useEditProject,
-        useSelectProject,
+        setAddProject,
+        setRemoveProject,
+        setCopyProject,
+        setEditProject,
+        setSelectProject,
         sortProjects,
-        useEditSortType,
-        useEditSortText,
-        useEditSortUp
+        setEditSortType,
+        setEditSortText,
+        setEditSortUp
     } = useProjects(state => state)
     // zustand
 
     const onSearch = (text: string) => {
-        if (text) {
-            useEditSortText(text)
-        }
+        setEditSortText(text)
     };
 
     const options = [
@@ -54,11 +53,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const onChangeSort = (value: any) => {
         const text = value.target.value;
         setSort(text);
-        useEditSortType(text)
+        setEditSortType(text)
     };
 
     const onChangeSortUp = (value: any) => {
-        useEditSortUp(value)
+        setEditSortUp(value)
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -89,7 +88,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     };
 
     const copy = (project: any) => {
-        useCopyProject(project)
+        setCopyProject(project)
     };
 
     const close = () => {
@@ -121,14 +120,14 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const onSubmit = (data: any) => {
         const id = Number(router.query.currentId)
-        useEditProject(id, data.title)
-        useSelectProject(Number(router.query.currentId))
+        setEditProject(id, data.title)
+        setSelectProject(Number(router.query.currentId))
         close()
     };
 
     const addProject = (data: any) => {
         if (data.title) {
-            useAddProject(data)
+            setAddProject(data)
             close()
         }
     }
@@ -144,8 +143,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             icon: <ExclamationCircleOutlined />,
             onCancel: () => close(),
             onOk: () => {
-                useRemoveProject(id)
-                useSelectProject(router.query.currentId)
+                setRemoveProject(id)
+                setSelectProject(Number(router.query.currentId))
                 close()
             },
             maskClosable: true,
@@ -164,7 +163,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     }, [])
 
     useEffect(() => {
-        useSelectProject(Number(router.query.currentId))
+        setSelectProject(Number(router.query.currentId))
     }, [router.query.currentId])
 
     const handleClickProject = (current: any) => {
@@ -278,7 +277,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         onChange={onChangeSort}
                         defaultValue={0}
                         // Поправить, пока не понимаю, заменил типы SizeType на string
-                        size={windowWidth}
+                        size={windowWidth as SizeType}
                         // Поправить, пока не понимаю, заменил типы SizeType на string
                         buttonStyle={windowWidth === 'small' ? 'solid' : 'outline'}
                         className={s.header__group}
