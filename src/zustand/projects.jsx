@@ -9,7 +9,7 @@ export const useProjects = create(set => ({
     useSelectProject: (id) => set(state => {
         const currentProject = state.projects.find(current => current.id === id)
 
-        return {selectProject: [currentProject]}
+        return { selectProject: [currentProject] }
     }),
     loading: false,
     error: null,
@@ -28,6 +28,15 @@ export const useProjects = create(set => ({
     }),
     useEditProject: (id, title) => set(state => {
         return { projects: state.projects.map(item => item.id == id ?? item.title != title ? { ...item, title: title } : item) }
+    }),
+    sortProjects: { text: '', sortUp: 0, sortType: 0 },
+    useEditSortType: (value) => set(state => {
+        return { sortProjects: { ...state.sortProjects, sortType: value } }
+    }),
+    useEditSortText: (value) => set(state => {
+        return { sortProjects: { ...state.sortProjects, text: value } }
+    }),
+    useEditSortUp: (value) => set(state => {
+        return { sortProjects: { ...state.sortProjects, sortUp: value } }
     })
-
 }))

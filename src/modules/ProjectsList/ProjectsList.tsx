@@ -23,45 +23,42 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const { Search } = Input;
 
     // zustand
-    // const projects = useProjects(state => state.projects)
-    // const useAddProject = useProjects(state => state.addProject)
-    // const useRemoveProject = useProjects(state => state.removeProject)
-    // const useCopyProject = useProjects(state => state.copyProject)
-    // const useEditProject = useProjects(state => state.editProject)
-    // const useSelectProject = useProjects(state => state.useSelectProject)
-    const { projects, useAddProject, useRemoveProject, useCopyProject, useEditProject, useSelectProject } = useProjects(state => state)
+    const {
+        projects,
+        useAddProject,
+        useRemoveProject,
+        useCopyProject,
+        useEditProject,
+        useSelectProject,
+        sortProjects,
+        useEditSortType,
+        useEditSortText,
+        useEditSortUp
+    } = useProjects(state => state)
     // zustand
 
     const onSearch = (text: string) => {
-        // if (text) {
-        //     let arr: any = []
-        //     localStorage.map(current => {
-        //         if (current.title.toLocaleLowerCase().includes(text.toLocaleLowerCase())) {
-        //             arr.push(current)
-        //         }
-        //     })
-        //     setSortLocalStorage(arr)
-        // } else {
-        //     setSortLocalStorage(localStorage)
-        // }
+        if (text) {
+            useEditSortText(text)
+        }
     };
 
     const options = [
-        { label: "По дате добавления", value: "По дате добавления" },
-        { label: "По дате изменения", value: "По дате изменения" },
-        { label: "По названию", value: "По названию" },
+        { label: "По дате добавления", value: 0 },
+        { label: "По дате изменения", value: 1 },
+        { label: "По названию", value: 2 },
     ];
 
     const [sort, setSort] = useState("По дате добавления");
 
     const onChangeSort = (value: any) => {
         const text = value.target.value;
-        console.log(text);
         setSort(text);
+        useEditSortType(text)
     };
 
-    const onChangeSelect = (value: any) => {
-        console.log(value);
+    const onChangeSortUp = (value: any) => {
+        useEditSortUp(value)
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,6 +76,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             }
         }
     }, [])
+
+    // Для контроля всех значений сортировки
+    useEffect(() => {
+        console.log(sortProjects)
+    }, [sort, onSearch, onChangeSortUp])
 
     const { control, handleSubmit, setValue } = useForm();
 
@@ -259,18 +261,22 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         defaultValue="По возрастанию"
                         className={s.header__select}
                         bordered={false}
+                        onChange={onChangeSortUp}
                         options={[
                             {
-                                value: "По возрастанию",
+                                value: 0,
                                 label: "По возрастанию",
                             },
-                            { value: "По убыванию", label: "По убыванию" },
+                            {
+                                value: 1,
+                                label: "По убыванию"
+                            },
                         ]}
                     />
                     <Radio.Group
                         options={options}
                         onChange={onChangeSort}
-                        value={sort}
+                        defaultValue={0}
                         // Поправить, пока не понимаю, заменил типы SizeType на string
                         size={windowWidth}
                         // Поправить, пока не понимаю, заменил типы SizeType на string
