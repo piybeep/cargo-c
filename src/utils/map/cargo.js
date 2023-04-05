@@ -1,45 +1,54 @@
 import * as THREE from "three";
 
 export default class Cargo {
+  #colors = ["rgb(20, 100, 120)", "yellow", "lime"];
+
   constructor(props) {
-    this.size = props.size;
+    this.cargo = props.cargo;
     this.intersect = props.intersect;
     this.scene = props.scene;
+    console.log(this.cargo.size.x);
   }
 
   create() {
-    const colors = ["rgb(20, 100, 120)", "yellow", "lime"];
-    this.cubeGeo = new THREE.BoxGeometry(this.size, this.size, this.size);
-    this.cubeMaterial = new THREE.MeshBasicMaterial({
-      color: colors[0],
+    this.geometry = new THREE.BoxGeometry(this.cargo.size.x, this.cargo.size.y, this.cargo.size.z);
+    this.material = new THREE.MeshBasicMaterial({
+      color: this.#colors[0],
       opacity: 0.6,
       transparent: true,
     });
-    this.voxel = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-    this.voxel.position.copy(this.intersect.point).add(this.intersect.face.normal);
-    this.voxel.position
-      .divideScalar(this.size)
-      .floor()
-      .multiplyScalar(this.size)
-      .addScalar(this.size / 2);
-    this.scene.add(this.voxel);
+    this.block = new THREE.Mesh(this.geometry, this.material);
 
-    this.edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(this.size, this.size, this.size));
+    this.block.position.copy(this.intersect.point).add(this.intersect.face.normal);
+    this.block.position
+      .divideScalar(this.cargo.size.x)
+      .floor()
+      .multiplyScalar(this.cargo.size.x)
+      .addScalar(this.cargo.size.x / 2);
+
+    this.scene.add(this.block);
+
+    this.edges2 = new THREE.EdgesGeometry(
+      new THREE.BoxGeometry(this.cargo.size.x, this.cargo.size.y, this.cargo.size.z)
+    );
     this.line2 = new THREE.LineSegments(
       this.edges2,
       new THREE.LineBasicMaterial({
         color: "black",
       })
     );
+
     this.line2.position.copy(this.intersect.point).add(this.intersect.face.normal);
     this.line2.position
-      .divideScalar(this.size)
+      .divideScalar(this.cargo.size.x)
       .floor()
-      .multiplyScalar(this.size)
-      .addScalar(this.size / 2);
+      .multiplyScalar(this.cargo.size.x)
+      .addScalar(this.cargo.size.x / 2);
+
     this.scene.add(this.line2);
   }
-  get cargo() {
-    return this.voxel;
+
+  get get() {
+    return this.block;
   }
 }

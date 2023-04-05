@@ -138,10 +138,21 @@ export class MapCargo {
 
         // create cube
       } else {
-        this.block = new Cargo({ size: this.#boxSize, intersect: this.intersect, scene: this.scene });
+        this.properties = {
+          cargo: {
+            size: {
+              x: this.#boxSize,
+              y: this.#boxSize,
+              z: this.#boxSize,
+            },
+          },
+          intersect: this.intersect,
+          scene: this.scene,
+        };
+
+        this.block = new Cargo(this.properties);
         this.block.create();
-        console.log(this.block.cargo);
-        this.#objects.push(this.block.cargo);
+        this.#objects.push(this.block.get);
       }
 
       this.render();
