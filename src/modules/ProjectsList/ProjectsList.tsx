@@ -99,12 +99,12 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             'title', ''
         )
 
-        let routerCurrentId = router.query.currentId
+        // let routerCurrentId = router.query.currentId
 
         router.replace('/projects', undefined, { shallow: true });
         router.push({
             pathname: 'projects',
-            query: { currentId: routerCurrentId }
+            query: { currentId: window.localStorage.getItem('lastSelectedProject') ?? 0 }
         })
     };
 
@@ -145,6 +145,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             onOk: () => {
                 setRemoveProject(id)
                 setSelectProject(Number(router.query.currentId))
+                window.localStorage.setItem('lastSelectedProject', '0')
                 close()
             },
             maskClosable: true,
