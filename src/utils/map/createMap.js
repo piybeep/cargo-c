@@ -33,6 +33,25 @@ export class MapCargo {
   constructor(params) {
     this.#width = params.width;
     this.#height = params.height;
+
+    this.handleRender = this.render.bind(this);
+  }
+
+  editor() {
+    window.removeEventListener("pointermove", this.handleRender);
+
+    // roll-over helpers
+    this.rollOverGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
+    this.rollOverMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      opacity: 0.5,
+      transparent: true,
+    });
+    this.rollOverMesh = new THREE.Mesh(this.rollOverGeo, this.rollOverMaterial);
+    this.scene.add(this.rollOverMesh);
+
+    window.addEventListener("pointermove", (e) => this.onPointerMove(e));
+    window.addEventListener("dblclick", (e) => this.onPointerDown(e));
   }
 
   create() {
@@ -71,21 +90,10 @@ export class MapCargo {
 
     this.#objects.push(this.plane);
 
-    // roll-over helpers
-    this.rollOverGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
-    this.rollOverMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
-      opacity: 0.5,
-      transparent: true,
-    });
-    this.rollOverMesh = new THREE.Mesh(this.rollOverGeo, this.rollOverMaterial);
-    this.scene.add(this.rollOverMesh);
-
     this.camera.position.set(20, 50, 40);
     this.controls.update();
 
-    window.addEventListener("dblclick", (e) => this.onPointerDown(e));
-    window.addEventListener("pointermove", (e) => this.onPointerMove(e));
+    window.addEventListener("pointermove", this.handleRender);
     window.addEventListener("wheel", () => this.onScroll());
     window.requestAnimationFrame(() => this.render());
   }
