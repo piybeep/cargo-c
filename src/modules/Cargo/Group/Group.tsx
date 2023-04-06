@@ -4,10 +4,29 @@ import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
 import Tool from './Tool/Tool'
 import Footer from './Footer/Footer'
+import { useCardAnimation } from './useCardAnimation'
+import { animated } from 'react-spring'
 
-const Group = () => {
+interface GroupProps {
+  isSwapped: { id: number | null }
+  ind: number
+  el: any
+  arrRef: any
+}
+
+const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
+  let CardAnimation = useCardAnimation({
+    isSwapped,
+    ind,
+    ref: arrRef
+  })
+
   return (
-    <div className={s.cont}>
+    <animated.div
+      className={s.cont}
+      ref={el}
+      style={isSwapped.id ? CardAnimation : {}}
+    >
       <Header />
       <Tool />
       <div className={s.wrapper}>
@@ -17,8 +36,8 @@ const Group = () => {
         <GroupEl />
         <GroupEl />
       </div>
-      <Footer/>
-    </div>
+      <Footer />
+    </animated.div>
   )
 }
 
