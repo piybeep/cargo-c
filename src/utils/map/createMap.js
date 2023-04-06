@@ -7,12 +7,10 @@ export class MapCargo {
   // Настройки
   #raycaster = new THREE.Raycaster();
   #isShiftDown = false;
-  #plane = null;
   // #cubeGeo = null;
   // #cubeMaterial = null;
   // #rollOverMesh = null;
   // #rollOverMaterial = null;
-  #camera = null;
   #objects = [];
   renderer;
 
@@ -40,7 +38,7 @@ export class MapCargo {
   editor() {
     window.removeEventListener("pointermove", this.handleRender);
 
-    // roll-over helpers
+    // Подсветка блока
     this.rollOverGeo = new THREE.BoxGeometry(this.#boxSize, this.#boxSize, this.#boxSize);
     this.rollOverMaterial = new THREE.MeshBasicMaterial({
       color: 0xff0000,
