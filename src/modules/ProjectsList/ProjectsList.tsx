@@ -138,7 +138,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             onCancel: () => close(),
             onOk: () => {
                 setRemoveProject(id)
-                window.localStorage.setItem('lastSelectedProject', String(projects.filter(current => current.id != id)[0].id))
+                window.localStorage.setItem('lastSelectedProject', String(projects.filter(current => current.id != id)[0]?.id ?? 0))
                 close()
             },
             maskClosable: true,
@@ -154,11 +154,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 query: { currentId: window.localStorage.getItem('lastSelectedProject') ?? 0 }
             })
         }
-    }, [projects])
+    }, [])
 
     useEffect(() => {
         setSelectProject(Number(router.query.currentId))
-    }, [router, selectProject])
+    }, [router])
 
     const handleClickProject = (current: any) => {
         window.localStorage.setItem('lastSelectedProject', (current.id))
