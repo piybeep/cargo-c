@@ -26,6 +26,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     // zustand
     const {
         projects,
+        selectProject,
         setAddProject,
         setRemoveProject,
         setCopyProject,
@@ -76,11 +77,6 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         }
     }, [])
 
-    // Для контроля всех значений сортировки
-    useEffect(() => {
-        console.log(sortProjects)
-    }, [sort, onSearch, onChangeSortUp])
-
     const { control, handleSubmit, setValue } = useForm();
 
     const open = () => {
@@ -98,8 +94,6 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         setValue(
             'title', ''
         )
-
-        // let routerCurrentId = router.query.currentId
 
         router.replace('/projects', undefined, { shallow: true });
         router.push({
@@ -144,8 +138,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             onCancel: () => close(),
             onOk: () => {
                 setRemoveProject(id)
-                setSelectProject(Number(router.query.currentId))
-                window.localStorage.setItem('lastSelectedProject', '0')
+                window.localStorage.setItem('lastSelectedProject', String(projects.filter(current => current.id != id)[0].id))
                 close()
             },
             maskClosable: true,
@@ -161,11 +154,11 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 query: { currentId: window.localStorage.getItem('lastSelectedProject') ?? 0 }
             })
         }
-    }, [])
+    }, [projects])
 
     useEffect(() => {
         setSelectProject(Number(router.query.currentId))
-    }, [router.query.currentId])
+    }, [router, selectProject])
 
     const handleClickProject = (current: any) => {
         window.localStorage.setItem('lastSelectedProject', (current.id))
@@ -277,9 +270,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         options={options}
                         onChange={onChangeSort}
                         defaultValue={0}
-                        // Поправить, пока не понимаю, заменил типы SizeType на string
                         size={windowWidth as SizeType}
-                        // Поправить, пока не понимаю, заменил типы SizeType на string
                         buttonStyle={windowWidth === 'small' ? 'solid' : 'outline'}
                         className={s.header__group}
                         optionType="button"

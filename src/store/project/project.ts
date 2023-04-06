@@ -5,6 +5,7 @@ export const useProjects = create<projectsProps>()(set => ({
     projects: [
         { id: 0, title: "Тестовый проект №1", date: "Добавлено 23.03.2023, обновлено 25.03.2023", },
         { id: 1, title: "Проект 2", date: "Добавлено 23.03.2023, обновлено 25.03.2023", },
+        { id: 2, title: "Проект 3", date: "Добавлено 23.03.2023, обновлено 25.03.2023", },
     ],
     selectProject: null,
     setSelectProject: (id) => set(state => {
