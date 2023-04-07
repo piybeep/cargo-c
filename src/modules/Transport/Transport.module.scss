@@ -39,6 +39,8 @@
     position: relative;
     z-index: 1;
 
+    transform: translateX(0);
+
     &__wrapper{
         position: relative;
     }

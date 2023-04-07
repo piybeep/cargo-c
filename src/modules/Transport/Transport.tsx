@@ -3,7 +3,7 @@ import { Button, Typography } from 'antd';
 import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
-import { HtmlHTMLAttributes, useState } from 'react';
+import { HtmlHTMLAttributes, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 
@@ -33,30 +33,65 @@ export function Transport({ ...props }: TransportProps) {
 
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
+    const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
+    const [savePosition, setSavePosition] = useState(0);
 
-    function handleTouchStart(e: any, index: number) {
+    function handleTouchStart(e: any, index: any) {
+        const current = index
         let firstTouch = e.touches[0].clientX;
-        if (touchEnd != 0) {
+        if (savePosition != 0 && current === saveCurrentIndex) {
             firstTouch = e.touches[0].clientX - touchEnd
         }
+
         setTouchStart(firstTouch)
+
+        if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
+            setTouchEnd(0)
+            const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
+
+            allCard.map((current: any, currentIndex: number) => {
+                if (index != currentIndex) {
+                    current.style.transform = `translateX(0px)`
+                    current.style.transition = '.3s'
+                    setTimeout(() => {
+                        current.style.transition = '0s'
+                    }, 300);
+                }
+            })
+        } else {
+            setTouchEnd(-128)
+        }
+
+        setSaveCurrentIndex(index)
     }
 
     function handleTouchMove(e: any, index: number) {
         const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
         let clientX = e.targetTouches[0].clientX - touchStart
+        setSavePosition(clientX)
+        current.style.transform = `translateX(${Math.round(clientX)}px)`
 
-        current.style.transform = `translateX(${clientX}px)`
-
-        setTouchEnd(clientX)
+        console.log(e.targetTouches[0].clientX, touchStart)
     }
 
     function handleTouchEnd(index: any) {
-        // const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        // if (touchEnd < -150){
-        //     console.log('work')
-        //     current.style.transform = `translateX(-128)px`
-        // }
+        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        console.log('+')
+        if (savePosition <= -128) {
+            current.style.transform = `translateX(-128px)`
+            current.style.transition = '.3s'
+            setTimeout(() => {
+                current.style.transition = '0s'
+            }, 300);
+            setTouchEnd(-128)
+        } else {
+            current.style.transform = `translateX(0px)`
+            current.style.transition = '.3s'
+            setTimeout(() => {
+                current.style.transition = '0s'
+            }, 300);
+            setTouchEnd(0)
+        }
     }
 
     const Menu = () => {
