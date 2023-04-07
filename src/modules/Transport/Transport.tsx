@@ -45,11 +45,11 @@ export function Transport({ ...props }: TransportProps) {
     }
 
     function handleTouchEnd(index: any) {
-        if (touchStart - touchEnd > 150) {
+        if (touchStart - touchEnd > 50) {
             setActiveMenu(index)
         }
 
-        if (touchStart - touchEnd < -150) {
+        if (touchStart - touchEnd < -50) {
             setActiveMenu(null)
         }
     }
