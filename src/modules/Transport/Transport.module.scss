@@ -38,8 +38,15 @@
 
     transition: .3s;
 
+    position: relative;
+    z-index: 1;
+
+    &__wrapper{
+        position: relative;
+    }
+
     &__active{
-        transform: translateX(-100px)
+        transform: translateX(-128px)
     }
 
     &__info{
@@ -60,10 +67,37 @@
     }
 }
 
+.menu{
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    z-index: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 12px;
+
+    height: 100%;
+    width: 100%;
+    max-width: 128px;
+}
+
 .buttons{
     display: flex;
     justify-content: center;
     column-gap: 20px;
+}
+
+@media screen and (max-width: 660px){
+    .item{
+
+        &__menu{
+            display: none;
+        }
+    }
 }
 
 @media screen and (max-width: 430px){
