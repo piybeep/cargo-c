@@ -3,7 +3,7 @@ import { Button, Typography } from 'antd';
 import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
-import { useState } from 'react';
+import { HtmlHTMLAttributes, useState } from 'react';
 import classNames from 'classnames';
 
 
@@ -33,25 +33,30 @@ export function Transport({ ...props }: TransportProps) {
 
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
-    const [activeMenu, setActiveMenu] = useState(null);
 
-
-    function handleTouchStart(e: any) {
-        setTouchStart(e.targetTouches[0].clientX);
+    function handleTouchStart(e: any, index: number) {
+        let firstTouch = e.touches[0].clientX;
+        if (touchEnd != 0) {
+            firstTouch = e.touches[0].clientX - touchEnd
+        }
+        setTouchStart(firstTouch)
     }
 
-    function handleTouchMove(e: any) {
-        setTouchEnd(e.targetTouches[0].clientX);
+    function handleTouchMove(e: any, index: number) {
+        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        let clientX = e.targetTouches[0].clientX - touchStart
+
+        current.style.transform = `translateX(${clientX}px)`
+
+        setTouchEnd(clientX)
     }
 
     function handleTouchEnd(index: any) {
-        if (touchStart - touchEnd > 50) {
-            setActiveMenu(index)
-        }
-
-        if (touchStart - touchEnd < -50) {
-            setActiveMenu(null)
-        }
+        // const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        // if (touchEnd < -150){
+        //     console.log('work')
+        //     current.style.transform = `translateX(-128)px`
+        // }
     }
 
     const Menu = () => {
@@ -94,10 +99,8 @@ export function Transport({ ...props }: TransportProps) {
                     data.map((current, index) => {
                         return (
                             <div key={current.id} className={s.item__wrapper}>
-                                <div className={classNames(s.item, {
-                                    [s.item__active]: activeMenu == index
-                                })}
-                                    onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={() => handleTouchEnd(index)}
+                                <div className={s.item}
+                                    onTouchStart={(e) => handleTouchStart(e, index)} onTouchMove={(e) => handleTouchMove(e, index)} onTouchEnd={() => handleTouchEnd(index)}
                                 >
                                     <img src="#" alt="Картинка" />
                                     <div className={s.item__info}>
@@ -105,11 +108,11 @@ export function Transport({ ...props }: TransportProps) {
                                         <Text>{current.text}</Text>
                                     </div>
                                     <div className={s.item__menu}>
-                                        <Menu/>
+                                        <Menu />
                                     </div>
                                 </div>
                                 <div className={s.menu}>
-                                    <Menu/>
+                                    <Menu />
                                 </div>
                             </div>
                         )

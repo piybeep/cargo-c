@@ -36,17 +36,11 @@
     background-color: #FFFFFF;
     border-radius: 4px 4px 0px 0px;
 
-    transition: .3s;
-
     position: relative;
     z-index: 1;
 
     &__wrapper{
         position: relative;
-    }
-
-    &__active{
-        transform: translateX(-128px)
     }
 
     &__info{
