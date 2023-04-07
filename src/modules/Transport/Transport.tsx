@@ -34,19 +34,17 @@ export function Transport({ ...props }: TransportProps) {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
     const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
-    const [savePosition, setSavePosition] = useState(0);
 
     function handleTouchStart(e: any, index: any) {
         const current = index
         let firstTouch = e.touches[0].clientX;
-        if (savePosition != 0 && current === saveCurrentIndex) {
+        if (touchEnd != 0 && current === saveCurrentIndex) {
             firstTouch = e.touches[0].clientX - touchEnd
         }
 
         setTouchStart(firstTouch)
 
         if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
-            setTouchEnd(0)
             const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
 
             allCard.map((current: any, currentIndex: number) => {
@@ -58,8 +56,6 @@ export function Transport({ ...props }: TransportProps) {
                     }, 300);
                 }
             })
-        } else {
-            setTouchEnd(-128)
         }
 
         setSaveCurrentIndex(index)
@@ -68,16 +64,13 @@ export function Transport({ ...props }: TransportProps) {
     function handleTouchMove(e: any, index: number) {
         const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
         let clientX = e.targetTouches[0].clientX - touchStart
-        setSavePosition(clientX)
+        setTouchEnd(clientX)
         current.style.transform = `translateX(${Math.round(clientX)}px)`
-
-        console.log(e.targetTouches[0].clientX, touchStart)
     }
 
     function handleTouchEnd(index: any) {
         const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        console.log('+')
-        if (savePosition <= -128) {
+        if (touchEnd <= -128) {
             current.style.transform = `translateX(-128px)`
             current.style.transition = '.3s'
             setTimeout(() => {
