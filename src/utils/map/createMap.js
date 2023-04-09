@@ -52,6 +52,15 @@ export class MapCargo {
     window.addEventListener("dblclick", (e) => this.onPointerDown(e));
   }
 
+  arrange(cargos) {
+    cargos.forEach((cargo) => {
+      const block = new Cargo(this.scene, cargo);
+      block.arrange({ x: cargo.cargoId * cargo.width + cargo.cargoId * 1.5, y: 0, z: 0 });
+      this.#objects.push(block.get);
+      this.render();
+    });
+  }
+
   create() {
     // Создание сцены
     this.scene = new THREE.Scene();
@@ -144,7 +153,7 @@ export class MapCargo {
 
         // create cube
       } else {
-        this.properties = {
+        const properties = {
           cargo: {
             size: {
               x: this.#boxSize,
@@ -152,13 +161,12 @@ export class MapCargo {
               z: this.#boxSize,
             },
           },
-          intersect: this.intersect,
           scene: this.scene,
         };
 
-        this.block = new Cargo(this.properties);
-        this.block.create();
-        this.#objects.push(this.block.get);
+        const block = new Cargo(properties);
+        block.create(this.intersect);
+        this.#objects.push(block.get);
       }
 
       this.render();

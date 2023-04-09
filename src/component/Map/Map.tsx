@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
-import { useInformer } from "@/store/figure-types";
 
+// Карта
 import { MapCargo } from "@/utils/map/createMap";
 
-// styles
+// Стили
 import style from "./Map.module.scss";
 
-const Map = () => {
-  // const figure = useInformer((state: any) => state.id);
+// Данные
+import { CARGOS } from "@/constants/cargos";
 
+const Map = () => {
   useEffect(() => {
     // Получить размеры canvas
     const width: number | undefined = document.querySelector(`.${style["canvas-field"]}`)?.clientWidth;
@@ -23,6 +24,7 @@ const Map = () => {
     const field = new MapCargo(settings);
     field.create();
     // field.editor();
+    field.arrange(CARGOS);
   }, []);
 
   return (

@@ -1,36 +1,26 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  #colors = ["rgb(20, 100, 120)", "yellow", "lime"];
+  constructor(scene, { width, height, length, color }) {
+    // Сцена холста
+    this.scene = scene;
 
-  constructor(props) {
-    this.cargo = props.cargo;
-    this.intersect = props.intersect;
-    this.scene = props.scene;
-    console.log(this.cargo.size.x);
-  }
+    // Размеры груза
+    this.width = width;
+    this.height = height;
+    this.length = length;
 
-  create() {
-    this.geometry = new THREE.BoxGeometry(this.cargo.size.x, this.cargo.size.y, this.cargo.size.z);
+    // Цвет груза
+    this.color = color;
+
+    this.geometry = new THREE.BoxGeometry(this.width, this.height, this.length);
     this.material = new THREE.MeshBasicMaterial({
-      color: this.#colors[0],
+      color: this.color,
       opacity: 0.6,
       transparent: true,
     });
-    this.block = new THREE.Mesh(this.geometry, this.material);
 
-    this.block.position.copy(this.intersect.point).add(this.intersect.face.normal);
-    this.block.position
-      .divideScalar(this.cargo.size.x)
-      .floor()
-      .multiplyScalar(this.cargo.size.x)
-      .addScalar(this.cargo.size.x / 2);
-
-    this.scene.add(this.block);
-
-    this.edges2 = new THREE.EdgesGeometry(
-      new THREE.BoxGeometry(this.cargo.size.x, this.cargo.size.y, this.cargo.size.z)
-    );
+    this.edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(this.width, this.height, this.length));
     this.line2 = new THREE.LineSegments(
       this.edges2,
       new THREE.LineBasicMaterial({
@@ -38,12 +28,45 @@ export default class Cargo {
       })
     );
 
-    this.line2.position.copy(this.intersect.point).add(this.intersect.face.normal);
-    this.line2.position
-      .divideScalar(this.cargo.size.x)
+    this.block = new THREE.Mesh(this.geometry, this.material);
+  }
+
+  arrange(props) {
+    this.block.position.set(props.x, props.y, props.z);
+    this.block.position.addScalar(this.height / 2);
+
+    this.scene.add(this.block);
+
+    this.line2.position.set(props.x, props.y, props.z);
+    this.line2.position.addScalar(this.height / 2);
+
+    this.scene.add(this.line2);
+  }
+
+  create(intersect) {
+    this.block.position.copy(intersect.point).add(intersect.face.normal);
+    this.block.position
+      .divideScalar(this.width)
       .floor()
-      .multiplyScalar(this.cargo.size.x)
-      .addScalar(this.cargo.size.x / 2);
+      .multiplyScalar(this.width)
+      .addScalar(this.width / 2);
+
+    this.scene.add(this.block);
+
+    this.edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(this.width, this.height, this.length));
+    this.line2 = new THREE.LineSegments(
+      this.edges2,
+      new THREE.LineBasicMaterial({
+        color: "black",
+      })
+    );
+
+    this.line2.position.copy(intersect.point).add(intersect.face.normal);
+    this.line2.position
+      .divideScalar(this.width)
+      .floor()
+      .multiplyScalar(this.width)
+      .addScalar(this.width / 2);
 
     this.scene.add(this.line2);
   }
