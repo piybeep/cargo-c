@@ -8,6 +8,7 @@ import style from "./Map.module.scss";
 
 // Данные
 import { CARGOS } from "@/constants/cargos";
+import { LOADSPACE } from "@/constants/loadSpace";
 
 const Map = () => {
   useEffect(() => {
@@ -24,7 +25,7 @@ const Map = () => {
     const field = new MapCargo(settings);
     field.create();
     // field.editor();
-    field.arrange(CARGOS);
+    field.arrange(LOADSPACE, CARGOS);
   }, []);
 
   return (

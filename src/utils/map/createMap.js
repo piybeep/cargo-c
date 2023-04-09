@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Renderer from "./renderer";
 import Cargo from "./cargo";
+import LoadSpace from "./loadSpace";
 
 export class MapCargo {
   // Настройки
@@ -21,7 +22,7 @@ export class MapCargo {
   // Конфигурация сетки
   #gridSize = 200; // размер
   #gridSizeCell = 50; // размер ячейки
-  #gridColorLine = "#bbb"; // цвет осей
+  #gridColorLine = "#f00"; // цвет осей
   #gridColorCell = "#bbb"; // цвет ячейки
 
   // Конфигурация объектов
@@ -52,12 +53,16 @@ export class MapCargo {
     window.addEventListener("dblclick", (e) => this.onPointerDown(e));
   }
 
-  arrange(cargos) {
+  arrange(space, cargos) {
+    // Создаем грузовое пространство
+    this.space = new LoadSpace(this.scene, space);
+    this.space.create({ x: 0, y: 0, z: 0 });
+
+    // Создаем грузы
     cargos.forEach((cargo) => {
       const block = new Cargo(this.scene, cargo);
       block.arrange({ x: cargo.cargoId * cargo.width + cargo.cargoId * 1.5, y: 0, z: 0 });
       this.#objects.push(block.get);
-      this.render();
     });
   }
 
@@ -97,7 +102,7 @@ export class MapCargo {
 
     this.#objects.push(this.plane);
 
-    this.camera.position.set(20, 50, 40);
+    this.camera.position.set(0, 150, 0);
     this.controls.update();
 
     window.addEventListener("pointermove", this.handleRender);
