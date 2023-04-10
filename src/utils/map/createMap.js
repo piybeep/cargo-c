@@ -61,7 +61,7 @@ export class MapCargo {
     // Создаем грузы
     cargos.forEach((cargo) => {
       const block = new Cargo(this.scene, cargo);
-      block.arrange({ x: cargo.cargoId * cargo.width + cargo.cargoId * 1.5, y: 0, z: 0 });
+      block.arrange(this.#objects);
       this.#objects.push(block.get);
     });
   }
@@ -94,6 +94,8 @@ export class MapCargo {
     this.controls.minDistance = 20;
     this.controls.maxDistance = 200;
 
+    this.camera.position.set(30, 30, 30);
+
     this.geometry = new THREE.PlaneGeometry(this.#planeSize, this.#planeSize);
     this.geometry.rotateX(-Math.PI / 2);
 
@@ -102,7 +104,6 @@ export class MapCargo {
 
     this.#objects.push(this.plane);
 
-    this.camera.position.set(0, 150, 0);
     this.controls.update();
 
     window.addEventListener("pointermove", this.handleRender);

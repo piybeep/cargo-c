@@ -1,5 +1,6 @@
 type CargosTypes = {
   cargoId: number;
+  name: string;
   color: string;
   width: number;
   height: number;
@@ -9,6 +10,7 @@ type CargosTypes = {
 export const CARGOS: CargosTypes = [
   {
     cargoId: 0,
+    name: "block0",
     color: "rgb(20, 100, 120)",
     width: 4,
     height: 8,
@@ -16,6 +18,7 @@ export const CARGOS: CargosTypes = [
   },
   {
     cargoId: 1,
+    name: "block1",
     color: "red",
     width: 8,
     height: 4,
@@ -23,23 +26,24 @@ export const CARGOS: CargosTypes = [
   },
   {
     cargoId: 2,
+    name: "block2",
     color: "yellow",
     width: 8,
-    height: 4,
+    height: 8,
     length: 8,
   },
-  {
-    cargoId: 3,
-    color: "rgb(20, 100, 120)",
-    width: 8,
-    height: 4,
-    length: 8,
-  },
-  {
-    cargoId: 4,
-    color: "rgb(20, 100, 120)",
-    width: 8,
-    height: 4,
-    length: 8,
-  },
+  // {
+  //   cargoId: 3,
+  //   color: "rgb(20, 100, 120)",
+  //   width: 8,
+  //   height: 4,
+  //   length: 8,
+  // },
+  // {
+  //   cargoId: 4,
+  //   color: "rgb(20, 100, 120)",
+  //   width: 8,
+  //   height: 4,
+  //   length: 8,
+  // },
 ];

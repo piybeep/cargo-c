@@ -24,8 +24,8 @@ const Map = () => {
     // Создание холста
     const field = new MapCargo(settings);
     field.create();
-    // field.editor();
     field.arrange(LOADSPACE, CARGOS);
+    // field.editor();
   }, []);
 
   return (
