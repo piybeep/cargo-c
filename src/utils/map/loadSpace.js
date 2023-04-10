@@ -27,8 +27,7 @@ export default class LoadSpace {
       })
     );
 
-    this.space.position.set(props.x, props.y, props.z);
-    this.space.position.addScalar(this.height / 2);
+    this.space.position.set(props.x, this.height / 2, props.z);
 
     // Добавить на холст
     this.scene.add(this.space);
