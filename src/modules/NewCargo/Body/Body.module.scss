@@ -19,16 +19,29 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
-  gap: 40px 60px;
+  gap: 20px 60px;
 }
 
-.firstInput{
-    grid-column-start: 1;
-    grid-column-end: 4;
+.el {
+  display: flex;
+  flex-direction: column;
+  input{
+    border-radius: 2px !important;
+  }
+
+  img{
+    width: 20px;
+    height: 20px;
+  }
+
+  &_mod{
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+  }
 }
 
-.breakInput {
-    width: 40%;
-    grid-column-start: 3;
-    grid-column-end: 5;
+.firstInput {
+  grid-column-start: 1;
+  grid-column-end: 4;
 }
