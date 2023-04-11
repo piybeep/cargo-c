@@ -59,9 +59,9 @@ export class MapCargo {
     this.space.create({ x: 0, z: 0 });
 
     // Создаем грузы
-    cargos.forEach((cargo) => {
+    cargos.forEach((cargo, index) => {
       const block = new Cargo(this.scene, cargo);
-      block.arrange(this.#objects);
+      block.arrange(this.#objects, index);
       this.#objects.push(block.get);
     });
   }
