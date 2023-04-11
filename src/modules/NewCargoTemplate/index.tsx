@@ -1,0 +1,1 @@
+export {NewCargoTemplate} from "./NewCargoTemplate";
