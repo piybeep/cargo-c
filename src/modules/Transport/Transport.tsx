@@ -1,10 +1,11 @@
+import { useState } from 'react';
+import Link from 'next/link';
+
 import { Button, Typography } from 'antd';
 
 import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
-import { HtmlHTMLAttributes, useEffect, useState } from 'react';
-import classNames from 'classnames';
 
 
 export function Transport({ ...props }: TransportProps) {
@@ -148,7 +149,9 @@ export function Transport({ ...props }: TransportProps) {
                 }
             </div>
             <div className={s.buttons}>
-                <Button className={s.buttons__button} type='primary'>Добавить транспорт вручную</Button>
+                <Link href='/transportConfig'>
+                    <Button className={s.buttons__button} type='primary'>Добавить транспорт вручную</Button>
+                </Link>
                 <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>Добавить из шаблона</Button>
             </div>
         </div>
