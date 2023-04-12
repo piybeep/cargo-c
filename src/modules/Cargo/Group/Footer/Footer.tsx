@@ -11,7 +11,6 @@ import Image from 'next/image'
 
 const Footer = () => {
   const [clientWidth, setClientWidth] = useState(0)
-  console.log(clientWidth)
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)

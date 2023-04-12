@@ -19,8 +19,6 @@ export const useDragEl = () => {
         document.querySelectorAll<HTMLElement>('.' + s.cont)
       )
 
-      console.log(allCard)
-
       allCard.map((current: any, currentIndex: number) => {
         if (index != currentIndex) {
           current.style.transform = `translateX(0px)`
