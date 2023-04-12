@@ -1,9 +1,16 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import { Controller, useForm } from 'react-hook-form';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Radio, RadioChangeEvent, Typography, Input, Select, InputNumber, Switch } from 'antd';
+import { Radio, RadioChangeEvent, Typography, Input, Select, InputNumber, Switch, Button } from 'antd';
 
 import { TransportConfigProps } from './TransportConfig.types';
+
+// img
+import pricep from '../../../public/img/pricep.png'
+import tyagach from '../../../public/img/tyagach.png'
+import furgon from '../../../public/img/furgon.png'
 
 import s from './TransportConfig.module.scss'
 import classNames from 'classnames';
@@ -12,6 +19,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
     const [width, setWidth] = useState('мм')
     const [height, setHeight] = useState('кг')
     const [axialLoad, setAxialLoad] = useState(0)
+    const [transport, setTransport] = useState(0)
 
     const [isSwitch, setIsSwitch] = useState(true)
 
@@ -20,7 +28,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
 
     const minMaxValue = '500 / 50000'
 
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, reset } = useForm({
         defaultValues: {
             configWidth: width,
             configHeight: height,
@@ -30,6 +38,24 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
             width: 500,
             height: 500,
             tonnage: 0,
+
+            // Для прицепа
+            semiTrailerAxes: 2,
+            semiTrailerWeight: 0,
+            L2: 0,
+            L3: 0,
+            A2SemiTrailer: 0,
+            A2SemiTrailerTrolley: 0,
+
+            // Для тягача/фургона
+            Axes: 0,
+            WeightWithoutLoad: 0,
+            L: 0,
+            L1: 0,
+            A1: 0,
+            A1Axes: 0,
+            A2: 0,
+            A2Axes: 0,
         }
     });
 
@@ -51,6 +77,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
 
     const changeAxialLoad = (e: RadioChangeEvent) => {
         setAxialLoad(e.target.value)
+        setTransport(e.target.value)
     }
 
     return (
@@ -184,16 +211,16 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                     <div className={s.options__header}>
                         <Title className={s.options__title} level={5}>Осевая нагрузка</Title>
                         <div className={s.options__wrapper}>
-                        <Radio.Group onChange={changeAxialLoad} defaultValue={0} value={axialLoad} className={classNames(s.options__group, {
-                            [s.options__group_hidden]: isSwitch
-                        })}>
-                            <Radio value={0}>Тягач с полуприцепом</Radio>
-                            <Radio value={1}>Фургон грузовой</Radio>
-                        </Radio.Group>
-                        <div className={classNames(s.options__info, {
-                            [s.options__info_hidden]: !isSwitch
-                        })}>
-                            <Text className={s.options__text} type="secondary">Выключите этот параметр если требуется указать нагрузку на каждую ось отдельно</Text>
+                            <Radio.Group onChange={changeAxialLoad} defaultValue={0} value={axialLoad} className={classNames(s.options__group, {
+                                [s.options__group_hidden]: isSwitch
+                            })}>
+                                <Radio value={0}>Тягач с полуприцепом</Radio>
+                                <Radio value={1}>Фургон грузовой</Radio>
+                            </Radio.Group>
+                            <div className={classNames(s.options__info, {
+                                [s.options__info_hidden]: !isSwitch
+                            })}>
+                                <Text className={s.options__text} type="secondary">Выключите этот параметр если требуется указать нагрузку на каждую ось отдельно</Text>
                             </div>
                         </div>
                     </div>
@@ -203,7 +230,235 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                     </div>
                 </div>
 
-                <button type='submit'>{isSwitch ? `Check: ${isSwitch}` : `Check: ${isSwitch}`}</button>
+                <div className={classNames(s.list, {
+                    [s.list_hidden]: isSwitch
+                })}>
+                    <div className={classNames(s.list__item, {
+                        [s.list__item_hidden]: transport != 0
+                    })}>
+                        <div className={s.list__header}>
+                            <Title className={s.list__title} level={5}>Описание полуприцепа</Title>
+                            <Image className={s.list__img} width='277' height='142' src={pricep.src} alt={'Картинка'} />
+                        </div>
+                        <div className={s.list__description}>
+                            <Controller
+                                name='semiTrailerAxes'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Количество осей</Text>
+                                        <Select
+                                            className={s.list__input}
+                                            defaultValue="2"
+                                            style={{ width: '100%' }}
+                                            onChange={onChange}
+                                            options={[
+                                                { value: '2', label: '2' },
+                                                { value: '3', label: '3' },
+                                            ]}
+                                        />
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='semiTrailerWeight'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Собственная масса без груза</Text>
+                                        <InputNumber className={s.list__input} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='L2'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Длина от центра тележки до сцеп. устройства</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={width} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>L2</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='L3'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Длина от центра тележки А2 до стенки</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={width} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>L3</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A2SemiTrailer'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Нагрузка на осевую тележку без груза</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A2</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A2SemiTrailerTrolley'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Макс. нагрузка на осевую тележку</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A2</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+                        </div>
+                    </div>
+                    <div className={s.list__item}>
+                        <div className={s.list__header}>
+                            <Title className={s.list__title} level={5}>{transport === 0 ? 'Описание тягача' : 'Описание фургона'}</Title>
+                            <Image className={s.list__img} width='277' height='142' src={transport === 0 ? tyagach.src : furgon.src} alt={'Картинка'} />
+                        </div>
+                        <div className={s.list__description}>
+                            <Controller
+                                name='Axes'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Количество осей</Text>
+                                        <Select
+                                            className={s.list__input}
+                                            defaultValue={2}
+                                            style={{ width: '100%' }}
+                                            onChange={onChange}
+                                            options={[
+                                                { value: 2, label: 2 },
+                                                { value: 3, label: 3 },
+                                            ]}
+                                        />
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='WeightWithoutLoad'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Собственная масса без груза</Text>
+                                        <InputNumber className={s.list__input} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='L'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Длина между осями</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={width} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>L</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='L1'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Длина от оси А1 до сцеп. устройства</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={width} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>L1</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A1'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A1</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A1Axes'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A1</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A2'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A2</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+
+                            <Controller
+                                name='A2Axes'
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <div className={s.list__control}>
+                                        <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
+                                        <div className={s.list__row}>
+                                            <InputNumber className={s.list__input_small} addonAfter={height} defaultValue={0} min={0} onChange={onChange} />
+                                            <Title className={s.list__title} level={5}>A2</Title>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className={s.buttons}>
+                    <Link href='/transport'>
+                        <Button>Отменить</Button>
+                    </Link>
+                    <Button type="primary" htmlType='submit'>Сохранить</Button>
+                </div>
             </form>
         </div>
     );
