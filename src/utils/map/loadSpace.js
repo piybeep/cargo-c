@@ -32,4 +32,8 @@ export default class LoadSpace {
     // Добавить на холст
     this.scene.add(this.space);
   }
+
+  get get() {
+    return this.space;
+  }
 }
