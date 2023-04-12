@@ -6,6 +6,7 @@ import Tool from './Tool/Tool'
 import Footer from './Footer/Footer'
 import { useCardAnimation } from './useCardAnimation'
 import { animated } from 'react-spring'
+import { useDragEl } from './useDragEl'
 
 interface GroupProps {
   isSwapped: { id: number | null }
@@ -14,12 +15,16 @@ interface GroupProps {
   arrRef: any
 }
 
+const arr = [1, 2, 3]
+
 const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
   let CardAnimation = useCardAnimation({
     isSwapped,
     ind,
     ref: arrRef
   })
+
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl()
 
   return (
     <animated.div
@@ -30,11 +35,15 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
       <Header />
       <Tool />
       <div className={s.wrapper}>
-        <GroupEl />
-        <GroupEl />
-        <GroupEl />
-        <GroupEl />
-        <GroupEl />
+        {arr.map((el, ind) => (
+          <GroupEl
+            ind={ind}
+            key={ind}
+            handleTouchEnd={handleTouchEnd}
+            handleTouchMove={handleTouchMove}
+            handleTouchStart={handleTouchStart}
+          />
+        ))}
       </div>
       <Footer />
     </animated.div>

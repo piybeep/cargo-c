@@ -41,3 +41,18 @@
     cursor: pointer;
   }
 }
+
+@media screen and (max-width: 460px) {
+  .info {
+    flex-direction: column;
+    gap: 20px;
+    align-items: start;
+  }
+  .ico{
+    padding-top: 10px;
+    align-self: flex-start;
+    div{
+      cursor: pointer;
+    }
+  }
+}
