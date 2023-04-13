@@ -121,6 +121,18 @@
 
     background-color: #fff;
 
+    transition: .3s;
+    max-height: 150px;
+    overflow: hidden;
+
+    &__hidden{
+        max-height: 0px;
+
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: 0px;
+    }
+
     &__header {
         display: flex;
         flex-direction: column;
@@ -282,6 +294,12 @@
     justify-content: space-between;
 
     margin-top: 20px;
+}
+
+@media screen and (max-width: 1320px){
+    .buttons{
+        padding: 0px 16px;
+    }
 }
 
 @media screen and (max-width: 1024px){
