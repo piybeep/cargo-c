@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -62,6 +62,10 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
     });
 
     const watchTypeTransport = watch('type')
+
+    useEffect(() => {
+        watchTypeTransport != 0 && setIsSwitch(true)
+    }, [watchTypeTransport])
 
     const onSubmit = (data: any) => console.log(data)
 
@@ -244,7 +248,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         </div>
                     </div>
                     <div className={s.options__switch}>
-                        <Switch defaultChecked={isSwitch} onChange={changeOptions} />
+                        <Switch defaultChecked={isSwitch} checked={isSwitch} onChange={changeOptions} />
                         <Text className={s.options__text} type="secondary">Автоматически</Text>
                     </div>
                 </div>
