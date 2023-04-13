@@ -49,19 +49,53 @@ export default class Cargo {
     return currentBlock.intersectsBox(otherBlock);
   }
 
+  isOutwardsY() {
+    const positionY =
+      Number.parseFloat(this.height.toFixed(2)) +
+      Number.parseFloat(this.block.position.y.toFixed(2));
+
+    console.log("Позиция Y: ", this.block.position.y.toFixed(2));
+    console.log("Размер коробки: ", this.height.toFixed(2));
+    console.log("----------------------------------");
+
+    if (positionY > this.spaceHeight) {
+      return true;
+    }
+    return false;
+  }
+
   // Алгоритм расстановки грузов
-  arrange(objects) {
+  arrange(objects, space) {
     const newObjects = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
+    this.spaceHeight = space.geometry.parameters.height;
 
     for (let i = 0; i < newObjects.length; ) {
       if (this.isCollision(newObjects[i])) {
-        this.block.position.y += 0.4;
-        this.line.position.y += 0.4;
+        if (!this.isOutwardsY()) {
+          this.block.position.y += 0.4;
+          this.line.position.y += 0.4;
+        }
+
+        if (this.isOutwardsY()) {
+          while (this.isCollision(newObjects[i])) {
+            this.block.position.x += 0.4;
+            this.line.position.x += 0.4;
+          }
+
+          this.block.position.y = this.height / 2;
+          this.line.position.y = this.height / 2;
+
+          while (this.isCollision(newObjects[i])) {
+            this.block.position.y += 0.4;
+            this.line.position.y += 0.4;
+          }
+        }
         continue;
-      } else i++;
+      }
+
+      i++;
     }
 
-    console.log("Ставим блок: \x1b[34m" + this.block.name);
     this.scene.add(this.block, this.line);
   }
 
@@ -75,7 +109,9 @@ export default class Cargo {
 
     this.scene.add(this.block);
 
-    this.edges2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(this.width, this.height, this.length));
+    this.edges2 = new THREE.EdgesGeometry(
+      new THREE.BoxGeometry(this.width, this.height, this.length)
+    );
     this.line = new THREE.LineSegments(
       this.edges2,
       new THREE.LineBasicMaterial({

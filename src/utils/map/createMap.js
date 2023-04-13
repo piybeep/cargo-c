@@ -61,7 +61,7 @@ export class MapCargo {
     // Создаем грузы
     cargos.forEach((cargo) => {
       const block = new Cargo(this.scene, cargo);
-      block.arrange(this.#objects);
+      block.arrange(this.#objects, this.space);
       this.#objects.push(block.get);
     });
   }
