@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+
+import classNames from 'classnames';
 
 import { Controller, useForm } from 'react-hook-form';
-import { object, string, number, date, InferType } from 'yup';
 
 import { Radio, RadioChangeEvent, Typography, Input, Select, InputNumber, Switch, Button } from 'antd';
 
@@ -15,7 +16,6 @@ import tyagach from '../../../public/img/tyagach.png'
 import furgon from '../../../public/img/furgon.png'
 
 import s from './TransportConfig.module.scss'
-import classNames from 'classnames';
 
 export function TransportConfig({ ...props }: TransportConfigProps) {
     const [width, setWidth] = useState('мм')
