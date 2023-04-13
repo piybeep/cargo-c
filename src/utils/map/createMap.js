@@ -84,7 +84,11 @@ export class MapCargo {
 
     this.canvas = document.querySelector("#canvas");
 
-    this.renderer = new Renderer({ canvas: this.canvas, width: this.#width, height: this.#height }).renderer;
+    this.renderer = new Renderer({
+      canvas: this.canvas,
+      width: this.#width,
+      height: this.#height,
+    }).renderer;
     this.pointer = new THREE.Vector2();
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -99,7 +103,10 @@ export class MapCargo {
     this.geometry = new THREE.PlaneGeometry(this.#planeSize, this.#planeSize);
     this.geometry.rotateX(-Math.PI / 2);
 
-    this.plane = new THREE.Mesh(this.geometry, new THREE.MeshBasicMaterial({ visible: false }));
+    this.plane = new THREE.Mesh(
+      this.geometry,
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
     this.scene.add(this.plane);
 
     this.#objects.push(this.plane);
@@ -120,7 +127,10 @@ export class MapCargo {
   }
 
   onPointerMove(event) {
-    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
+    this.pointer.set(
+      (event.clientX / this.#width) * 2 - 1,
+      -((event.clientY - 64) / this.#height) * 2 + 1
+    );
 
     this.#raycaster.setFromCamera(this.pointer, this.camera);
 
@@ -141,7 +151,10 @@ export class MapCargo {
   }
 
   onPointerDown(event) {
-    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
+    this.pointer.set(
+      (event.clientX / this.#width) * 2 - 1,
+      -((event.clientY - 64) / this.#height) * 2 + 1
+    );
 
     this.#raycaster.setFromCamera(this.pointer, this.camera);
 

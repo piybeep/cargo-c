@@ -49,14 +49,13 @@ export default class Cargo {
     return currentBlock.intersectsBox(otherBlock);
   }
 
+  // console.log("Позиция Y: ", positionY);
+  // console.log("Размер коробки: ", this.height.toFixed(2));
+  // console.log("----------------------------------");
+
   isOutwardsY() {
     const positionY =
-      Number.parseFloat(this.height.toFixed(2)) +
-      Number.parseFloat(this.block.position.y.toFixed(2));
-
-    console.log("Позиция Y: ", this.block.position.y.toFixed(2));
-    console.log("Размер коробки: ", this.height.toFixed(2));
-    console.log("----------------------------------");
+      Number.parseFloat(this.height / 2) + Number.parseFloat(this.block.position.y.toFixed(2));
 
     if (positionY > this.spaceHeight) {
       return true;
@@ -70,27 +69,28 @@ export default class Cargo {
     this.spaceHeight = space.geometry.parameters.height;
 
     for (let i = 0; i < newObjects.length; ) {
-      if (this.isCollision(newObjects[i])) {
-        if (!this.isOutwardsY()) {
-          this.block.position.y += 0.4;
-          this.line.position.y += 0.4;
+      this.block.position.x = newObjects[newObjects.length - 1].position.x;
+      this.line.position.x = newObjects[newObjects.length - 1].position.x;
+
+      if (!this.isOutwardsY()) {
+        while (this.isCollision(newObjects[i])) {
+          this.block.position.y +=
+            parseInt(newObjects[i].geometry.parameters.height / this.block.position.y) + 0.01;
+          this.line.position.y +=
+            parseInt(newObjects[i].geometry.parameters.height / this.line.position.y) + 0.01;
         }
+      }
 
-        if (this.isOutwardsY()) {
-          while (this.isCollision(newObjects[i])) {
-            this.block.position.x += 0.4;
-            this.line.position.x += 0.4;
-          }
+      if (this.isOutwardsY()) {
+        this.block.position.y = this.height / 2;
+        this.line.position.y = this.height / 2;
 
-          this.block.position.y = this.height / 2;
-          this.line.position.y = this.height / 2;
-
-          while (this.isCollision(newObjects[i])) {
-            this.block.position.y += 0.4;
-            this.line.position.y += 0.4;
+        for (let j = 0; j < newObjects.length; j++) {
+          while (this.isCollision(newObjects[j])) {
+            this.block.position.x += 1;
+            this.line.position.x += 1;
           }
         }
-        continue;
       }
 
       i++;
