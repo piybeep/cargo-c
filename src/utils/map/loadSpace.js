@@ -36,4 +36,15 @@ export default class LoadSpace {
   get get() {
     return this.space;
   }
+
+  get size() {
+    return { width: this.width, height: this.height, length: this.length };
+  }
+
+  get position() {
+    this.minFaceX = this.width / 2 - this.width;
+    this.maxFaceX = this.width / 2;
+
+    return { faceX: { min: this.minFaceX, max: this.maxFaceX } };
+  }
 }

@@ -95,7 +95,6 @@ export default class Cargo {
 
       i++;
     }
-
     this.scene.add(this.block, this.line);
   }
 
