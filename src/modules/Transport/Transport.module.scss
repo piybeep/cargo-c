@@ -41,6 +41,10 @@
 
     transform: translateX(0);
 
+    &__svg{
+        cursor: pointer;
+    }
+
     &__wrapper{
         position: relative;
     }

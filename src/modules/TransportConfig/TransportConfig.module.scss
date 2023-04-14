@@ -24,6 +24,10 @@
         margin-bottom: 0px !important;
     }
 
+    &__svg{
+        cursor: pointer;
+    }
+
     &__menu {
         display: flex;
         column-gap: 10px;

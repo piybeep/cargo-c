@@ -16,8 +16,17 @@ import tyagach from '../../../public/img/tyagach.png'
 import furgon from '../../../public/img/furgon.png'
 
 import s from './TransportConfig.module.scss'
+import { useTransport } from '@/store/transport';
+import { useRouter } from 'next/router';
 
 export function TransportConfig({ ...props }: TransportConfigProps) {
+
+    const router = useRouter()
+
+    // zustand
+    const { setAddTransport } = useTransport(state => state)
+    // zustand
+
     const [width, setWidth] = useState('мм')
     const [height, setHeight] = useState('кг')
     const [axialLoad, setAxialLoad] = useState(0)
@@ -35,7 +44,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
             configWidth: width,
             configHeight: height,
             name: '',
-            type: 0,
+            type: 'Грузовой автомобиль',
             length: 500,
             width: 500,
             height: 500,
@@ -43,39 +52,44 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
 
             // Для прицепа
             semiTrailerAxes: 2,
-            semiTrailerWeight: 0,
-            L2: 0,
-            L3: 0,
-            A2SemiTrailer: 0,
-            A2SemiTrailerTrolley: 0,
+            semiTrailerWeight: !isSwitch && transport === 0 ? 0 : null,
+            L2: !isSwitch && transport === 0 ? 0 : null,
+            L3: !isSwitch && transport === 0 ? 0 : null,
+            A2SemiTrailer: !isSwitch && transport === 0 ? 0 : null,
+            A2SemiTrailerTrolley: !isSwitch && transport === 0 ? 0 : null,
 
             // Для тягача/фургона
-            Axes: 0,
-            WeightWithoutLoad: 0,
-            L: 0,
-            L1: 0,
-            A1: 0,
-            A1Axes: 0,
-            A2: 0,
-            A2Axes: 0,
+            Axes: 2,
+            WeightWithoutLoad: !isSwitch ? 0 : null,
+            L: !isSwitch ? 0 : null,
+            L1: !isSwitch ? 0 : null,
+            A1: !isSwitch ? 0 : null,
+            A1Axes: !isSwitch ? 0 : null,
+            A2: !isSwitch ? 0 : null,
+            A2Axes: !isSwitch ? 0 : null,
         }
     });
 
     const watchTypeTransport = watch('type')
 
     useEffect(() => {
-        watchTypeTransport != 0 && setIsSwitch(true)
+        watchTypeTransport != 'Грузовой автомобиль' && setIsSwitch(true)
     }, [watchTypeTransport])
 
-    const onSubmit = (data: any) => console.log(data)
+    const onSubmit = (data: any) => {
+        if (isSwitch) {
+            const newTransport = { title: data.name, text: `${data.type} ${data.length} x ${data.width} x ${data.height} ${width}, ${data.tonnage} ${height}, ${width === 'м' ? data.length * data.width : width === 'см' ? (data.length / 100) * (data.width / 100) : (data.length / 1000) * (data.width / 1000)} м2` }
+            setAddTransport(newTransport)
+
+            router.push('/transport')
+        }
+    }
 
     const changeWidth = (e: RadioChangeEvent) => {
-        console.log('Мера измерения длины: ', e.target.value);
         setWidth(e.target.value);
     }
 
     const changeHeight = (e: RadioChangeEvent) => {
-        console.log('Мера измерения веса: ', e.target.value);
         setHeight(e.target.value);
     }
 
@@ -87,8 +101,6 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
         setAxialLoad(e.target.value)
         setTransport(e.target.value)
     }
-
-    console.log(transport)
 
     return (
         <div className={s.wrapper}>
@@ -161,14 +173,14 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                 <div className={s.info__select}>
                                     <Text className={s.info__text} type="secondary">Тип грузовой площади</Text>
                                     <Select
-                                        defaultValue={0}
+                                        defaultValue='Грузовой автомобиль'
                                         style={{ width: '100%' }}
                                         onChange={onChange}
                                         options={[
-                                            { value: 0, label: 'Грузовой автомобиль' },
-                                            { value: 1, label: 'Морской контейнер' },
-                                            { value: 2, label: 'Паллет' },
-                                            { value: 3, label: 'Складская площадь' },
+                                            { value: 'Грузовой автомобиль', label: 'Грузовой автомобиль' },
+                                            { value: 'Морской контейнер', label: 'Морской контейнер' },
+                                            { value: 'Паллет', label: 'Паллет' },
+                                            { value: 'Складская площадь', label: 'Складская площадь' },
                                         ]}
                                     />
                                 </div>
@@ -218,7 +230,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                         className={s.item__input}
                                         addonAfter={height}
                                         defaultValue={0}
-                                        {...register('tonnage', { required: true, min: 1 })}
+                                        type='number'
+                                        {...register('tonnage', { required: true, min: 1, valueAsNumber: true })}
                                         status={errors.tonnage && 'error'}
                                         onChange={onChange}
                                     />
@@ -229,7 +242,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                 </div>
 
                 <div className={classNames(s.options, {
-                    [s.options__hidden]: watchTypeTransport != 0
+                    [s.options__hidden]: watchTypeTransport != 'Грузовой автомобиль'
                 })}>
                     <div className={s.options__header}>
                         <Title className={s.options__title} level={5}>Осевая нагрузка</Title>
@@ -272,12 +285,12 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                         <Text className={s.list__text} type="secondary">Количество осей</Text>
                                         <Select
                                             className={s.list__input}
-                                            defaultValue="2"
+                                            defaultValue={2}
                                             style={{ width: '100%' }}
                                             onChange={onChange}
                                             options={[
-                                                { value: '2', label: '2' },
-                                                { value: '3', label: '3' },
+                                                { value: 2, label: 2 },
+                                                { value: 3, label: 3 },
                                             ]}
                                         />
                                     </div>
@@ -295,7 +308,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                             addonAfter={height}
                                             defaultValue={0}
                                             min={0}
-                                            {...register('semiTrailerWeight', isSwitch === false && transport === 0 ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                            type='number'
+                                            {...register('semiTrailerWeight', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                             status={errors.semiTrailerWeight && 'error'}
                                             onChange={onChange}
                                         />
@@ -315,7 +329,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 addonAfter={width}
                                                 defaultValue={0}
                                                 min={0}
-                                                {...register('L2', isSwitch === false && transport === 0 ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                                type='number'
+                                                {...register('L2', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                                 status={errors.L2 && 'error'}
                                                 onChange={onChange}
                                             />
@@ -337,7 +352,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 addonAfter={width}
                                                 defaultValue={0}
                                                 min={0}
-                                                {...register('L3', isSwitch === false && transport === 0 ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                                type='number'
+                                                {...register('L3', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                                 status={errors.L3 && 'error'}
                                                 onChange={onChange}
                                             />
@@ -359,7 +375,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 addonAfter={height}
                                                 defaultValue={0}
                                                 min={0}
-                                                {...register('A2SemiTrailer', isSwitch === false && transport === 0 ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                                type='number'
+                                                {...register('A2SemiTrailer', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                                 status={errors.A2SemiTrailer && 'error'}
                                                 onChange={onChange}
                                             />
@@ -381,7 +398,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 addonAfter={height}
                                                 defaultValue={0}
                                                 min={0}
-                                                {...register('A2SemiTrailerTrolley', isSwitch === false && transport === 0 ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                                type='number'
+                                                {...register('A2SemiTrailerTrolley', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                                 status={errors.A2SemiTrailerTrolley && 'error'}
                                                 onChange={onChange}
                                             />
@@ -429,7 +447,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                             addonAfter={height}
                                             defaultValue={0}
                                             min={0}
-                                            {...register('WeightWithoutLoad', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
+                                            type='number'
+                                            {...register('WeightWithoutLoad', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
                                             status={errors.WeightWithoutLoad && 'error'}
                                             onChange={onChange} />
                                     </div>
@@ -443,14 +462,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина между осями</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={width} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('L', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.L && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={width}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('L', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.L && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>L</Title>
                                         </div>
                                     </div>
@@ -464,14 +484,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина от оси А1 до сцеп. устройства</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={width} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('L1', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.L1 && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={width}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('L1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.L1 && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>L1</Title>
                                         </div>
                                     </div>
@@ -485,14 +506,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={height} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('A1', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.A1 && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={height}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('A1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.A1 && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A1</Title>
                                         </div>
                                     </div>
@@ -506,14 +528,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={height} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('A1Axes', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.A1Axes && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={height}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('A1Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.A1Axes && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A1</Title>
                                         </div>
                                     </div>
@@ -527,14 +550,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={height} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('A2', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.A2 && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={height}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('A2', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.A2 && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A2</Title>
                                         </div>
                                     </div>
@@ -548,14 +572,15 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
                                         <div className={s.list__row}>
-                                            <InputNumber 
-                                            className={s.list__input_small} 
-                                            addonAfter={height} 
-                                            defaultValue={0} 
-                                            min={0} 
-                                            {...register('A2Axes', isSwitch === false ? { required: true, min: 1 } : { required: false, min: 0 })}
-                                            status={errors.A2Axes && 'error'}
-                                            onChange={onChange} />
+                                            <InputNumber
+                                                className={s.list__input_small}
+                                                addonAfter={height}
+                                                defaultValue={0}
+                                                min={0}
+                                                type='number'
+                                                {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                status={errors.A2Axes && 'error'}
+                                                onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A2</Title>
                                         </div>
                                     </div>
