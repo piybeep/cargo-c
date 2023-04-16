@@ -7,6 +7,7 @@ import Footer from './Footer/Footer'
 import { useCardAnimation } from './useCardAnimation'
 import { animated } from 'react-spring'
 import { useDragEl } from './useDragEl'
+import style from './GroupEl/GroupEl.module.scss'
 
 interface GroupProps {
   isSwapped: { id: number | null }
@@ -24,7 +25,7 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
     ref: arrRef
   })
 
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl()
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl(style)
 
   return (
     <animated.div

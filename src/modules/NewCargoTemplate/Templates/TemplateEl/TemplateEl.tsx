@@ -6,17 +6,39 @@ import { Typography } from 'antd'
 
 const { Text, Title } = Typography
 
-const TemplateEl = () => {
+interface TemplateElProps {
+  ind: number
+  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
+  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
+  handleTouchEnd: (ind: number) => void
+}
+
+const TemplateEl: React.FC<TemplateElProps> = ({
+  handleTouchEnd,
+  handleTouchMove,
+  handleTouchStart,
+  ind
+}) => {
   return (
-    <div className={s.cont}>
-      <div className={s.wrapper}>
-        <img src={boxSvg.src} />
-        <div className={s.text}>
-          <Title level={5}>Ящик 40м2</Title>
-          <Text type='secondary'>Ящик 12039 х 2330 х 2693 мм, 26840 кг, 5 шт.</Text>
+    <div className={s.wrapperCont}>
+      <div
+        className={s.cont}
+        onTouchStart={(e) => handleTouchStart(e, ind)}
+        onTouchMove={(e) => handleTouchMove(e, ind)}
+        onTouchEnd={() => handleTouchEnd(ind)}
+      >
+        <div className={s.wrapper}>
+          <img src={boxSvg.src} />
+          <div className={s.text}>
+            <Title level={5}>Ящик 40м2</Title>
+            <Text type='secondary'>
+              Ящик 12039 х 2330 х 2693 мм, 26840 кг, 5 шт.
+            </Text>
+          </div>
         </div>
+        <RightCircleTwoTone className={s.img} />
       </div>
-      <RightCircleTwoTone className={s.img}/>
+      <RightCircleTwoTone className={s.img_mod} />
     </div>
   )
 }

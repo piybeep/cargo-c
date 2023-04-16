@@ -28,7 +28,6 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleTouchStart
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
-  console.log(clientWidth)
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)

@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import s from './GroupEl/GroupEl.module.scss'
 
-export const useDragEl = () => {
+export const useDragEl = (style:any) => {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   const [saveCurrentIndex, setSaveCurrentIndex] = useState<undefined|number>(undefined)
@@ -16,7 +15,7 @@ export const useDragEl = () => {
     setTouchStart(firstTouch)
     if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
       const allCard = Array.from(
-        document.querySelectorAll<HTMLElement>('.' + s.cont)
+        document.querySelectorAll<HTMLElement>('.' + style.cont)
       )
 
       allCard.map((current: any, currentIndex: number) => {
@@ -34,14 +33,14 @@ export const useDragEl = () => {
   }
 
   function handleTouchMove(e: any, index: number) {
-    const current = document.querySelectorAll<HTMLElement>('.' + s.cont)[index]
+    const current = document.querySelectorAll<HTMLElement>('.' + style.cont)[index]
     let clientX = e.targetTouches[0].clientX - touchStart
     setTouchEnd(clientX)
     current.style.transform = `translateX(${Math.round(clientX)}px)`
   }
 
   function handleTouchEnd(index: number) {
-    const current = document.querySelectorAll<HTMLElement>('.' + s.cont)[index]
+    const current = document.querySelectorAll<HTMLElement>('.' + style.cont)[index]
     if (touchEnd <= -128) {
       current.style.transform = `translateX(-128px)`
       current.style.transition = '.3s'
