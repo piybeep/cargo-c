@@ -212,7 +212,7 @@ const Body: React.FC<BodyProps> = ({
             <PlusOutlined />
           </div>
         </div>
-        <div></div>
+        <div className={s.el_mod2}></div>
         <div className={s.el}>
           <Text type='secondary'>Поворот</Text>
           <div className={s.el_mod}>
