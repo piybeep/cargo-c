@@ -57,7 +57,6 @@ export class MapCargo {
     // Создаем грузовое пространство
     this.space = new LoadSpace(this.scene, space);
     this.space.create({ x: 0, z: 0 });
-
     console.log(this.space.position);
 
     // Создаем грузы

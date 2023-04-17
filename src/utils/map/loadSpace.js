@@ -13,6 +13,10 @@ export default class LoadSpace {
 
   // Создать грозовое пространство
   create(props) {
+    // Получить позицию
+    this.positionX = props.x;
+    this.positionZ = props.z;
+
     // Создать размеры
     this.geometry = new THREE.BoxGeometry(this.width, this.height, this.length);
 
@@ -27,7 +31,7 @@ export default class LoadSpace {
       })
     );
 
-    this.space.position.set(props.x, this.height / 2, props.z);
+    this.space.position.set(this.positionX, this.height / 2, this.positionZ);
 
     // Добавить на холст
     this.scene.add(this.space);
@@ -42,9 +46,24 @@ export default class LoadSpace {
   }
 
   get position() {
-    this.minFaceX = this.width / 2 - this.width;
-    this.maxFaceX = this.width / 2;
+    // Грань по оси x
+    this.minFaceX = this.positionX - this.width / 2;
+    this.maxFaceX = this.positionX + this.width / 2;
 
-    return { faceX: { min: this.minFaceX, max: this.maxFaceX } };
+    // Грань по оси y
+    this.minFaceY = 0;
+    this.maxFaceY = this.height;
+
+    // Грань по оси z
+    this.minFaceZ = this.positionZ - this.length / 2;
+    this.maxFaceZ = this.positionZ + this.length / 2;
+
+    const obj = {
+      faceX: { min: this.minFaceX, max: this.maxFaceX },
+      faceY: { min: this.minFaceY, max: this.maxFaceY },
+      faceZ: { min: this.minFaceZ, max: this.maxFaceZ },
+    };
+
+    return obj;
   }
 }
