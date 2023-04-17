@@ -12,7 +12,7 @@ export const CARGOS: CargosTypes = [
   {
     cargoId: 0,
     name: "default",
-    count: 5,
+    count: 20,
     color: "rgb(20, 100, 120)",
     width: 4,
     height: 4,
@@ -20,9 +20,9 @@ export const CARGOS: CargosTypes = [
   },
   {
     cargoId: 1,
-    name: "yellow",
-    count: 3,
-    color: "yellow",
+    name: "pink",
+    count: 20,
+    color: "pink",
     width: 4,
     height: 4,
     length: 4,

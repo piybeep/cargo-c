@@ -8,6 +8,8 @@ export default class Cargo {
     // Грузовое пространство
     this.space = space;
     this.spaceMaxY = this.space.position.faceY.max;
+    this.spaceMinX = this.space.position.faceX.min;
+    this.spaceMinZ = this.space.position.faceZ.min;
 
     // Размеры груза
     this.width = width;
@@ -66,6 +68,8 @@ export default class Cargo {
     for (let i = 0; i < newObjects.length; ) {
       this.block.position.x = newObjects[newObjects.length - 1].position.x;
       this.line.position.x = newObjects[newObjects.length - 1].position.x;
+      this.block.position.z = newObjects[newObjects.length - 1].position.z;
+      this.line.position.z = newObjects[newObjects.length - 1].position.z;
 
       if (!this.isOutwardsY()) {
         while (this.isCollision(newObjects[i])) {
@@ -89,6 +93,18 @@ export default class Cargo {
       }
 
       i++;
+    }
+    if (newObjects.length === 0) {
+      this.block.position.set(
+        this.spaceMinX + this.width / 2,
+        this.height / 2,
+        this.spaceMinZ + this.length / 2
+      );
+      this.line.position.set(
+        this.spaceMinX + this.width / 2,
+        this.height / 2,
+        this.spaceMinZ + this.length / 2
+      );
     }
 
     this.scene.add(this.block, this.line);
