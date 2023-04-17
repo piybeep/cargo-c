@@ -87,14 +87,15 @@ export default class Cargo {
 
         for (let j = 0; j < newObjects.length; j++) {
           while (this.isCollision(newObjects[j])) {
-            this.block.position.x += 1;
-            this.line.position.x += 1;
+            this.block.position.x += 0.1;
+            this.line.position.x += 0.1;
           }
         }
       }
 
       i++;
     }
+
     this.scene.add(this.block, this.line);
   }
 

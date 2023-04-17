@@ -57,13 +57,14 @@ export class MapCargo {
     // Создаем грузовое пространство
     this.space = new LoadSpace(this.scene, space);
     this.space.create({ x: 0, z: 0 });
-    console.log(this.space.position);
 
     // Создаем грузы
     cargos.forEach((cargo) => {
-      const block = new Cargo(this.scene, cargo);
-      block.arrange(this.#objects, this.space);
-      this.#objects.push(block.get);
+      for (let i = 0; i < cargo.count; i++) {
+        const block = new Cargo(this.scene, cargo);
+        block.arrange(this.#objects, this.space);
+        this.#objects.push(block.get);
+      }
     });
   }
 
