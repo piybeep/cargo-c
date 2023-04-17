@@ -41,6 +41,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const onSearch = (text: string) => {
         setEditSortText(text)
+
+        console.log(sortProjects)
     };
 
     const options = [

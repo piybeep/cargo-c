@@ -47,7 +47,7 @@
         column-gap: 16px;
     }
 
-    cursor: pointer;
+    // cursor: pointer;
 
     &__info {
         display: flex;
@@ -97,8 +97,9 @@
         opacity: 0;
         visibility: hidden;
 
-
-        cursor: pointer;
+        &_svg{
+            cursor:pointer;
+        }
     }
 }
 

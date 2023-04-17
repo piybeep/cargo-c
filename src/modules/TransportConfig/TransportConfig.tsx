@@ -82,6 +82,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
             setAddTransport(newTransport)
 
             router.push('/transport')
+        }else {
+            console.log(data)
         }
     }
 
@@ -193,7 +195,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Длина</Text>
-                                    <InputNumber className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -204,7 +206,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Ширина</Text>
-                                    <InputNumber className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -215,7 +217,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Высота</Text>
-                                    <InputNumber className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -309,7 +311,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                             defaultValue={0}
                                             min={0}
                                             type='number'
-                                            {...register('semiTrailerWeight', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                            {...register('semiTrailerWeight', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: false })}
                                             status={errors.semiTrailerWeight && 'error'}
                                             onChange={onChange}
                                         />
@@ -330,7 +332,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('L2', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('L2', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.L2 && 'error'}
                                                 onChange={onChange}
                                             />
@@ -353,7 +355,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('L3', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('L3', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.L3 && 'error'}
                                                 onChange={onChange}
                                             />
@@ -376,7 +378,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A2SemiTrailer', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A2SemiTrailer', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A2SemiTrailer && 'error'}
                                                 onChange={onChange}
                                             />
@@ -399,7 +401,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A2SemiTrailerTrolley', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A2SemiTrailerTrolley', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A2SemiTrailerTrolley && 'error'}
                                                 onChange={onChange}
                                             />
@@ -448,7 +450,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                             defaultValue={0}
                                             min={0}
                                             type='number'
-                                            {...register('WeightWithoutLoad', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                            {...register('WeightWithoutLoad', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                             status={errors.WeightWithoutLoad && 'error'}
                                             onChange={onChange} />
                                     </div>
@@ -468,7 +470,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('L', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('L', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.L && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>L</Title>
@@ -490,7 +492,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('L1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('L1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.L1 && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>L1</Title>
@@ -512,7 +514,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A1 && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A1</Title>
@@ -534,7 +536,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A1Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A1Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A1Axes && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A1</Title>
@@ -556,7 +558,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A2', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A2', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A2 && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A2</Title>
@@ -578,7 +580,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0 })}
+                                                {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true     })}
                                                 status={errors.A2Axes && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A2</Title>

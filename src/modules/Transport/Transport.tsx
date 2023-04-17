@@ -1,5 +1,5 @@
 import { useTransport } from '@/store/transport';
-import { useState } from 'react';
+// import { useState } from 'react';
 import Link from 'next/link';
 
 import { Button, Typography } from 'antd';
@@ -8,6 +8,7 @@ import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
 
+import { swipe } from '../../hook/swipe'
 
 export function Transport({ ...props }: TransportProps) {
     const { Title, Text } = Typography
@@ -19,64 +20,13 @@ export function Transport({ ...props }: TransportProps) {
     } = useTransport(state => state)
     // zustand 
 
-    const [touchStart, setTouchStart] = useState(0);
-    const [touchEnd, setTouchEnd] = useState(0);
-    const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
-
-    function handleTouchStart(e: any, index: any) {
-        const current = index
-        let firstTouch = e.touches[0].clientX;
-        if (touchEnd != 0 && current === saveCurrentIndex) {
-            firstTouch = e.touches[0].clientX - touchEnd
-        }
-
-        setTouchStart(firstTouch)
-
-        if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
-            const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
-
-            allCard.map((current: any, currentIndex: number) => {
-                if (index != currentIndex) {
-                    current.style.transform = `translateX(0px)`
-                    current.style.transition = '.3s'
-                    setTimeout(() => {
-                        current.style.transition = '0s'
-                    }, 300);
-                }
-            })
-        }
-
-        setSaveCurrentIndex(index)
-    }
-
-    function handleTouchMove(e: any, index: number) {
-        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        let clientX = e.targetTouches[0].clientX - touchStart
-        setTouchEnd(clientX)
-        current.style.transform = `translateX(${Math.round(clientX)}px)`
-    }
-
-    function handleTouchEnd(index: any) {
-        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        if (touchEnd <= -128) {
-            current.style.transform = `translateX(-128px)`
-            current.style.transition = '.3s'
-            setTimeout(() => {
-                current.style.transition = '0s'
-            }, 300);
-            setTouchEnd(-128)
-        } else {
-            current.style.transform = `translateX(0px)`
-            current.style.transition = '.3s'
-            setTimeout(() => {
-                current.style.transition = '0s'
-            }, 300);
-            setTouchEnd(0)
-        }
-    }
+    // Swipe logic
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex } = swipe(s)
+    // Swipe logic
 
     const handleRemoveTransport = (id: number) => {
         setRemoveTransport(id)
+        setSaveCurrentIndex(undefined)
     }
 
     const Menu = (id: { id: number; }) => {
@@ -120,7 +70,9 @@ export function Transport({ ...props }: TransportProps) {
                         return (
                             <div key={current.id} className={s.item__wrapper}>
                                 <div className={s.item}
-                                    onTouchStart={(e) => handleTouchStart(e, index)} onTouchMove={(e) => handleTouchMove(e, index)} onTouchEnd={() => handleTouchEnd(index)}
+                                    onTouchStart={(e) => handleTouchStart(e, index)}
+                                    onTouchMove={(e) => handleTouchMove(e, index)}
+                                    onTouchEnd={() => handleTouchEnd(index)}
                                 >
                                     <img src="#" alt="Картинка" />
                                     <div className={s.item__info}>
