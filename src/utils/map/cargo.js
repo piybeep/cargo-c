@@ -1,9 +1,13 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  constructor(scene, { name, width, height, length, color }) {
+  constructor(scene, space, { name, width, height, length, color }) {
     // Сцена холста
     this.scene = scene;
+
+    // Грузовое пространство
+    this.space = space;
+    this.spaceMaxY = this.space.position.faceY.max;
 
     // Размеры груза
     this.width = width;
@@ -49,24 +53,15 @@ export default class Cargo {
     return currentBlock.intersectsBox(otherBlock);
   }
 
-  // console.log("Позиция Y: ", positionY);
-  // console.log("Размер коробки: ", this.height.toFixed(2));
-  // console.log("----------------------------------");
-
   isOutwardsY() {
     const positionY =
       Number.parseFloat(this.height / 2) + Number.parseFloat(this.block.position.y.toFixed(2));
-
-    if (positionY > this.spaceHeight) {
-      return true;
-    }
-    return false;
+    return positionY > this.spaceMaxY ? true : false;
   }
 
   // Алгоритм расстановки грузов
-  arrange(objects, space) {
+  arrange(objects) {
     const newObjects = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
-    this.spaceHeight = space.geometry.parameters.height;
 
     for (let i = 0; i < newObjects.length; ) {
       this.block.position.x = newObjects[newObjects.length - 1].position.x;
