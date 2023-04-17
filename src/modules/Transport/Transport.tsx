@@ -143,7 +143,9 @@ export function Transport({ ...props }: TransportProps) {
                 <Link href='/transportConfig'>
                     <Button className={s.buttons__button} type='primary'>Добавить транспорт вручную</Button>
                 </Link>
-                <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>Добавить из шаблона</Button>
+                <Link href='/transportTemplate'>
+                    <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>Добавить из шаблона</Button>
+                </Link>
             </div>
         </div>
     );
