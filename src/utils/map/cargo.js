@@ -9,6 +9,7 @@ export default class Cargo {
     this.space = space;
     this.spaceMaxY = this.space.position.faceY.max;
     this.spaceMinX = this.space.position.faceX.min;
+    this.spaceMaxX = this.space.position.faceX.max;
     this.spaceMinZ = this.space.position.faceZ.min;
     this.spaceMaxZ = this.space.position.faceZ.max;
 
@@ -70,15 +71,43 @@ export default class Cargo {
     return false;
   }
 
+  isOutwardsMaxX() {
+    const positionX = this.block.position.x + this.width / 2;
+    if (positionX > this.spaceMaxX) {
+      return true;
+    }
+    return false;
+  }
+
   // Алгоритм расстановки грузов
   arrange(objects) {
     const newObjects = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
 
     for (let i = 0; i < newObjects.length; ) {
-      this.block.position.x = newObjects[newObjects.length - 1].position.x;
-      this.line.position.x = newObjects[newObjects.length - 1].position.x;
+      if (newObjects[newObjects.length - 1].geometry.parameters.width == this.width) {
+        this.block.position.x = newObjects[newObjects.length - 1].position.x;
+        this.line.position.x = newObjects[newObjects.length - 1].position.x;
+      } else {
+        this.block.position.x =
+          newObjects[newObjects.length - 1].position.x -
+          newObjects[newObjects.length - 1].geometry.parameters.width / 2 +
+          this.width / 2;
+        this.line.position.x =
+          newObjects[newObjects.length - 1].position.x -
+          newObjects[newObjects.length - 1].geometry.parameters.width / 2 +
+          this.width / 2;
+      }
+
       this.block.position.z = newObjects[newObjects.length - 1].position.z;
       this.line.position.z = newObjects[newObjects.length - 1].position.z;
+
+      if (newObjects[newObjects.length - 1].geometry.parameters.height == this.height) {
+        this.block.position.y = newObjects[newObjects.length - 1].position.y;
+        this.line.position.y = newObjects[newObjects.length - 1].position.y;
+      } else {
+        this.block.position.y = this.height / 2;
+        this.line.position.y = this.height / 2;
+      }
 
       if (!this.isOutwardsMaxZ()) {
         while (this.isCollision(newObjects[i])) {
@@ -100,6 +129,13 @@ export default class Cargo {
             this.line.position.x += 0.1;
           }
         }
+      }
+
+      if (this.isOutwardsMaxX()) {
+        this.block.position.y += this.height + 0.01;
+        this.line.position.y += this.height + 0.01;
+        this.block.position.x = this.spaceMinX + this.width / 2;
+        this.line.position.x = this.spaceMinX + this.width / 2;
       }
 
       // if (!this.isOutwardsY()) {

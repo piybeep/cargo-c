@@ -34,6 +34,11 @@ export class MapCargo {
     this.#height = params.height;
 
     this.handleRender = this.render.bind(this);
+
+    // Камера
+    this.cameraX = 30;
+    this.cameraY = 30;
+    this.cameraZ = 30;
   }
 
   editor() {
@@ -66,7 +71,25 @@ export class MapCargo {
         this.#objects.push(block.get);
       }
     });
+
+    // Тест
+    // cargos.forEach((cargo, i) => {
+    //   setTimeout(() => {
+    //     this.test(cargo);
+    //   }, cargo.count * (i * 100));
+    // });
   }
+
+  // test(cargo) {
+  //   for (let i = 0; i < cargo.count; i++) {
+  //     setTimeout(() => {
+  //       const block = new Cargo(this.scene, this.space, cargo);
+  //       block.arrange(this.#objects);
+  //       this.#objects.push(block.get);
+  //       this.render();
+  //     }, i * 100);
+  //   }
+  // }
 
   create() {
     // Создание сцены
@@ -100,7 +123,7 @@ export class MapCargo {
     this.controls.minDistance = 20;
     this.controls.maxDistance = 200;
 
-    this.camera.position.set(30, 30, 30);
+    this.camera.position.set(this.cameraX, this.cameraY, this.cameraZ);
 
     this.geometry = new THREE.PlaneGeometry(this.#planeSize, this.#planeSize);
     this.geometry.rotateX(-Math.PI / 2);
