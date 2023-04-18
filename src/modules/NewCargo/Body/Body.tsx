@@ -2,10 +2,10 @@ import React from 'react'
 import s from './Body.module.scss'
 import { Radio, Typography, Input, InputNumber, Select } from 'antd'
 import classNames from 'classnames'
-import boxSvg from '@/img/svg/newBox/box.svg'
-import listSvg from '@/img/svg/boxEl/list.svg'
-import arrowXSvg from '@/img/svg/boxEl/arrowX.svg'
-import arrowYSvg from '@/img/svg/boxEl/arrowY.svg'
+import boxSvg from '@/public/svg/newBox/box.svg'
+import listSvg from '@/public/svg/boxEl/list.svg'
+import arrowXSvg from '@/public/svg/boxEl/arrowX.svg'
+import arrowYSvg from '@/public/svg/boxEl/arrowY.svg'
 import { PlusOutlined } from '@ant-design/icons'
 import { BodyProps } from './type'
 import { Controller } from 'react-hook-form'
@@ -17,8 +17,19 @@ const Body: React.FC<BodyProps> = ({
   setUnitLength,
   setUnitWeight,
   unitLength,
-  unitWeight
+  unitWeight,
+  watch
 }) => {
+  const getMaxLength = () => {
+    if (unitLength === 'мм') {
+      return 50000
+    } else if (unitLength === 'cм') {
+      return 5000
+    } else {
+      return 50
+    }
+  }
+
   return (
     <div className={s.cont}>
       <div className={s.header}>
@@ -28,7 +39,7 @@ const Body: React.FC<BodyProps> = ({
           onChange={(e) => setUnitLength(e.target.value)}
         >
           <Radio value={'мм'}>мм</Radio>
-          <Radio value={'см'}>см</Radio>
+          <Radio value={'cм'}>cм</Radio>
           <Radio value={'м'}>м</Radio>
         </Radio.Group>
         <Radio.Group
@@ -47,11 +58,11 @@ const Body: React.FC<BodyProps> = ({
             control={control}
             name='name'
             render={({ field: { onChange } }) => (
-              <Input type='text' onChange={onChange} required />
+              <Input type='text' onChange={onChange} required maxLength={110} />
             )}
           />
           <Text type='secondary' style={{ marginLeft: 'auto' }}>
-            15 / 110
+            {watch('name') ? watch('name').length : 0} / 110
           </Text>
         </div>
         <div className={s.el}>
@@ -80,13 +91,13 @@ const Body: React.FC<BodyProps> = ({
                 onChange={onChange}
                 type='text'
                 addonAfter={unitLength}
-                max={50000}
+                max={getMaxLength()}
                 required
               />
             )}
           />
           <Text type='secondary' style={{ marginLeft: 'auto' }}>
-            15 / 50000
+            {watch('length') ? String(watch('length')) : 0} / {getMaxLength()}
           </Text>
         </div>
         <div className={s.el}>
@@ -100,13 +111,13 @@ const Body: React.FC<BodyProps> = ({
                 style={{ width: '100%' }}
                 type='text'
                 addonAfter={unitLength}
-                max={50000}
+                max={getMaxLength()}
                 required
               />
             )}
           />
           <Text type='secondary' style={{ marginLeft: 'auto' }}>
-            15 / 50000
+            {watch('width') ? String(watch('width')) : 0} / {getMaxLength()}
           </Text>
         </div>
         <div className={s.el}>
@@ -120,13 +131,13 @@ const Body: React.FC<BodyProps> = ({
                 style={{ width: '100%' }}
                 type='text'
                 addonAfter={unitLength}
-                max={50000}
+                max={getMaxLength()}
                 required
               />
             )}
           />
           <Text type='secondary' style={{ marginLeft: 'auto' }}>
-            15 / 50000
+            {watch('height') ? String(watch('height')) : 0} / {getMaxLength()}
           </Text>
         </div>
         <div className={s.el}>

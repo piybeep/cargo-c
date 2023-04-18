@@ -1,5 +1,4 @@
-import { Control, FieldPath, FieldValues } from 'react-hook-form'
-import { ControllerProps } from 'react-spring'
+import { Control, UseFormWatch } from 'react-hook-form'
 
 export interface createCargo {
   name: string
@@ -25,4 +24,5 @@ export interface BodyProps {
   setUnitLength: React.Dispatch<React.SetStateAction<string>>
   unitWeight: string
   setUnitWeight: React.Dispatch<React.SetStateAction<string>>
+  watch:UseFormWatch<createCargo>
 }

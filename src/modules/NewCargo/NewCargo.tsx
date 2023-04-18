@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { createCargo } from './Body/type'
 
 export const NewCargo = () => {
-  const { handleSubmit, control } = useForm<createCargo>({
+  const { handleSubmit, control,watch } = useForm<createCargo>({
     defaultValues: {
       type: 'Ящик',
       tiers: 'Да - оптимально',
@@ -30,6 +30,7 @@ export const NewCargo = () => {
         setUnitLength={setUnitLength}
         unitWeight={unitWeight}
         setUnitWeight={setUnitWeight}
+        watch={watch}
       />
       <Footer />
     </form>

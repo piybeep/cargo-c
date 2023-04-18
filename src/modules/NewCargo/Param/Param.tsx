@@ -1,9 +1,9 @@
 import React from 'react'
 import s from './Param.module.scss'
 import { Space, Typography } from 'antd'
-import saveSvg from '@/img/svg/boxEl/save.svg'
-import trashSvg from '@/img/svg/boxEl/trash.svg'
-import reverseSvg from '@/img/svg/boxEl/reverse.svg'
+import saveSvg from '@/public/svg/boxEl/save.svg'
+import trashSvg from '@/public/svg/boxEl/trash.svg'
+import reverseSvg from '@/public/svg/boxEl/reverse.svg'
 
 
 const { Title } = Typography

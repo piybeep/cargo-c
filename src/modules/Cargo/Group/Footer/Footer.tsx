@@ -8,9 +8,11 @@ import {
 } from '@ant-design/icons'
 import saveSvg from '../../../../../public/svg/boxEl/saveB.svg'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 const Footer = () => {
   const [clientWidth, setClientWidth] = useState(0)
+  const nav=useRouter()
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)
@@ -21,7 +23,7 @@ const Footer = () => {
       {clientWidth > 460 ? (
         <>
           <Button icon={<FileAddOutlined />}>Из файла</Button>
-          <Button type='primary' icon={<PlusSquareOutlined />}>
+          <Button type='primary' icon={<PlusSquareOutlined />} onClick={()=>nav.push('cargo/new')}>
             Добавить груз
           </Button>
           <Button
@@ -36,6 +38,7 @@ const Footer = () => {
               />
             }
             className={s.button}
+            onClick={()=>nav.push('cargo/new/template')}
           >
             Из шаблонов
           </Button>

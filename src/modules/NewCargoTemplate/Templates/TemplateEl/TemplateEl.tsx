@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './TemplateEl.module.scss'
 import { RightCircleTwoTone } from '@ant-design/icons'
-import boxSvg from '@/img/svg/box/box1blue.svg'
+import boxSvg from '@/public/svg/box/box1blue.svg'
 import { Typography } from 'antd'
 
 const { Text, Title } = Typography

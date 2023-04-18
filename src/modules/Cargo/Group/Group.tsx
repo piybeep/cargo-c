@@ -8,6 +8,7 @@ import { useCardAnimation } from './useCardAnimation'
 import { animated } from 'react-spring'
 import { useDragEl } from './useDragEl'
 import style from './GroupEl/GroupEl.module.scss'
+import { useFieldArray, useForm } from 'react-hook-form'
 
 interface GroupProps {
   isSwapped: { id: number | null }
@@ -16,7 +17,12 @@ interface GroupProps {
   arrRef: any
 }
 
-const arr = [1, 2, 3]
+//ПЕРЕДЕЛАТЬ ТИП
+export interface cargoCheckBox {
+  cargo: { select?: boolean; name?: string }[]
+}
+
+const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
 
 const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
   let CardAnimation = useCardAnimation({
@@ -27,6 +33,20 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
 
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl(style)
 
+  const { control, register, setValue } = useForm<cargoCheckBox>({
+    defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
+  })
+  const { fields } = useFieldArray({
+    control,
+    name: 'cargo'
+  })
+
+  const selectAll = (value:boolean) => {
+    for (let i = 0; i < fields.length; i++) {
+      setValue(`cargo.${i}.select`, value)
+    }
+  }
+
   return (
     <animated.div
       className={s.cont}
@@ -34,15 +54,18 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
       style={isSwapped.id ? CardAnimation : {}}
     >
       <Header />
-      <Tool />
+      <Tool selectAll={selectAll} />
       <div className={s.wrapper}>
-        {arr.map((el, ind) => (
+        {fields.map((el, index) => (
           <GroupEl
-            ind={ind}
-            key={ind}
+            ind={index}
+            key={index}
+            el={el}
             handleTouchEnd={handleTouchEnd}
             handleTouchMove={handleTouchMove}
             handleTouchStart={handleTouchStart}
+            register={register}
+            control={control}
           />
         ))}
       </div>

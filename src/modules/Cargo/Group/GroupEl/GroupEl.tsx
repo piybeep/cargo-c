@@ -11,6 +11,8 @@ import arrowYSvg from '../../../../../public/svg/boxEl/arrowY.svg'
 import saveSvg from '../../../../../public/svg/boxEl/save.svg'
 import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
+import { Control, Controller, UseFormRegister } from 'react-hook-form'
+import { cargoCheckBox } from '../Group'
 
 const { Text, Title } = Typography
 
@@ -19,13 +21,20 @@ interface GroupElProps {
   handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
   handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
   handleTouchEnd: (ind: number) => void
+  el: any
+  //ПЕРЕДЕЛАТЬ ТИП
+  register: UseFormRegister<any>
+  control: Control<cargoCheckBox, any>
 }
 
 const GroupEl: React.FC<GroupElProps> = ({
   ind,
   handleTouchEnd,
   handleTouchMove,
-  handleTouchStart
+  handleTouchStart,
+  el,
+  register,
+  control
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
 
@@ -41,17 +50,34 @@ const GroupEl: React.FC<GroupElProps> = ({
         onTouchMove={(e) => handleTouchMove(e, ind)}
         onTouchEnd={() => handleTouchEnd(ind)}
       >
-        <Checkbox className={s.checkBox} />
+        <Controller
+          control={control}
+          name={`cargo.${ind}.select`}
+          render={({ field }) => (
+            <Checkbox
+              key={field.name}
+              className={s.checkBox}
+              {...field}
+              checked={field.value}
+            />
+          )}
+        />
         <div className={s.wrapper}>
           <div className={s.el}>
             <div className={s.checkBox_mod}>
               <label htmlFor={`checkBox${ind}`} className={s.ico}>
                 <img src={box1SVG.src} alt='box' />
               </label>
-              <Checkbox className={s.checkBox} id={`checkBox${ind}`} disabled={clientWidth>460}/>
+              <Checkbox
+                className={s.checkBox}
+                id={`checkBox${ind}`}
+                disabled={clientWidth > 460}
+              />
             </div>
             <div className={s.info}>
-              <Title level={5} className={s.title}>1. Новое место - 1</Title>
+              <Title level={5} className={s.title}>
+                1. Новое место - 1
+              </Title>
               <Text type='secondary' strong className={s.text}>
                 Ящик 1200 х 500 х 600 мм, 12 кг, 5 шт.
               </Text>

@@ -5,11 +5,15 @@ import { Typography } from 'antd'
 
 const { Text } = Typography
 
-const Tool = () => {
+interface toolProps {
+  selectAll: (value: boolean) => void
+}
+
+const Tool: React.FC<toolProps> = ({ selectAll }) => {
   return (
     <div className={s.cont}>
       <div className={s.select}>
-        <Checkbox />
+        <Checkbox onChange={(e) => selectAll(e.target.checked)} />
         <Text>Выбрать все</Text>
       </div>
       <Text>25 шт, 125 кг, 270 м3</Text>
