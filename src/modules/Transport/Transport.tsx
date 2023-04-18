@@ -8,7 +8,7 @@ import { TransportProps } from './Transport.types';
 
 import s from './Transport.module.scss'
 
-import { swipe } from '../../hook/swipe'
+import { useSwipe } from '../../hook/useSwipe'
 
 export function Transport({ ...props }: TransportProps) {
     const { Title, Text } = Typography
@@ -21,7 +21,7 @@ export function Transport({ ...props }: TransportProps) {
     // zustand 
 
     // Swipe logic
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex } = swipe(s)
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex } = useSwipe(s)
     // Swipe logic
 
     const handleRemoveTransport = (id: number) => {
@@ -29,7 +29,7 @@ export function Transport({ ...props }: TransportProps) {
         setSaveCurrentIndex(undefined)
     }
 
-    const Menu = (id: { id: number; }) => {
+    const Menu = ({id}: { id: number }) => {
         return (
             <>
                 <svg className={s.item__svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +45,7 @@ export function Transport({ ...props }: TransportProps) {
                         <path d="M17 17V19C17 19.5304 16.7893 20.0391 16.4142 20.4142C16.0391 20.7893 15.5304 21 15 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V9C3 8.46957 3.21071 7.96086 3.58579 7.58579C3.96086 7.21071 4.46957 7 5 7H7" stroke="#1890FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </g>
                 </svg>
-                <svg className={s.item__svg} onClick={() => handleRemoveTransport(id.id)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg className={s.item__svg} onClick={() => handleRemoveTransport(id)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_404_1322)">
                         <path d="M4 7H20" stroke="#1890FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M10 11V17" stroke="#1890FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

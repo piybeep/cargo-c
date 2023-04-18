@@ -1,7 +1,6 @@
-import { ModalName } from "@/modules/ModalName/ModalName";
 import { BaseLayout } from "@/layouts/BaseLayout";
 import { ProjectsList } from "@/modules";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
 export default function Projects() {
 	return (

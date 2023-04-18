@@ -78,11 +78,20 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
 
     const onSubmit = (data: any) => {
         if (isSwitch) {
-            const newTransport = { title: data.name, text: `${data.type} ${data.length} x ${data.width} x ${data.height} ${width}, ${data.tonnage} ${height}, ${width === 'м' ? data.length * data.width : width === 'см' ? (data.length / 100) * (data.width / 100) : (data.length / 1000) * (data.width / 1000)} м2` }
+            const newTransport = {
+                title: data.name,
+                text: `${data.type} ${data.length} x ${data.width} x ${data.height} ${width}, ${data.tonnage} ${height}, ${width === 'м'
+                    ?
+                    data.length * data.width : width === 'см'
+                        ?
+                        (data.length / 100) * (data.width / 100)
+                        :
+                        (data.length / 1000) * (data.width / 1000)} м2`
+            }
             setAddTransport(newTransport)
 
             router.push('/transport')
-        }else {
+        } else {
             console.log(data)
         }
     }
@@ -580,7 +589,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
-                                                {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true     })}
+                                                {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
                                                 status={errors.A2Axes && 'error'}
                                                 onChange={onChange} />
                                             <Title className={s.list__title} level={5}>A2</Title>

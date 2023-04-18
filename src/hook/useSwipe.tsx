@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const swipe = (s:any) => {
+export const useSwipe = (s: any) => {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
     const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
@@ -56,5 +56,31 @@ export const swipe = (s:any) => {
             setTouchEnd(0)
         }
     }
-    return {handleTouchStart,handleTouchMove,handleTouchEnd, setSaveCurrentIndex}
+
+    const handleClick = (e: any, index: any) => {
+        const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
+        allCard.map((current: any, currentIndex: number) => {
+            if (index != currentIndex) {
+                current.style.transform = `translateX(0px)`
+                current.style.transition = '.3s'
+                setTimeout(() => {
+                    current.style.transition = '0s'
+                }, 300);
+            }
+            else {
+                current.style.transform = `translateX(-128px)`
+                current.style.transition = '.3s'
+                setTimeout(() => {
+                    current.style.transition = '0s'
+                }, 300);
+            }
+        })
+
+        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        current.style.transform = `translateX(-128px)`
+
+        setTouchEnd(-128)
+    }
+
+    return { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick }
 }

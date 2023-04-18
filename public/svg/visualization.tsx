@@ -1,6 +1,6 @@
 import * as React from "react"
 
-const svgVisualization = (props) => (
+const svgVisualization = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
   <svg
     width={18}
     height={18}
