@@ -10,6 +10,7 @@ export default class Cargo {
     this.spaceMaxY = this.space.position.faceY.max;
     this.spaceMinX = this.space.position.faceX.min;
     this.spaceMinZ = this.space.position.faceZ.min;
+    this.spaceMaxZ = this.space.position.faceZ.max;
 
     // Размеры груза
     this.width = width;
@@ -61,6 +62,14 @@ export default class Cargo {
     return positionY > this.spaceMaxY ? true : false;
   }
 
+  isOutwardsMaxZ() {
+    const positionZ = this.block.position.z + this.length / 2;
+    if (positionZ > this.spaceMaxZ) {
+      return true;
+    }
+    return false;
+  }
+
   // Алгоритм расстановки грузов
   arrange(objects) {
     const newObjects = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
@@ -71,18 +80,19 @@ export default class Cargo {
       this.block.position.z = newObjects[newObjects.length - 1].position.z;
       this.line.position.z = newObjects[newObjects.length - 1].position.z;
 
-      if (!this.isOutwardsY()) {
+      if (!this.isOutwardsMaxZ()) {
         while (this.isCollision(newObjects[i])) {
-          this.block.position.y +=
-            parseInt(newObjects[i].geometry.parameters.height / this.block.position.y) + 0.01;
-          this.line.position.y +=
-            parseInt(newObjects[i].geometry.parameters.height / this.line.position.y) + 0.01;
+          this.block.position.z += 0.1;
+          this.line.position.z += 0.1;
         }
       }
 
-      if (this.isOutwardsY()) {
-        this.block.position.y = this.height / 2;
-        this.line.position.y = this.height / 2;
+      if (this.isOutwardsMaxZ()) {
+        this.block.position.x = this.spaceMinX + this.width / 2 - this.width;
+        this.block.position.z = this.spaceMinZ + this.length / 2;
+
+        this.line.position.x = this.spaceMinX + this.width / 2 - this.width;
+        this.line.position.z = this.spaceMinZ + this.length / 2;
 
         for (let j = 0; j < newObjects.length; j++) {
           while (this.isCollision(newObjects[j])) {
@@ -91,6 +101,27 @@ export default class Cargo {
           }
         }
       }
+
+      // if (!this.isOutwardsY()) {
+      //   while (this.isCollision(newObjects[i])) {
+      //     this.block.position.y +=
+      //       parseInt(newObjects[i].geometry.parameters.height / this.block.position.y) + 0.01;
+      //     this.line.position.y +=
+      //       parseInt(newObjects[i].geometry.parameters.height / this.line.position.y) + 0.01;
+      //   }
+      // }
+
+      // if (this.isOutwardsY()) {
+      //   this.block.position.y = this.height / 2;
+      //   this.line.position.y = this.height / 2;
+
+      //   for (let j = 0; j < newObjects.length; j++) {
+      //     while (this.isCollision(newObjects[j])) {
+      //       this.block.position.x += 0.1;
+      //       this.line.position.x += 0.1;
+      //     }
+      //   }
+      // }
 
       i++;
     }
