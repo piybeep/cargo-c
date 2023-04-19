@@ -1,5 +1,5 @@
 import * as React from "react"
-const Car = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
+const IconCar = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={40}
@@ -20,4 +20,4 @@ const Car = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => 
     </g>
   </svg>
 )
-export default Car
+export default IconCar

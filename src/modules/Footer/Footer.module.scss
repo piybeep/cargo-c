@@ -3,6 +3,11 @@
 
 	display: flex;
 	justify-content: center;
+
+	position: sticky;
+	bottom: 0px;
+
+	z-index: 9;
 }
 
 .link {

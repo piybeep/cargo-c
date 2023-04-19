@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
-import { BaseLayout } from "@/layouts/BaseLayout";
-import { TransportConfig } from "@/modules";
+// import { BaseLayout } from "@/layouts/BaseLayout";
+import { Header, TransportConfig } from "@/modules";
 
 export default function TransportConfigPage() {
     return (
@@ -12,7 +12,8 @@ export default function TransportConfigPage() {
 }
 
 TransportConfigPage.getLayout = (page: ReactNode) => (
-    <BaseLayout>
+    <>
+        <Header />
         {page}
-    </BaseLayout>
+    </>
 );

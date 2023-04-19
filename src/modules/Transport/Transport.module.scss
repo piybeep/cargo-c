@@ -1,4 +1,4 @@
-.wrapper{
+.wrapper {
     display: flex;
     flex-direction: column;
     row-gap: 20px;
@@ -10,23 +10,23 @@
     margin-top: 20px;
 }
 
-.header{
+.header {
     background-color: #FFFFFF;
     border-radius: 8px;
 
     padding: 16px 24px;
 
-    h5{
+    h5 {
         margin: 0px;
     }
 }
 
-.list{
+.list {
     display: flex;
     flex-direction: column;
 }
 
-.item{
+.item {
     display: flex;
     align-items: center;
     column-gap: 16px;
@@ -41,33 +41,43 @@
 
     transform: translateX(0);
 
-    &__svg{
+    &__icon {
+        width: 100%;
+        max-width: 40px;
+
+        svg {
+            width: inherit;
+            height: auto;
+        }
+    }
+
+    &__svg {
         cursor: pointer;
     }
 
-    &__wrapper{
+    &__wrapper {
         position: relative;
     }
 
-    &__info{
+    &__info {
         display: flex;
         flex-direction: column;
         row-gap: 4px;
 
         width: 100%;
 
-        h5{
+        h5 {
             margin: 0px;
         }
     }
 
-    &__menu{
+    &__menu {
         display: flex;
         column-gap: 12px;
     }
 }
 
-.menu{
+.menu {
     position: absolute;
     right: 0px;
     top: 50%;
@@ -85,34 +95,53 @@
     max-width: 128px;
 }
 
-.buttons{
+.buttons {
     display: flex;
     justify-content: center;
     column-gap: 20px;
-}
 
-@media screen and (max-width: 660px){
-    .item{
 
-        &__menu{
-            display: none;
+    &__button{
+        display: flex;
+        align-items: center;
+    }
+
+    &__icon {
+        width: 18px;
+
+        svg {
+            width: inherit;
+            height: auto;
         }
     }
 }
 
-@media screen and (max-width: 430px){
-    .item{
-        padding: 16px;
-        column-gap: 10px;
+@media screen and (max-width: 660px) {
+    .item {
+
+        &__menu {
+            display: none;
+        }
     }
 
-    .buttons{
+    .buttons {
         flex-direction: column;
         align-items: center;
         row-gap: 10px;
 
-        &__button{
+        &__button {
             width: fit-content;
+        }
+    }
+}
+
+@media screen and (max-width: 430px) {
+    .item {
+        padding: 16px;
+        column-gap: 10px;
+
+        &__icon{
+            scale: 0.8;
         }
     }
 }

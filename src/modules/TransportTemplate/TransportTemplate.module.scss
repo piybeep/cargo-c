@@ -35,6 +35,10 @@
 .menu {
     display: flex;
     column-gap: 12px;
+
+    &__svg{
+        cursor: pointer;
+    }
 }
 
 .item {
@@ -55,12 +59,12 @@
         background-color: unset;
 
         .item__svg {
-            opacity: 0;
+            // opacity: 0;
         }
 
         .item__buttons {
-            opacity: 1;
-            visibility: visible;
+            // opacity: 1;
+            // visibility: visible;
         }
     }
 
@@ -97,9 +101,9 @@
     }
 
     &__menu {
-        position: relative;
-
-        z-index: 2;
+        display: flex;
+        flex-direction: row-reverse;
+        column-gap: 16px;
     }
 
     &__svg {
@@ -109,16 +113,6 @@
     }
 
     &__buttons {
-        position: absolute;
-        right: 0px;
-        top: 50%;
-        transform: translateY(-50%);
-
-        transition: .3s;
-
-        opacity: 0;
-        visibility: hidden;
-
         &_svg {
             cursor: pointer;
         }

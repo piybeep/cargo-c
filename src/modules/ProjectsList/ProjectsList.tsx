@@ -11,7 +11,7 @@ import Icon from "@ant-design/icons/lib/components/Icon";
 
 import { PorjectsProps } from "./ProjectsList.types";
 
-import svgAdd from "../../../public/svg/add";
+import svgAdd from "../../../public/svg/IconAdd";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";

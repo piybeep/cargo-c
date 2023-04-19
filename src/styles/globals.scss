@@ -7,7 +7,8 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  // Оно не нужно, с ним sticky не работает
+  // overflow-x: hidden;
 
   background-color: #f0f2f5;
 }

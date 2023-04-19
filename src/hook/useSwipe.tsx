@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useSwipe = (s: any) => {
+export const useSwipe = (s: any, right:number = -128) => {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
     const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
@@ -40,13 +40,13 @@ export const useSwipe = (s: any) => {
 
     function handleTouchEnd(index: any) {
         const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        if (touchEnd <= -128) {
-            current.style.transform = `translateX(-128px)`
+        if (touchEnd <= right) {
+            current.style.transform = `translateX(${right}px)`
             current.style.transition = '.3s'
             setTimeout(() => {
                 current.style.transition = '0s'
             }, 300);
-            setTouchEnd(-128)
+            setTouchEnd(right)
         } else {
             current.style.transform = `translateX(0px)`
             current.style.transition = '.3s'
@@ -57,30 +57,5 @@ export const useSwipe = (s: any) => {
         }
     }
 
-    const handleClick = (e: any, index: any) => {
-        const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
-        allCard.map((current: any, currentIndex: number) => {
-            if (index != currentIndex) {
-                current.style.transform = `translateX(0px)`
-                current.style.transition = '.3s'
-                setTimeout(() => {
-                    current.style.transition = '0s'
-                }, 300);
-            }
-            else {
-                current.style.transform = `translateX(-128px)`
-                current.style.transition = '.3s'
-                setTimeout(() => {
-                    current.style.transition = '0s'
-                }, 300);
-            }
-        })
-
-        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
-        current.style.transform = `translateX(-128px)`
-
-        setTouchEnd(-128)
-    }
-
-    return { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick }
+    return { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex }
 }
