@@ -57,12 +57,14 @@ export default class Cargo {
     return currentBlock.intersectsBox(otherBlock);
   }
 
+  // Проверка пересечения контейнера по оси +Y
   isOutwardsY() {
     const positionY =
       Number.parseFloat(this.height / 2) + Number.parseFloat(this.block.position.y.toFixed(2));
     return positionY > this.spaceMaxY ? true : false;
   }
 
+  // Проверка пересечения контейнера по оси +Z
   isOutwardsMaxZ() {
     const positionZ = this.block.position.z + this.length / 2;
     if (positionZ > this.spaceMaxZ) {
@@ -71,6 +73,7 @@ export default class Cargo {
     return false;
   }
 
+  // Проверка пересечения контейнера по оси +X
   isOutwardsMaxX() {
     const positionX = this.block.position.x + this.width / 2;
     if (positionX > this.spaceMaxX) {
@@ -78,6 +81,8 @@ export default class Cargo {
     }
     return false;
   }
+
+  setPosition(position) {}
 
   // Алгоритм расстановки грузов
   arrange(objects) {
