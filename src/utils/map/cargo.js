@@ -82,65 +82,83 @@ export default class Cargo {
     return false;
   }
 
-  setPosition(position) {}
+  setPosition(position, axis) {
+    if (axis === "x") {
+      this.block.position.x = position;
+      this.line.position.x = position;
+    } else if (axis === "+x") {
+      this.block.position.x += position;
+      this.line.position.x += position;
+    } else if (axis === "y") {
+      this.block.position.y = position;
+      this.line.position.y = position;
+    } else if (axis === "+y") {
+      this.block.position.y += position;
+      this.line.position.y += position;
+    } else if (axis === "z") {
+      this.block.position.z = position;
+      this.line.position.z = position;
+    } else if (axis === "+z") {
+      this.block.position.z += position;
+      this.line.position.z += position;
+    }
+  }
 
   // Алгоритм расстановки грузов
   arrange(objects) {
-    const newObjects = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
+    // Получаем блоки
+    const blocks = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
 
-    for (let i = 0; i < newObjects.length; ) {
-      if (newObjects[newObjects.length - 1].geometry.parameters.width == this.width) {
-        this.block.position.x = newObjects[newObjects.length - 1].position.x;
-        this.line.position.x = newObjects[newObjects.length - 1].position.x;
+    for (let i = 0; i < blocks.length; ) {
+      // Получаем последний блок
+      const lastBlock = blocks[blocks.length - 1];
+
+      // Запоминаем координаты последнего блока по x
+      if (lastBlock.geometry.parameters.width === this.width) {
+        this.setPosition(lastBlock.position.x, "x");
       } else {
-        this.block.position.x =
-          newObjects[newObjects.length - 1].position.x -
-          newObjects[newObjects.length - 1].geometry.parameters.width / 2 +
-          this.width / 2;
-        this.line.position.x =
-          newObjects[newObjects.length - 1].position.x -
-          newObjects[newObjects.length - 1].geometry.parameters.width / 2 +
-          this.width / 2;
+        this.setPosition(
+          lastBlock.position.x - lastBlock.geometry.parameters.width / 2 + this.width / 2,
+          "x"
+        );
+      }
+      // Запоминаем координаты последнего блока по z
+      this.setPosition(lastBlock.position.z, "z");
+
+      // Запоминаем координаты последнего блока по y
+      if (lastBlock == this.height) {
+        this.setPosition(lastBlock.position.y, "y");
+      } else {
+        this.setPosition(this.height / 2, "y");
       }
 
-      this.block.position.z = newObjects[newObjects.length - 1].position.z;
-      this.line.position.z = newObjects[newObjects.length - 1].position.z;
-
-      if (newObjects[newObjects.length - 1].geometry.parameters.height == this.height) {
-        this.block.position.y = newObjects[newObjects.length - 1].position.y;
-        this.line.position.y = newObjects[newObjects.length - 1].position.y;
-      } else {
-        this.block.position.y = this.height / 2;
-        this.line.position.y = this.height / 2;
-      }
-
+      // Проверка не вышел ли за пределы z
       if (!this.isOutwardsMaxZ()) {
-        while (this.isCollision(newObjects[i])) {
-          this.block.position.z += 0.1;
-          this.line.position.z += 0.1;
+        while (this.isCollision(blocks[i])) {
+          this.setPosition(0.1, "+z");
         }
       }
 
+      // Проверка вышел ли за пределы z
       if (this.isOutwardsMaxZ()) {
-        this.block.position.x = this.spaceMinX + this.width / 2 - this.width;
-        this.block.position.z = this.spaceMinZ + this.length / 2;
+        this.setPosition(this.block.position.x, "x");
+        this.setPosition(this.spaceMinZ + this.length / 2, "z");
 
-        this.line.position.x = this.spaceMinX + this.width / 2 - this.width;
-        this.line.position.z = this.spaceMinZ + this.length / 2;
-
-        for (let j = 0; j < newObjects.length; j++) {
-          while (this.isCollision(newObjects[j])) {
-            this.block.position.x += 0.1;
-            this.line.position.x += 0.1;
+        for (let j = 0; j < blocks.length; j++) {
+          while (this.isCollision(blocks[j])) {
+            if (this.isOutwardsMaxZ()) {
+              this.setPosition(0.1, "+x");
+            } else {
+              this.setPosition(0.1, "+z");
+            }
           }
         }
       }
 
+      // Проверка вышел ли за пределы x
       if (this.isOutwardsMaxX()) {
-        this.block.position.y += this.height + 0.01;
-        this.line.position.y += this.height + 0.01;
-        this.block.position.x = this.spaceMinX + this.width / 2;
-        this.line.position.x = this.spaceMinX + this.width / 2;
+        this.setPosition(this.height + 0.01, "+y");
+        this.setPosition(this.spaceMinX + this.width / 2, "x");
       }
 
       // if (!this.isOutwardsY()) {
@@ -166,7 +184,7 @@ export default class Cargo {
 
       i++;
     }
-    if (newObjects.length === 0) {
+    if (blocks.length === 0) {
       this.block.position.set(
         this.spaceMinX + this.width / 2,
         this.height / 2,
@@ -178,7 +196,7 @@ export default class Cargo {
         this.spaceMinZ + this.length / 2
       );
     }
-
+    console.log(this.block);
     this.scene.add(this.block, this.line);
   }
 

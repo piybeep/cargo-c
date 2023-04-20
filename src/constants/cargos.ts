@@ -36,4 +36,13 @@ export const CARGOS: CargosTypes = [
     height: 8,
     length: 4,
   },
+  {
+    cargoId: 3,
+    name: "group4",
+    count: 30,
+    color: "#00bb00",
+    width: 4,
+    height: 2,
+    length: 4,
+  },
 ];
