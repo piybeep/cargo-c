@@ -141,18 +141,24 @@ export default class Cargo {
 
       // Проверка вышел ли за пределы z
       if (this.isOutwardsMaxZ()) {
-        this.setPosition(this.block.position.x, "x");
         this.setPosition(this.spaceMinZ + this.length / 2, "z");
-
+        let buff = 0;
         for (let j = 0; j < blocks.length; j++) {
           while (this.isCollision(blocks[j])) {
-            if (this.isOutwardsMaxZ()) {
-              this.setPosition(0.1, "+x");
-            } else {
-              this.setPosition(0.1, "+z");
+            if (buff.toFixed(1) > this.width) {
+              break;
             }
+
+            this.setPosition(0.1, "+x");
+            buff += 0.1;
           }
         }
+
+        blocks.forEach((block) => {
+          while (this.isCollision(block)) {
+            this.setPosition(0.1, "+z");
+          }
+        });
       }
 
       // Проверка вышел ли за пределы x
@@ -181,7 +187,6 @@ export default class Cargo {
       //     }
       //   }
       // }
-
       i++;
     }
     if (blocks.length === 0) {
@@ -196,7 +201,6 @@ export default class Cargo {
         this.spaceMinZ + this.length / 2
       );
     }
-    console.log(this.block);
     this.scene.add(this.block, this.line);
   }
 

@@ -64,32 +64,32 @@ export class MapCargo {
     this.space.create({ x: 0, z: 0 });
 
     // Создаем грузы
-    // cargos.forEach((cargo) => {
-    //   for (let i = 0; i < cargo.count; i++) {
-    //     const block = new Cargo(this.scene, this.space, cargo);
-    //     block.arrange(this.#objects);
-    //     this.#objects.push(block.get);
-    //   }
-    // });
-
-    // Тест
-    cargos.forEach((cargo, i) => {
-      setTimeout(() => {
-        this.test(cargo);
-      }, cargo.count * (i * 100));
-    });
-  }
-
-  test(cargo) {
-    for (let i = 0; i < cargo.count; i++) {
-      setTimeout(() => {
+    cargos.forEach((cargo) => {
+      for (let i = 0; i < cargo.count; i++) {
         const block = new Cargo(this.scene, this.space, cargo);
         block.arrange(this.#objects);
         this.#objects.push(block.get);
-        this.render();
-      }, i * 100);
-    }
+      }
+    });
+
+    // Тест
+    // cargos.forEach((cargo, i) => {
+    //   setTimeout(() => {
+    //     this.test(cargo);
+    //   }, cargo.count * (i * 150));
+    // });
   }
+
+  // test(cargo) {
+  //   for (let i = 0; i < cargo.count; i++) {
+  //     setTimeout(() => {
+  //       const block = new Cargo(this.scene, this.space, cargo);
+  //       block.arrange(this.#objects);
+  //       this.#objects.push(block.get);
+  //       this.render();
+  //     }, i * 100);
+  //   }
+  // }
 
   create() {
     // Создание сцены
