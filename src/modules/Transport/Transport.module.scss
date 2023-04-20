@@ -39,7 +39,15 @@
     position: relative;
     z-index: 1;
 
+    cursor: pointer;
+
     transform: translateX(0);
+
+    transition: background .3s;
+
+    &:hover{
+        background-color: #f0f2f5;
+    }
 
     &__icon {
         width: 100%;

@@ -72,6 +72,14 @@
 
         padding: 16px 24px;
 
+        cursor: pointer;
+
+        transition: background .3s;
+
+        &:hover{
+            background-color: #F5F5F5;
+        }
+
         &_active{
             background-color: #F5F5F5;
 

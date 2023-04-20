@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useFormState } from 'react-hook-form';
 
 import { Radio, RadioChangeEvent, Typography, Input, Select, InputNumber, Switch, Button } from 'antd';
 
@@ -39,7 +39,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
 
     const minMaxValue = '500 / 50000'
 
-    const { control, handleSubmit, register, watch, formState: { errors } } = useForm({
+    const { control, handleSubmit, register, reset, watch, trigger, getValues, clearErrors, formState: { errors, isValid } } = useForm({
         defaultValues: {
             configWidth: width,
             configHeight: height,
@@ -50,23 +50,22 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
             height: 500,
             tonnage: 0,
 
-            // Для прицепа
             semiTrailerAxes: 2,
-            semiTrailerWeight: !isSwitch && transport === 0 ? 0 : null,
-            L2: !isSwitch && transport === 0 ? 0 : null,
-            L3: !isSwitch && transport === 0 ? 0 : null,
-            A2SemiTrailer: !isSwitch && transport === 0 ? 0 : null,
-            A2SemiTrailerTrolley: !isSwitch && transport === 0 ? 0 : null,
+            semiTrailerWeight: 0,
+            L2: 0,
+            L3: 0,
+            A2SemiTrailer: 0,
+            A2SemiTrailerTrolley: 0,
 
             // Для тягача/фургона
             Axes: 2,
-            WeightWithoutLoad: !isSwitch ? 0 : null,
-            L: !isSwitch ? 0 : null,
-            L1: !isSwitch ? 0 : null,
-            A1: !isSwitch ? 0 : null,
-            A1Axes: !isSwitch ? 0 : null,
-            A2: !isSwitch ? 0 : null,
-            A2Axes: !isSwitch ? 0 : null,
+            WeightWithoutLoad: 0,
+            L: 0,
+            L1: 0,
+            A1: 0,
+            A1Axes: 0,
+            A2: 0,
+            A2Axes: 0,
         }
     });
 
@@ -76,24 +75,84 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
         watchTypeTransport != 'Грузовой автомобиль' && setIsSwitch(true)
     }, [watchTypeTransport])
 
-    const onSubmit = (data: any) => {
-        if (isSwitch) {
-            const newTransport = {
-                title: data.name,
-                text: `${data.type} ${data.length} x ${data.width} x ${data.height} ${width}, ${data.tonnage} ${height}, ${width === 'м'
-                    ?
-                    data.length * data.width : width === 'см'
-                        ?
-                        (data.length / 100) * (data.width / 100)
-                        :
-                        (data.length / 1000) * (data.width / 1000)} м2`
-            }
-            setAddTransport(newTransport)
+    useEffect(() => {
+        clearErrors()
+    }, [isSwitch, watchTypeTransport, transport])
 
-            router.push('/transport')
-        } else {
-            console.log(data)
+    const onSubmit = (data: any) => {
+        let values:any = {}
+
+        if (isSwitch) {
+            values = {
+                configWidth: data.configWidth,
+                configHeight: data.configHeight,
+                name: data.name,
+                type: data.type,
+                length: data.length,
+                width: data.width,
+                height: data.height,
+                tonnage: data.tonnage,
+            }
         }
+        else {
+            if (transport === 0) {
+                values = {
+                    configWidth: data.configWidth,
+                    configHeight: data.configHeight,
+                    name: data.name,
+                    type: data.type,
+                    length: data.length,
+                    width: data.width,
+                    height: data.height,
+                    tonnage: data.tonnage,
+
+                    semiTrailerAxes: data.semiTrailerAxes,
+                    semiTrailerWeight: data.semiTrailerWeight,
+                    L2: data.L2,
+                    L3: data.L3,
+                    A2SemiTrailer: data.A2SemiTrailer,
+                    A2SemiTrailerTrolley: data.A2SemiTrailerTrolley,
+
+                    // Для тягача/фургона
+                    Axes: data.Axes,
+                    WeightWithoutLoad: data.WeightWithoutLoad,
+                    L: data.L,
+                    L1: data.L1,
+                    A1: data.A1,
+                    A1Axes: data.A1Axes,
+                    A2: data.A2,
+                    A2Axes: data.A2Axes,
+                }
+            } else {
+                values = {
+                    configWidth: data.configWidth,
+                    configHeight: data.configHeight,
+                    name: data.name,
+                    type: data.type,
+                    length: data.length,
+                    width: data.width,
+                    height: data.height,
+                    tonnage: data.tonnage,
+
+                    // Для тягача/фургона
+                    Axes: data.Axes,
+                    WeightWithoutLoad: data.WeightWithoutLoad,
+                    L: data.L,
+                    L1: data.L1,
+                    A1: data.A1,
+                    A1Axes: data.A1Axes,
+                    A2: data.A2,
+                    A2Axes: data.A2Axes,
+                }
+            }
+        }
+        setAddTransport(
+            {
+                title: values.name,
+                text: `${values.type} ${values.length} x ${values.width} x ${values.height} ${values.configWidth}, ${values.tonnage} ${values.configHeight}, "тут подсчёт"`,
+                type: values.type
+            })
+        console.log(values)
     }
 
     const changeWidth = (e: RadioChangeEvent) => {
@@ -113,12 +172,87 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
         setTransport(e.target.value)
     }
 
+    const addShablon = () => {
+        trigger()
+
+        if (isValid) {
+            const data = getValues()
+            let values = {}
+
+            if (isSwitch) {
+                values = {
+                    configWidth: data.configWidth,
+                    configHeight: data.configHeight,
+                    name: data.name,
+                    type: data.type,
+                    length: data.length,
+                    width: data.width,
+                    height: data.height,
+                    tonnage: data.tonnage,
+                }
+            }
+            else {
+                if (transport === 0) {
+                    values = {
+                        configWidth: data.configWidth,
+                        configHeight: data.configHeight,
+                        name: data.name,
+                        type: data.type,
+                        length: data.length,
+                        width: data.width,
+                        height: data.height,
+                        tonnage: data.tonnage,
+
+                        semiTrailerAxes: data.semiTrailerAxes,
+                        semiTrailerWeight: data.semiTrailerWeight,
+                        L2: data.L2,
+                        L3: data.L3,
+                        A2SemiTrailer: data.A2SemiTrailer,
+                        A2SemiTrailerTrolley: data.A2SemiTrailerTrolley,
+
+                        // Для тягача/фургона
+                        Axes: data.Axes,
+                        WeightWithoutLoad: data.WeightWithoutLoad,
+                        L: data.L,
+                        L1: data.L1,
+                        A1: data.A1,
+                        A1Axes: data.A1Axes,
+                        A2: data.A2,
+                        A2Axes: data.A2Axes,
+                    }
+                } else {
+                    values = {
+                        configWidth: data.configWidth,
+                        configHeight: data.configHeight,
+                        name: data.name,
+                        type: data.type,
+                        length: data.length,
+                        width: data.width,
+                        height: data.height,
+                        tonnage: data.tonnage,
+
+                        // Для тягача/фургона
+                        Axes: data.Axes,
+                        WeightWithoutLoad: data.WeightWithoutLoad,
+                        L: data.L,
+                        L1: data.L1,
+                        A1: data.A1,
+                        A1Axes: data.A1Axes,
+                        A2: data.A2,
+                        A2Axes: data.A2Axes,
+                    }
+                }
+            }
+            console.log(values)
+        }
+    }
+
     return (
         <div className={s.wrapper}>
             <div className={s.header}>
                 <Title className={s.header__title} level={5}>Параметры</Title>
                 <div className={s.header__menu}>
-                    <span title='Добавить в шаблон' className={s.header__svg}>
+                    <span onClick={() => addShablon()} title='Добавить в шаблон' className={s.header__svg}>
                         <svg className={s.header__svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_474_9493)">
                                 <path d="M5.99951 4H15.9995L19.9995 8V18C19.9995 18.5304 19.7888 19.0391 19.4137 19.4142C19.0387 19.7893 18.5299 20 17.9995 20H5.99951C5.46908 20 4.96037 19.7893 4.5853 19.4142C4.21023 19.0391 3.99951 18.5304 3.99951 18V6C3.99951 5.46957 4.21023 4.96086 4.5853 4.58579C4.96037 4.21071 5.46908 4 5.99951 4Z" stroke="#1890FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -128,7 +262,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         </svg>
                     </span>
 
-                    <span title='Очистить поля' className={s.header__svg}>
+                    <span onClick={() => reset()} title='Очистить поля' className={s.header__svg}>
                         <svg className={s.header__svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_474_9498)">
                                 <path d="M20 11C19.7554 9.24017 18.9391 7.60961 17.6766 6.35945C16.4142 5.10928 14.7758 4.30887 13.0137 4.0815C11.2516 3.85414 9.46362 4.21243 7.9252 5.1012C6.38678 5.98996 5.18325 7.35989 4.5 8.99995M4 4.99995V8.99995H8" stroke="#1890FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -169,7 +303,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name="name"
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.info__input}>
                                     <Text className={s.info__text} type="secondary">Название или маркировка места</Text>
                                     <TextArea
@@ -177,6 +311,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                         autoSize={true}
                                         maxLength={110}
                                         minLength={1}
+                                        value={value}
                                         {...register('name', { required: true, maxLength: 110, minLength: 1 })}
                                         status={errors.name && 'error'}
                                         onChange={onChange} />
@@ -186,11 +321,12 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name='type'
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.info__select}>
                                     <Text className={s.info__text} type="secondary">Тип грузовой площади</Text>
                                     <Select
                                         defaultValue='Грузовой автомобиль'
+                                        value={value}
                                         style={{ width: '100%' }}
                                         onChange={onChange}
                                         options={[
@@ -207,10 +343,10 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name='length'
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Длина</Text>
-                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -218,10 +354,10 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name='width'
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Ширина</Text>
-                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -229,10 +365,10 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name='height'
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Высота</Text>
-                                    <InputNumber type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
                                     <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
                                 </div>
                             )}
@@ -240,13 +376,14 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                         <Controller
                             name='tonnage'
                             control={control}
-                            render={({ field: { onChange } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Тоннаж</Text>
                                     <InputNumber
                                         className={s.item__input}
                                         addonAfter={height}
                                         defaultValue={0}
+                                        value={value}
                                         type='number'
                                         {...register('tonnage', { required: true, min: 1, valueAsNumber: true })}
                                         status={errors.tonnage && 'error'}
@@ -297,10 +434,11 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='semiTrailerAxes'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Количество осей</Text>
                                         <Select
+                                            value={Number(value)}
                                             className={s.list__input}
                                             defaultValue={2}
                                             style={{ width: '100%' }}
@@ -317,12 +455,13 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='semiTrailerWeight'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Собственная масса без груза</Text>
                                         <InputNumber
                                             className={s.list__input}
                                             addonAfter={height}
+                                            value={value}
                                             defaultValue={0}
                                             min={0}
                                             type='number'
@@ -337,11 +476,12 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='L2'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина от центра тележки до сцеп. устройства</Text>
                                         <div className={s.list__row}>
                                             <InputNumber
+                                                value={value}
                                                 className={s.list__input_small}
                                                 addonAfter={width}
                                                 defaultValue={0}
@@ -360,7 +500,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='L3'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина от центра тележки А2 до стенки</Text>
                                         <div className={s.list__row}>
@@ -368,6 +508,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 className={s.list__input_small}
                                                 addonAfter={width}
                                                 defaultValue={0}
+                                                value={value}
                                                 min={0}
                                                 type='number'
                                                 {...register('L3', isSwitch === false && transport === 0 ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
@@ -383,13 +524,14 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A2SemiTrailer'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Нагрузка на осевую тележку без груза</Text>
                                         <div className={s.list__row}>
                                             <InputNumber
                                                 className={s.list__input_small}
                                                 addonAfter={height}
+                                                value={value}
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
@@ -406,11 +548,12 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A2SemiTrailerTrolley'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Макс. нагрузка на осевую тележку</Text>
                                         <div className={s.list__row}>
                                             <InputNumber
+                                                value={value}
                                                 className={s.list__input_small}
                                                 addonAfter={height}
                                                 defaultValue={0}
@@ -436,12 +579,13 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='Axes'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Количество осей</Text>
                                         <Select
                                             className={s.list__input}
                                             defaultValue={2}
+                                            value={value}
                                             style={{ width: '100%' }}
                                             onChange={onChange}
                                             options={[
@@ -456,12 +600,13 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='WeightWithoutLoad'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Собственная масса без груза</Text>
                                         <InputNumber
                                             className={s.list__input}
                                             addonAfter={height}
+                                            value={value}
                                             defaultValue={0}
                                             min={0}
                                             type='number'
@@ -475,7 +620,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='L'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина между осями</Text>
                                         <div className={s.list__row}>
@@ -483,6 +628,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 className={s.list__input_small}
                                                 addonAfter={width}
                                                 defaultValue={0}
+                                                value={value}
                                                 min={0}
                                                 type='number'
                                                 {...register('L', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
@@ -497,13 +643,14 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='L1'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Длина от оси А1 до сцеп. устройства</Text>
                                         <div className={s.list__row}>
                                             <InputNumber
                                                 className={s.list__input_small}
                                                 addonAfter={width}
+                                                value={value}
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
@@ -519,7 +666,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A1'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
                                         <div className={s.list__row}>
@@ -527,6 +674,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 className={s.list__input_small}
                                                 addonAfter={height}
                                                 defaultValue={0}
+                                                value={value}
                                                 min={0}
                                                 type='number'
                                                 {...register('A1', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
@@ -541,7 +689,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A1Axes'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
                                         <div className={s.list__row}>
@@ -549,6 +697,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 className={s.list__input_small}
                                                 addonAfter={height}
                                                 defaultValue={0}
+                                                value={value}
                                                 min={0}
                                                 type='number'
                                                 {...register('A1Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}
@@ -563,13 +712,14 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A2'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Нагрузка на ось без груза</Text>
                                         <div className={s.list__row}>
                                             <InputNumber
                                                 className={s.list__input_small}
                                                 addonAfter={height}
+                                                value={value}
                                                 defaultValue={0}
                                                 min={0}
                                                 type='number'
@@ -585,7 +735,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             <Controller
                                 name='A2Axes'
                                 control={control}
-                                render={({ field: { onChange } }) => (
+                                render={({ field: { onChange, value } }) => (
                                     <div className={s.list__control}>
                                         <Text className={s.list__text} type="secondary">Макс. нагрузка на ось</Text>
                                         <div className={s.list__row}>
@@ -593,6 +743,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                                                 className={s.list__input_small}
                                                 addonAfter={height}
                                                 defaultValue={0}
+                                                value={value}
                                                 min={0}
                                                 type='number'
                                                 {...register('A2Axes', isSwitch === false ? { required: true, min: 1, valueAsNumber: true } : { required: false, min: 0, valueAsNumber: true })}

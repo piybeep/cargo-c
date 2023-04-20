@@ -2,6 +2,7 @@ import { useTransport } from '@/store';
 // import { useState } from 'react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { Button, Typography } from 'antd';
 
@@ -13,15 +14,15 @@ import s from './Transport.module.scss'
 
 import { useSwipe } from '../../hook/useSwipe'
 
-// Он почему-то ругается на @public
-import IconAdd from '../../../public/svg/Iconadd';
-// Он почему-то ругается на @public
+import IconAdd from '@/public/svg/IconAdd';
 import IconShablon from '@/public/svg/IconShablon';
 
 export function Transport({ ...props }: TransportProps) {
     const { Title, Text } = Typography
 
     const [windowWidth, setWindowWidth] = useState(false)
+
+    const router = useRouter()
 
     useEffect(() => {
         if (window) {
@@ -32,6 +33,8 @@ export function Transport({ ...props }: TransportProps) {
     const {
         transport,
         setRemoveTransport,
+        setSelectTransport,
+        setRemoveSelectTransport,
         getIcon,
     } = useTransport(state => state)
     // zustand 
@@ -43,6 +46,16 @@ export function Transport({ ...props }: TransportProps) {
     const handleRemoveTransport = (id: number) => {
         setRemoveTransport(id)
         setSaveCurrentIndex(undefined)
+    }
+
+    const handleClickItem = (id: number) => {
+        setSelectTransport(id)
+        router.push('/transportConfig')
+    }
+
+    const addNewTransport = () => {
+        setRemoveSelectTransport()
+        router.push('/transportConfig')
     }
 
     const Menu = ({ id }: { id: number }) => {
@@ -92,6 +105,7 @@ export function Transport({ ...props }: TransportProps) {
                         return (
                             <div key={current.id} className={s.item__wrapper}>
                                 <div className={s.item}
+                                    onClick={() => handleClickItem(current.id)}
                                     onTouchStart={(e) => windowWidth && handleTouchStart(e, index)}
                                     onTouchMove={(e) => windowWidth && handleTouchMove(e, index)}
                                     onTouchEnd={() => windowWidth && handleTouchEnd(index)}
@@ -114,12 +128,10 @@ export function Transport({ ...props }: TransportProps) {
                 }
             </div>
             <div className={s.buttons}>
-                <Link href='/transportConfig'>
-                    <Button className={s.buttons__button} type='primary'>
-                        <Icon className={s.buttons__icon} component={IconAdd} />
-                        Добавить транспорт вручную
-                    </Button>
-                </Link>
+                <Button onClick={() => addNewTransport()} className={s.buttons__button} type='primary'>
+                    <Icon className={s.buttons__icon} component={IconAdd} />
+                    Добавить транспорт вручную
+                </Button>
                 <Link href='/transportTemplate'>
                     <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>
                         <Icon className={s.buttons__icon} component={IconShablon} />

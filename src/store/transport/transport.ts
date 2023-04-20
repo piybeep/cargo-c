@@ -6,8 +6,8 @@ import Car from "../../../public/svg/IconCar";
 import Pallet from "../../../public/svg/IconPallet";
 import Stock from "../../../public/svg/IconStock";
 
-export const typeIcons:Record<string, any> = {
-    'Грузовой автобомиль': Car,
+export const typeIcons: Record<string, any> = {
+    'Грузовой автомобиль': Car,
     'Морской контейнер': Ship,
     'Паллет': Pallet,
     'Складская площадь': Stock,
@@ -25,7 +25,7 @@ export const useTransport = create<transportProps>()((set, get) => ({
             id: 1,
             title: 'Грузовой автомобиль 87м3',
             text: 'Грузовой автомобиль 6000 х 2000 х 1200 мм, 5000 кг, 200 м2',
-            type: 'Грузовой автобомиль',
+            type: 'Грузовой автомобиль',
         },
         {
             id: 2,
@@ -40,11 +40,20 @@ export const useTransport = create<transportProps>()((set, get) => ({
             type: 'Складская площадь',
         }
     ],
+    selectTransport: null,
+    setSelectTransport: (id) => set(state => {
+        const currentProject = state.transport.find(current => current.id === id)
+
+        return { selectTransport: currentProject }
+    }),
+    setRemoveSelectTransport: () => set(() => {
+        return { selectTransport: null }
+    }),
     getIcon: (id) => {
         return typeIcons[get().transport.find(item => item.id === id)?.type as string]
     },
     setAddTransport: (data) => set(state => {
-        const newTransport = { id: state.transport.length, title: data.title, text: data.text, type: 'Паллет' }
+        const newTransport = { id: state.transport.length, title: data.title, text: data.text, type: data.type }
 
         return { transport: [...state.transport, newTransport] }
     }),

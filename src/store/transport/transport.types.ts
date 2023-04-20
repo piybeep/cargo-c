@@ -6,8 +6,11 @@ interface transportElement {
 }
 
 export interface transportProps {
-    transport: transportElement[],
-    setAddTransport: (data: any) => void,
+    transport: transportElement[]
+    selectTransport: null | transportElement
+    setAddTransport: (data: any) => void
     setRemoveTransport: (id: number) => void
+    setSelectTransport: (id: number) => void
+    setRemoveSelectTransport: () => void
     getIcon: (id: number) => any
 }
