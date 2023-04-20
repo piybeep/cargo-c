@@ -40,7 +40,7 @@ export function Transport({ ...props }: TransportProps) {
     // zustand 
 
     // Swipe logic
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex } = useSwipe(s)
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick } = useSwipe(s)
     // Swipe logic
 
     const handleRemoveTransport = (id: number) => {
@@ -50,6 +50,7 @@ export function Transport({ ...props }: TransportProps) {
 
     const handleClickItem = (id: number) => {
         setSelectTransport(id)
+        handleClick()
         router.push('/transportConfig')
     }
 

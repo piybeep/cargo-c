@@ -62,35 +62,43 @@
 .list {
     display: flex;
     flex-direction: column;
+
+    &__wrapper {
+        position: relative;
+    }
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+
+    padding: 16px 24px;
+
+    cursor: pointer;
+
     background-color: #FFFFFF;
-    border-radius: 8px;
 
-    &__item {
-        display: flex;
-        align-items: center;
-        column-gap: 16px;
+    transition: background .3s;
 
-        padding: 16px 24px;
+    position: relative;
 
-        cursor: pointer;
+    z-index: 2;
 
-        transition: background .3s;
+    &:hover {
+        background-color: #F5F5F5;
+    }
 
-        &:hover{
-            background-color: #F5F5F5;
+    &_active {
+        background-color: #F5F5F5;
+
+        .list__svg {
+            fill: transparent;
         }
 
-        &_active{
-            background-color: #F5F5F5;
-
-            .list__svg{
-                fill: transparent;
-            }
-
-            .list__open{
-                opacity: 0;
-                visibility: hidden;
-            }
+        .list__open {
+            opacity: 0;
+            visibility: hidden;
         }
     }
 
@@ -107,15 +115,26 @@
         transition: .2s;
     }
 
+    &__menu {
+        display: flex;
+        column-gap: 12px;
+
+        &__svg {
+            cursor: pointer;
+        }
+    }
 }
 
-.menu {
-    display: flex;
-    column-gap: 12px;
+.menu{
+    position: absolute;
+    right: 16px;
+    top: 50%;
 
-    &__svg {
-        cursor: pointer;
-    }
+    transform: translateY(-50%);
+
+    z-index: 1;
+
+    display: none;
 }
 
 .remove {
@@ -141,9 +160,9 @@
 .modal {
     max-width: 400px;
 
-        form{
-            margin-top: 40px;
-        }
+    form {
+        margin-top: 40px;
+    }
 }
 
 @media screen and (max-width: 660px) {
@@ -194,16 +213,27 @@
             }
         }
     }
-}
 
-@media screen and (max-width: 660px) {
-    .list {
+    .item {
 
         &__open {
             display: none;
         }
+
+        &_active {
+            background-color: #F5F5F5;
+        }
+
+        &__buttons{
+            display: none;
+        }
+    }
+
+    .menu{
+        display: block;
     }
 }
+
 
 @media screen and (max-width: 430px) {
     .header {
@@ -245,7 +275,7 @@
         }
     }
 
-    .modal{
+    .modal {
         max-width: 288px;
 
         padding: 16px;
