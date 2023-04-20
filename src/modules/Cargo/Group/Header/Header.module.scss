@@ -13,11 +13,8 @@
 }
 
 .group {
-  width: 141px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.5s;
+  padding: 8px 16px;
   background: #ffc069;
   border-radius: 38px;
   font-family: 'Roboto';
@@ -25,19 +22,24 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 20px;
+
+  &__hidden {
+    background: #ff4d4f;
+    color: white;
+  }
 }
 
-.fix{
+.fix {
   margin: 0 !important;
   display: flex;
   align-items: center;
-  div{
+  div {
     height: 16px;
   }
 }
 
-.ico{
-  div{
+.ico {
+  div {
     cursor: pointer;
   }
 }
@@ -48,10 +50,10 @@
     gap: 20px;
     align-items: start;
   }
-  .ico{
+  .ico {
     padding-top: 10px;
     align-self: flex-start;
-    div{
+    div {
       cursor: pointer;
     }
   }

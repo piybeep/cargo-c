@@ -7,15 +7,16 @@
   column-gap: 20px;
 }
 
-.img {
-  width: 20px;
-  height: 20px;
-}
-
 .button {
   display: flex;
   column-gap: 8px;
   align-items: center;
+
+  &:hover svg{
+    path{
+      stroke: #4096ff;
+    }
+  }
 }
 
 @media screen and (max-width: 460px) {

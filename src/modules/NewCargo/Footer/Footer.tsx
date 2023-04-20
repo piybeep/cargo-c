@@ -7,7 +7,7 @@ const Footer = () => {
   const nav=useRouter()
   return (
     <div className={s.cont}>
-        <Button onClick={()=>nav.back()}>Отменить</Button>
+        <Button onClick={()=>nav.replace('/cargo')}>Отменить</Button>
         <Button type='primary' htmlType='submit'>Сохранить</Button>
     </div>
   )

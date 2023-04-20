@@ -6,9 +6,8 @@ import {
   PlusSquareOutlined,
   PlusSquareTwoTone
 } from '@ant-design/icons'
-import saveSvg from '../../../../../public/svg/boxEl/saveB.svg'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { SaveSvg } from '@/assets/svgComponent/SaveSvg'
 
 const Footer = () => {
   const [clientWidth, setClientWidth] = useState(0)
@@ -28,14 +27,7 @@ const Footer = () => {
           </Button>
           <Button
             icon={
-              <Image
-                src={saveSvg.src}
-                className={s.img}
-                alt=''
-                width={14}
-                height={14}
-                color='red'
-              />
+              <SaveSvg/>
             }
             className={s.button}
             onClick={()=>nav.push('cargo/new/template')}
@@ -47,14 +39,7 @@ const Footer = () => {
         <>
           <FileAddOutlined className={s.img}/>
           <PlusSquareTwoTone className={s.img} />
-          <Image
-            src={saveSvg.src}
-            className={s.img}
-            alt=''
-            width={28}
-            height={28}
-            color='red'
-          />
+          <SaveSvg/>
         </>
       )}
     </div>

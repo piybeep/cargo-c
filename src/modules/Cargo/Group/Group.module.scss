@@ -8,8 +8,16 @@
   border-radius: 8px;
 }
 
-.wrapper{
+.wrapper {
   display: flex;
   flex-direction: column;
   margin-top: 28px;
+}
+
+.hidden {
+  overflow: hidden;
+
+  &_mod {
+    height: 0px;
+  }
 }

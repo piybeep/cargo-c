@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import s from './Pagination.module.scss'
 import { Pagination } from 'antd'
 import { Button } from 'antd'
+import { useRouter } from 'next/router'
 
 const Navigation = () => {
   const [clientWidth, setClientWidth] = useState(0)
+  const nav = useRouter()
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)
@@ -20,11 +22,11 @@ const Navigation = () => {
             showQuickJumper
             showTotal={(total) => `Total ${total} items`}
           />
-          <Button>Отменить</Button>
+          <Button onClick={() => nav.replace('/cargo')}>Отменить</Button>
         </>
       ) : (
         <>
-          <Button>Отменить</Button>
+          <Button onClick={() => nav.replace('/cargo')}>Отменить</Button>
           <Pagination simple defaultCurrent={2} total={50} />
         </>
       )}

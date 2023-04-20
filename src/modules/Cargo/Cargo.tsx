@@ -35,11 +35,19 @@ export const Cargo = () => {
 
   const meDebounce = useDebounce(swap, 800)
 
+  const scrollDown = () => {
+    window.scrollBy({ top: document.body.scrollHeight, behavior: 'smooth' })
+  }
+
+  const scrollTop = () => {
+    window.scrollBy({ top: -document.body.scrollHeight, behavior: 'smooth' })
+  }
+
   return (
     <>
       <Header />
       <div className={s.roll}>
-        <img src={down.src} alt='down' />
+        <img src={down.src} alt='down' onClick={scrollDown} />
       </div>
       {cards.map((el, ind) => (
         <React.Fragment key={ind}>
@@ -58,7 +66,7 @@ export const Cargo = () => {
         </React.Fragment>
       ))}
       <div className={classNames(s.roll, s.roll_mod)}>
-        <img src={down.src} alt='top' />
+        <img src={down.src} alt='top' onClick={scrollTop}/>
       </div>
       <Footer />
     </>

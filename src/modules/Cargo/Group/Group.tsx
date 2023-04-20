@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import s from './Group.module.scss'
 import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
@@ -9,6 +9,7 @@ import { animated } from 'react-spring'
 import { useDragEl } from './useDragEl'
 import style from './GroupEl/GroupEl.module.scss'
 import { useFieldArray, useForm } from 'react-hook-form'
+import classNames from 'classnames'
 
 interface GroupProps {
   isSwapped: { id: number | null }
@@ -31,9 +32,11 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
     ref: arrRef
   })
 
+  const [isHidden, setIsHidden] = useState(false)
+
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl(style)
 
-  const { control, register, setValue } = useForm<cargoCheckBox>({
+  const { control, register, setValue, watch } = useForm<cargoCheckBox>({
     defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
   })
   const { fields } = useFieldArray({
@@ -41,7 +44,7 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
     name: 'cargo'
   })
 
-  const selectAll = (value:boolean) => {
+  const selectAll = (value: boolean) => {
     for (let i = 0; i < fields.length; i++) {
       setValue(`cargo.${i}.select`, value)
     }
@@ -53,23 +56,25 @@ const Group: React.FC<GroupProps> = ({ arrRef, el, ind, isSwapped }) => {
       ref={el}
       style={isSwapped.id ? CardAnimation : {}}
     >
-      <Header />
-      <Tool selectAll={selectAll} />
-      <div className={s.wrapper}>
-        {fields.map((el, index) => (
-          <GroupEl
-            ind={index}
-            key={index}
-            el={el}
-            handleTouchEnd={handleTouchEnd}
-            handleTouchMove={handleTouchMove}
-            handleTouchStart={handleTouchStart}
-            register={register}
-            control={control}
-          />
-        ))}
+      <Header isHidden={isHidden} setIsHidden={setIsHidden} />
+      <div className={classNames(s.hidden, { [s.hidden_mod]: isHidden })}>
+        <Tool selectAll={selectAll} watch={watch} />
+        <div className={s.wrapper}>
+          {fields.map((el, index) => (
+            <GroupEl
+              ind={index}
+              key={index}
+              el={el}
+              handleTouchEnd={handleTouchEnd}
+              handleTouchMove={handleTouchMove}
+              handleTouchStart={handleTouchStart}
+              register={register}
+              control={control}
+            />
+          ))}
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </animated.div>
   )
 }
