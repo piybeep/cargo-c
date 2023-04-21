@@ -61,7 +61,7 @@ export function Transport({ ...props }: TransportProps) {
 
     const Menu = ({ id }: { id: number }) => {
         return (
-            <>
+            <div className={s.menu} onClick={(e) => e.stopPropagation()}>
                 <span title='Добавить в шаблон' className={s.item__svg}>
                     <svg className={s.item__svg} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_404_1313)">
@@ -90,7 +90,7 @@ export function Transport({ ...props }: TransportProps) {
                         </g>
                     </svg>
                 </span>
-            </>
+            </div>
         )
     }
 
@@ -120,7 +120,7 @@ export function Transport({ ...props }: TransportProps) {
                                         <Menu id={current.id} />
                                     </div>
                                 </div>
-                                <div className={s.menu}>
+                                <div className={s.list__menu}>
                                     <Menu id={current.id} />
                                 </div>
                             </div>

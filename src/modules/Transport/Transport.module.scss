@@ -8,6 +8,8 @@
 
     margin: 0 auto;
     margin-top: 20px;
+
+    overflow: hidden;
 }
 
 .header {
@@ -24,6 +26,23 @@
 .list {
     display: flex;
     flex-direction: column;
+
+    &__menu {
+        position: absolute;
+        right: 0px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        z-index: 0;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        height: 100%;
+        width: 100%;
+        max-width: 128px;
+    }
 }
 
 .item {
@@ -45,7 +64,7 @@
 
     transition: background .3s;
 
-    &:hover{
+    &:hover {
         background-color: #f0f2f5;
     }
 
@@ -61,6 +80,12 @@
 
     &__svg {
         cursor: pointer;
+
+        transition: .2s;
+
+        &:hover {
+            opacity: .7;
+        }
     }
 
     &__wrapper {
@@ -86,13 +111,6 @@
 }
 
 .menu {
-    position: absolute;
-    right: 0px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    z-index: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,9 +127,13 @@
     column-gap: 20px;
 
 
-    &__button{
+    &__button {
         display: flex;
         align-items: center;
+
+        &:hover {
+            opacity: .6;
+        }
     }
 
     &__icon {
@@ -132,6 +154,13 @@
         }
     }
 
+    .list{
+
+        &__menu{
+            display: flex;
+        }
+    }
+
     .buttons {
         flex-direction: column;
         align-items: center;
@@ -148,7 +177,7 @@
         padding: 16px;
         column-gap: 10px;
 
-        &__icon{
+        &__icon {
             scale: 0.8;
         }
     }
