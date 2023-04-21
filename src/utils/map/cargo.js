@@ -104,6 +104,26 @@ export default class Cargo {
     }
   }
 
+  // Тестовый список алгоритмов
+
+  // сдвиг по x если есть коллизия
+  offsetX(blocks) {
+    for (let j = 0; j < blocks.length; j++) {
+      while (this.isCollision(blocks[j])) {
+        this.setPosition(0.1, "+x");
+      }
+    }
+  }
+
+  // сдвиг по z если есть коллизия
+  offsetZ(blocks) {
+    for (let j = 0; j < blocks.length; j++) {
+      while (this.isCollision(blocks[j])) {
+        this.setPosition(0.1, "+z");
+      }
+    }
+  }
+
   // Алгоритм расстановки грузов
   arrange(objects) {
     // Получаем блоки
@@ -134,9 +154,16 @@ export default class Cargo {
 
       // Проверка не вышел ли за пределы z
       if (!this.isOutwardsMaxZ()) {
-        while (this.isCollision(blocks[i])) {
-          this.setPosition(0.1, "+z");
+        this.offsetZ(blocks);
+
+        for (let j = 0; j < blocks.length; j++) {
+          while (this.isCollision(blocks[j])) {
+            this.setPosition(this.spaceMinZ + this.length / 2, "z");
+            break;
+          }
         }
+
+        this.offsetX(blocks);
       }
 
       // Проверка вышел ли за пределы z
@@ -153,12 +180,6 @@ export default class Cargo {
             buff += 0.1;
           }
         }
-
-        blocks.forEach((block) => {
-          while (this.isCollision(block)) {
-            this.setPosition(0.1, "+z");
-          }
-        });
       }
 
       // Проверка вышел ли за пределы x
