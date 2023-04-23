@@ -16,7 +16,7 @@
     justify-content: space-between;
 
     width: 100%;
-    max-width: 1265px;
+    max-width: 1280px;
 }
 
 .info {
@@ -29,4 +29,23 @@
     display: flex;
     align-items: center;
     column-gap: 16px;
+}
+
+
+.button {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+
+    transition: .2s;
+
+    &:hover .button__svg{
+        stroke: #69b1ff;
+    }
+
+    &__svg {
+        transition: .2s;
+
+        stroke: #1677ff;
+    }
 }

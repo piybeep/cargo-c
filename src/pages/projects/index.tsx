@@ -1,10 +1,11 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
-import { ReactNode } from "react";
+import { ProjectsList } from "@/modules";
+import { ReactNode, useState } from "react";
 
 export default function Projects() {
 	return (
 		<main>
-            Projects
+            <ProjectsList />
 		</main>
 	);
 }
