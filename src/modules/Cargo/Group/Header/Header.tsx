@@ -9,6 +9,8 @@ import {
   EyeOutlined
 } from '@ant-design/icons'
 import classNames from 'classnames'
+import { motion } from 'framer-motion'
+
 
 const { Paragraph, Text } = Typography
 
@@ -22,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ isHidden, setIsHidden }) => {
   const [isHiddenTitle, setIsHiddenTitle] = useState(false)
 
   return (
-    <div className={s.cont}>
+    <motion.div className={s.cont} layout='position'>
       <div className={s.info}>
         <div
           className={classNames(s.group, { [s.group__hidden]: isHiddenTitle })}
@@ -50,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ isHidden, setIsHidden }) => {
         )}
         <CloseOutlined />
       </Space>
-    </div>
+    </motion.div>
   )
 }
 
