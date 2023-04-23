@@ -13,8 +13,12 @@ import { LOADSPACE } from "@/constants/loadSpace";
 const Map = () => {
   useEffect(() => {
     // Получить размеры canvas
-    const width: number | undefined = document.querySelector(`.${style["canvas-field"]}`)?.clientWidth;
-    const height: number | undefined = document.querySelector(`.${style["canvas-field"]}`)?.clientHeight;
+    const width: number | undefined = document.querySelector(
+      `.${style["canvas-field"]}`
+    )?.clientWidth;
+    const height: number | undefined = document.querySelector(
+      `.${style["canvas-field"]}`
+    )?.clientHeight;
 
     const settings = {
       width,

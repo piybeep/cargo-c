@@ -63,11 +63,16 @@ export class MapCargo {
     this.space = new LoadSpace(this.scene, space);
     this.space.create({ x: 0, z: 0 });
 
+    this.groupCargo = new THREE.Group();
+    this.groupCargo.name = "group-cargo";
+
     // Создаем грузы
     cargos.forEach((cargo) => {
       for (let i = 0; i < cargo.count; i++) {
-        const block = new Cargo(this.scene, this.space, cargo);
+        const block = new Cargo(this.scene, this.space, this.groupCargo, cargo);
         block.arrange(this.#objects);
+
+        this.scene.add(this.groupCargo);
         this.#objects.push(block.get);
       }
     });
@@ -83,8 +88,10 @@ export class MapCargo {
   // test(cargo) {
   //   for (let i = 0; i < cargo.count; i++) {
   //     setTimeout(() => {
-  //       const block = new Cargo(this.scene, this.space, cargo);
+  //       const block = new Cargo(this.scene, this.space, this.groupCargo, cargo);
   //       block.arrange(this.#objects);
+
+  //       this.scene.add(this.groupCargo);
   //       this.#objects.push(block.get);
   //       this.render();
   //     }, i * 100);

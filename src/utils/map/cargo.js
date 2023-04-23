@@ -1,7 +1,8 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  constructor(scene, space, { name, width, height, length, color }) {
+  constructor(scene, space, groupCargo, { name, width, height, length, color }) {
+    this.group = groupCargo;
     // Сцена холста
     this.scene = scene;
 
@@ -44,6 +45,7 @@ export default class Cargo {
 
     // Имя фигуры
     this.block.name = this.name;
+    this.line.name = this.name;
 
     // Ставим блок на платформу [!возможен баг]
     this.block.position.y = this.height / 2;
@@ -81,6 +83,14 @@ export default class Cargo {
     }
     return false;
   }
+  // Проверка пересечения контейнера по оси -X
+  isOutwardsMinX() {
+    const positionX = this.block.position.x + this.width / 2;
+    if (positionX < this.spaceMinX) {
+      return true;
+    }
+    return false;
+  }
 
   setPosition(position, axis) {
     if (axis === "x") {
@@ -89,45 +99,63 @@ export default class Cargo {
     } else if (axis === "+x") {
       this.block.position.x += position;
       this.line.position.x += position;
+    } else if (axis === "-x") {
+      this.block.position.x -= position;
+      this.line.position.x -= position;
     } else if (axis === "y") {
       this.block.position.y = position;
       this.line.position.y = position;
     } else if (axis === "+y") {
       this.block.position.y += position;
       this.line.position.y += position;
+    } else if (axis === "-y") {
+      this.block.position.y -= position;
+      this.line.position.y -= position;
     } else if (axis === "z") {
       this.block.position.z = position;
       this.line.position.z = position;
     } else if (axis === "+z") {
       this.block.position.z += position;
       this.line.position.z += position;
+    } else if (axis === "-z") {
+      this.block.position.z -= position;
+      this.line.position.z -= position;
     }
   }
 
   // Тестовый список алгоритмов
 
-  // сдвиг по x если есть коллизия
-  offsetX(blocks) {
+  // сдвиг по осям если есть коллизия
+  offset(blocks, direction) {
     for (let j = 0; j < blocks.length; j++) {
       while (this.isCollision(blocks[j])) {
-        this.setPosition(0.1, "+x");
+        this.setPosition(0.1, direction);
       }
     }
   }
 
-  // сдвиг по z если есть коллизия
-  offsetZ(blocks) {
-    for (let j = 0; j < blocks.length; j++) {
-      while (this.isCollision(blocks[j])) {
-        this.setPosition(0.1, "+z");
+  isCollisionAll(objects) {
+    const currentBlock = new THREE.Box3().setFromObject(this.block);
+    for (let i = 0; i < objects.length; i++) {
+      const otherBlock = new THREE.Box3().setFromObject(objects[i]);
+      if (currentBlock.intersectsBox(otherBlock)) {
+        return true;
       }
     }
+    return false;
+  }
+
+  swap(blocks, name) {
+    return [
+      ...blocks.filter((block) => block.name === name),
+      ...blocks.filter((block) => block.name !== name),
+    ];
   }
 
   // Алгоритм расстановки грузов
   arrange(objects) {
     // Получаем блоки
-    const blocks = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
+    let blocks = objects.filter((object) => object.geometry.type !== "PlaneGeometry");
 
     for (let i = 0; i < blocks.length; ) {
       // Получаем последний блок
@@ -153,17 +181,34 @@ export default class Cargo {
       }
 
       // Проверка не вышел ли за пределы z
-      if (!this.isOutwardsMaxZ()) {
-        this.offsetZ(blocks);
+      if (!this.isOutwardsMaxZ() && !this.isOutwardsMinX()) {
+        // Сдвиг вниз
+        this.offset(blocks, "+z");
 
-        for (let j = 0; j < blocks.length; j++) {
-          while (this.isCollision(blocks[j])) {
-            this.setPosition(this.spaceMinZ + this.length / 2, "z");
-            break;
-          }
+        if (this.isCollisionAll(blocks)) {
+          // console.log(blocks);
+          blocks = this.swap(blocks, this.block.name);
+          // this.group.children.forEach((child) => {
+          //   this.group.remove(child);
+          // });
+          // console.log(this.group);
+          // console.log(this.scene);
+          this.block.position.set(
+            this.spaceMinX + this.width / 2,
+            this.height / 2,
+            this.spaceMinZ + this.length / 2
+          );
+          this.line.position.set(
+            this.spaceMinX + this.width / 2,
+            this.height / 2,
+            this.spaceMinZ + this.length / 2
+          );
+          // console.log(blocks);
+          i = 1;
+          continue;
         }
 
-        this.offsetX(blocks);
+        // Заново проверка и если по сдвигу вниз была коллизия, сдвигаем вправо
       }
 
       // Проверка вышел ли за пределы z
@@ -210,6 +255,7 @@ export default class Cargo {
       // }
       i++;
     }
+
     if (blocks.length === 0) {
       this.block.position.set(
         this.spaceMinX + this.width / 2,
@@ -222,7 +268,8 @@ export default class Cargo {
         this.spaceMinZ + this.length / 2
       );
     }
-    this.scene.add(this.block, this.line);
+    // this.scene.add(this.block, this.line);
+    this.group.add(this.block, this.line);
   }
 
   create(intersect) {
