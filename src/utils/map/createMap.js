@@ -58,24 +58,37 @@ export class MapCargo {
     window.addEventListener("dblclick", (e) => this.onPointerDown(e));
   }
 
-  arrange(space, cargos) {
+  init(space, cargos) {
     // Создаем грузовое пространство
     this.space = new LoadSpace(this.scene, space);
     this.space.create({ x: 0, z: 0 });
 
-    this.groupCargo = new THREE.Group();
-    this.groupCargo.name = "group-cargo";
+    // Список грузовых групп
+    this.groups = [];
 
     // Создаем грузы
-    cargos.forEach((cargo) => {
-      for (let i = 0; i < cargo.count; i++) {
-        const block = new Cargo(this.scene, this.space, this.groupCargo, cargo);
-        block.arrange(this.#objects);
+    cargos.forEach((cargo, id) => {
+      // Создаем для каждой группы блоков отдельную группу
+      this.groups.push(new THREE.Group());
+      this.groups[id].name = `cargo-group-${id}`;
 
-        this.scene.add(this.groupCargo);
+      for (let i = 0; i < cargo.count; i++) {
+        // Создаем груз
+        const block = new Cargo(cargo);
+
+        // Добавляем в глобальный массив
         this.#objects.push(block.get);
+
+        // Деструктурируем блок, тк группы ругаются на объекты
+        const { block: gBlock, line: gLine } = block.get;
+
+        // Добавляем в группу, текущие блоки
+        this.groups[id].add(gBlock);
+        this.groups[id].add(gLine);
       }
     });
+
+    // this.scene.add(this.groupCargo);
 
     // Тест
     // cargos.forEach((cargo, i) => {
