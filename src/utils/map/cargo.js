@@ -14,20 +14,20 @@ export default class Cargo {
     // this.spaceMinZ = this.space.position.faceZ.min;
     // this.spaceMaxZ = this.space.position.faceZ.max;
 
-    // Размеры груза
-    this.width = width;
-    this.height = height;
-    this.length = length;
+    // // Размеры груза
+    // this.width = width;
+    // this.height = height;
+    // this.length = length;
 
-    // Цвет груза
-    this.color = color;
+    // // Цвет груза
+    // this.color = color;
 
     // Имя груза
     this.name = name;
 
-    this.geometry = new THREE.BoxGeometry(this.width, this.height, this.length);
+    this.geometry = new THREE.BoxGeometry(width, height, length);
     this.material = new THREE.MeshBasicMaterial({
-      color: this.color,
+      color: color,
       opacity: 0.6,
       transparent: true,
     });
@@ -294,6 +294,14 @@ export default class Cargo {
   // }
 
   get get() {
-    return { block: this.block, line: this.line };
+    return { block: this.block, line: this.line, parameters: this.parameters };
+  }
+
+  get parameters() {
+    return {
+      width: this.block.geometry.parameters.width,
+      height: this.block.geometry.parameters.height,
+      length: this.block.geometry.parameters.depth,
+    };
   }
 }

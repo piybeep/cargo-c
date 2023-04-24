@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Renderer from "./renderer";
+
+// Map utils
 import Cargo from "./cargo";
 import LoadSpace from "./loadSpace";
+import Arrangement from "./arrangement";
 
 export class MapCargo {
   // Настройки
@@ -88,8 +91,18 @@ export class MapCargo {
       }
     });
 
-    // this.scene.add(this.groupCargo);
+    const settings = {
+      scene: this.scene,
+      space: this.space,
+      groups: this.groups,
+      cargos: this.#objects,
+    };
 
+    const arrange = new Arrangement(settings);
+    arrange.start();
+
+    // После расстановки добавить все группы на сцену
+    this.groups.forEach((group) => this.scene.add(group));
     // Тест
     // cargos.forEach((cargo, i) => {
     //   setTimeout(() => {
@@ -152,6 +165,7 @@ export class MapCargo {
       this.geometry,
       new THREE.MeshBasicMaterial({ visible: false })
     );
+    this.plane.name = "platform";
     this.scene.add(this.plane);
 
     this.#objects.push(this.plane);
