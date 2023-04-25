@@ -23,13 +23,43 @@ export default class Arrangement {
   // Расстановки блоков
   start() {
     for (let i = 0; i < this.cargos.length; i++) {
+      // Стартовая позиция
       if (i === 0) {
-        this.setPosition(this.cargos[i], this.spaceMinX + this.cargos[i].parameters.width / 2, "x");
-        this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
-        this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
+        this.startPosition(this.cargos[i]);
+        continue;
       }
 
-      this.offset(this.cargos[i], "+x");
+      // Получаем позицию предыдущего блока
+      const previous = this.cargos[i - 1];
+
+      // Ставим следующий блок, относительно предыдущего X
+      if (previous.parameters.width === this.cargos[i].parameters.width) {
+        this.setPosition(this.cargos[i], previous.block.position.x, "x");
+      } else {
+        this.setPosition(
+          this.cargos[i],
+          previous.block.position.x -
+            previous.parameters.width / 2 +
+            this.cargos[i].parameters.width / 2,
+          "x"
+        );
+      }
+
+      // Ставим следующий блок, относительно предыдущего Z
+      this.setPosition(this.cargos[i], previous.block.position.z, "z");
+
+      // Ставим следующий блок, относительно предыдущего Y
+      if (previous.parameters.height == this.cargos[i].parameters.height) {
+        this.setPosition(this.cargos[i], previous.block.position.y, "y");
+      } else {
+        this.setPosition(this.cargos[i], previous.parameters.height / 2 / 2, "y");
+      }
+
+      if (!this.isOutwardsMaxZ(this.cargos[i])) this.offset(this.cargos[i], "+z");
+
+      if (this.isOutwardsMaxZ(this.cargos[i])) {
+        this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
+      }
     }
   }
 
@@ -83,11 +113,24 @@ export default class Arrangement {
     }
   }
 
+  // Установить стартовую позицию внутри контейнера
+  startPosition(cargo) {
+    this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+    this.setPosition(cargo, cargo.parameters.height / 2, "y");
+    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+  }
+
+  // Сдвиг с проверкой на коллизию
   offset(cargo, direction) {
     for (let i = 0; i < this.cargos.length; i++) {
       while (this.isCollision(cargo)) {
         this.setPosition(cargo, 0.1, direction);
       }
     }
+  }
+
+  // Проверка пересечения контейнера по оси +Z
+  isOutwardsMaxZ(cargo) {
+    return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
   }
 }
