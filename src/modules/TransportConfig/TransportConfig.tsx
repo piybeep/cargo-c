@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Controller, useForm, useFormState } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Radio, RadioChangeEvent, Typography, Input, Select, InputNumber, Switch, Button } from 'antd';
 
@@ -17,11 +17,8 @@ import furgon from '../../../public/img/furgon.png'
 
 import s from './TransportConfig.module.scss'
 import { useTransport } from '@/store/transport';
-import { useRouter } from 'next/router';
 
 export function TransportConfig({ ...props }: TransportConfigProps) {
-
-    const router = useRouter()
 
     // zustand
     const { setAddTransport } = useTransport(state => state)

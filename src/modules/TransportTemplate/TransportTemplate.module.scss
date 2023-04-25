@@ -67,15 +67,6 @@
 
     &:hover {
         background-color: unset;
-
-        .item__svg {
-            // opacity: 0;
-        }
-
-        .item__buttons {
-            // opacity: 1;
-            // visibility: visible;
-        }
     }
 
     &__wrapper {
@@ -103,10 +94,6 @@
 
     &__title {
         margin-bottom: 0px !important;
-    }
-
-    &__text {
-        // мб что-то поменять
     }
 
     &__menu {
