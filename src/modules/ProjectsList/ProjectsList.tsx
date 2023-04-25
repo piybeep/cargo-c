@@ -47,8 +47,6 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const onSearch = (text: string) => {
         setEditSortText(text)
-
-        console.log(sortProjects)
     };
 
     const options = [
@@ -84,8 +82,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const { control, handleSubmit, setValue } = useForm();
 
+    // Открывает конкретный проект
     const open = () => {
-        console.log("Открыть этот проект");
     };
 
     const copy = (project: any) => {

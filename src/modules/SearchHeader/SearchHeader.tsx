@@ -7,8 +7,8 @@ export function SearchHeader() {
     const { Title } = Typography;
     const { Search } = Input;
 
+    // Поиск шаблона
     const onSearch = (value: string) => {
-        console.log(value)
     }
 
     return (

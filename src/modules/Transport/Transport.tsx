@@ -51,12 +51,12 @@ export function Transport({ ...props }: TransportProps) {
     const handleClickItem = (id: number) => {
         setSelectTransport(id)
         handleClick()
-        router.push('/transportConfig')
+        router.push('/transport/config')
     }
 
     const addNewTransport = () => {
         setRemoveSelectTransport()
-        router.push('/transportConfig')
+        router.push('/transport/config')
     }
 
     const Menu = ({ id }: { id: number }) => {
@@ -133,7 +133,7 @@ export function Transport({ ...props }: TransportProps) {
                     <Icon className={s.buttons__icon} component={IconAdd} />
                     Добавить транспорт вручную
                 </Button>
-                <Link href='/transportTemplate'>
+                <Link href='/transport/template'>
                     <Button className={s.buttons__button} type='primary' style={{ backgroundColor: '#389E0D' }}>
                         <Icon className={s.buttons__icon} component={IconShablon} />
                         Добавить из шаблона

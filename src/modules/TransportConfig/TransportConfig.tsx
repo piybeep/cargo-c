@@ -37,7 +37,22 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
     const { Title, Text } = Typography
     const { TextArea } = Input;
 
-    const minMaxValue = '500 / 50000'
+
+    const [minValue, setMinValue] = useState(10)
+    const [maxValue, setMaxValue] = useState(500000)
+
+    useEffect(() => {
+        if (width === 'мм') {
+            setMinValue(10)
+            setMaxValue(500000)
+        } else if (width === 'см') {
+            setMinValue(1)
+            setMaxValue(50000)
+        } else {
+            setMinValue(0.01)
+            setMaxValue(500)
+        }
+    }, [width])
 
     const { control, handleSubmit, register, reset, watch, trigger, getValues, clearErrors, formState: { errors, isValid } } = useForm({
         defaultValues: {
@@ -45,9 +60,9 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
             configHeight: height,
             name: '',
             type: 'Грузовой автомобиль',
-            length: 500,
-            width: 500,
-            height: 500,
+            length: 10,
+            width: 10,
+            height: 10,
             tonnage: 0,
 
             semiTrailerAxes: 2,
@@ -80,7 +95,7 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
     }, [isSwitch, watchTypeTransport, transport])
 
     const onSubmit = (data: any) => {
-        let values:any = {}
+        let values: any = {}
 
         if (isSwitch) {
             values = {
@@ -152,7 +167,6 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                 text: `${values.type} ${values.length} x ${values.width} x ${values.height} ${values.configWidth}, ${values.tonnage} ${values.configHeight}, "тут подсчёт"`,
                 type: values.type
             })
-        console.log(values)
     }
 
     const changeWidth = (e: RadioChangeEvent) => {
@@ -243,7 +257,6 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                     }
                 }
             }
-            console.log(values)
         }
     }
 
@@ -346,8 +359,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Длина</Text>
-                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
-                                    <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={minValue} max={maxValue} defaultValue={minValue} onChange={onChange} />
+                                    <Text className={s.item__text_bottom} type="secondary">{`${minValue} / ${maxValue}`}</Text>
                                 </div>
                             )}
                         />
@@ -357,8 +370,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Ширина</Text>
-                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
-                                    <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={minValue} max={maxValue / 10} defaultValue={minValue} onChange={onChange} />
+                                    <Text className={s.item__text_bottom} type="secondary">{`${minValue} / ${maxValue / 10}`}</Text>
                                 </div>
                             )}
                         />
@@ -368,8 +381,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                             render={({ field: { onChange, value } }) => (
                                 <div className={s.item}>
                                     <Text className={s.item__text} type="secondary">Высота</Text>
-                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={500} max={50000} defaultValue={500} onChange={onChange} />
-                                    <Text className={s.item__text_bottom} type="secondary">{minMaxValue}</Text>
+                                    <InputNumber value={value} type='number' className={s.item__input} addonAfter={width} min={minValue} max={maxValue / 10} defaultValue={minValue} onChange={onChange} />
+                                    <Text className={s.item__text_bottom} type="secondary">{`${minValue} / ${maxValue / 10}`}</Text>
                                 </div>
                             )}
                         />
