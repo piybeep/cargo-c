@@ -57,8 +57,8 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='name'
-            render={({ field: { onChange } }) => (
-              <Input type='text' onChange={onChange} required maxLength={110} />
+            render={({ field }) => (
+              <Input type='text' {...field} required maxLength={110} />
             )}
           />
           <Text type='secondary' style={{ marginLeft: 'auto' }}>
@@ -70,11 +70,11 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='count'
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <InputNumber
                 style={{ width: '100%' }}
                 type='text'
-                onChange={onChange}
+                {...field}
                 required
               />
             )}
@@ -85,10 +85,10 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='length'
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <InputNumber
                 style={{ width: '100%' }}
-                onChange={onChange}
+                {...field}
                 type='text'
                 addonAfter={unitLength}
                 max={getMaxLength()}
@@ -105,9 +105,9 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='width'
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <InputNumber
-                onChange={onChange}
+                {...field}
                 style={{ width: '100%' }}
                 type='text'
                 addonAfter={unitLength}
@@ -125,9 +125,9 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='height'
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <InputNumber
-                onChange={onChange}
+                {...field}
                 style={{ width: '100%' }}
                 type='text'
                 addonAfter={unitLength}
@@ -145,9 +145,9 @@ const Body: React.FC<BodyProps> = ({
           <Controller
             control={control}
             name='weight'
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <InputNumber
-                onChange={onChange}
+                {...field}
                 style={{ width: '100%' }}
                 type='text'
                 addonAfter={unitWeight}
@@ -210,9 +210,9 @@ const Body: React.FC<BodyProps> = ({
             <Controller
               control={control}
               name='load'
-              render={({ field: { onChange } }) => (
+              render={({ field }) => (
                 <InputNumber
-                  onChange={onChange}
+                  {...field}
                   style={{ width: '100%' }}
                   type='text'
                   addonAfter={unitWeight}

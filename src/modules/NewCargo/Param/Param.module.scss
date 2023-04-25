@@ -7,3 +7,28 @@
   border-radius: 8px;
   margin-bottom: 20px;
 }
+
+.ico {
+  * {
+    cursor: pointer;
+  }
+}
+
+.color {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  position: relative;
+}
+
+.picker {
+  z-index: 100;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 11%);
+
+  &_mod{
+    display: none !important;
+  }
+}

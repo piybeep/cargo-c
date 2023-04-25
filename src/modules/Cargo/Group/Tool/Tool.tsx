@@ -24,7 +24,7 @@ const Tool: React.FC<toolProps> = ({ selectAll, watch }) => {
           value={isCheckAll}
           checked={isCheckAll}
         />
-        <Text>Выбрать все</Text>
+        <Text onClick={()=>selectAll(!isCheckAll)}>Выбрать все</Text>
       </div>
       <Text>25 шт, 125 кг, 270 м3</Text>
     </div>

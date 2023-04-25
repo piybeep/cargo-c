@@ -11,7 +11,6 @@ import {
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 
-
 const { Paragraph, Text } = Typography
 
 interface HeaderProps {
@@ -36,7 +35,8 @@ const Header: React.FC<HeaderProps> = ({ isHidden, setIsHidden }) => {
         <Paragraph
           editable={{
             icon: <img src={editSvg.src} />,
-            onChange: setTitle
+            onChange: setTitle,
+            triggerType: ['text', 'icon']
           }}
           className={s.fix}
         >

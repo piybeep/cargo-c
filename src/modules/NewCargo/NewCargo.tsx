@@ -6,7 +6,14 @@ import { useForm } from 'react-hook-form'
 import { createCargo } from './Body/type'
 
 export const NewCargo = () => {
-  const { handleSubmit, control,watch } = useForm<createCargo>({
+  const [color, setColor] = useState('#aabbcc')
+  const {
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { dirtyFields, defaultValues }
+  } = useForm<createCargo>({
     defaultValues: {
       type: 'Ящик',
       tiers: 'Да - оптимально',
@@ -23,7 +30,13 @@ export const NewCargo = () => {
 
   return (
     <form onSubmit={handleSubmit(Submit)}>
-      <Param />
+      <Param
+        reset={reset}
+        dirtyFields={dirtyFields}
+        defaultValues={defaultValues}
+        color={color}
+        setColor={setColor}
+      />
       <Body
         control={control}
         unitLength={unitLength}
