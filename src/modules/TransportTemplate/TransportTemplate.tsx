@@ -25,7 +25,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
         handleTouchEnd,
         setSaveCurrentIndex,
         handleClick,
-    } = useSwipe(s, -56)
+    } = useSwipe(s.item, -56)
 
     useEffect(() => {
         if (window) {

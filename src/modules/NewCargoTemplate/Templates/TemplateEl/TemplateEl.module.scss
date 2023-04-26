@@ -2,26 +2,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 16px 0 16px;
+  padding: 0 16px;
+  z-index: 2;
   h5 {
     margin: 0;
   }
   position: relative;
-  background: white;
-  z-index: 2;
 
   &:last-child {
     margin-bottom: 0;
   }
+  padding: 16px;
+  background: white;
 }
 
 .wrapperCont {
-  margin-bottom: 16px;
   position: relative;
+  background: white;
 }
 
 .wrapper {
   display: flex;
+  background: white;
   align-items: center;
   column-gap: 16px;
   overflow: hidden;
@@ -49,6 +51,10 @@
   }
 
   &_mod {
+    img {
+      width: 24px;
+      height: 24px;
+    }
     position: absolute;
     right: 0px;
     top: 50%;

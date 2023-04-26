@@ -1,21 +1,17 @@
 .cont {
   width: 100%;
-  height: 74px;
   display: flex;
   align-items: center;
   column-gap: 16px;
   z-index: 2;
   background: white;
   position: relative;
+  padding-bottom: 28px;
 }
 
 .wrapperCont {
   position: relative;
   background: white;
-  margin-bottom: 28px;
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
 .wrapper {

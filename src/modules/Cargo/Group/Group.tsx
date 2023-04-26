@@ -4,11 +4,11 @@ import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
 import Tool from './Tool/Tool'
 import Footer from './Footer/Footer'
-import { useDragEl } from './useDragEl'
 import style from './GroupEl/GroupEl.module.scss'
 import { useFieldArray, useForm } from 'react-hook-form'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
+import { useSwipe } from '@/hook/useSwipe'
 
 interface GroupProps {
   el: any
@@ -24,7 +24,7 @@ const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
 const Group: React.FC<GroupProps> = ({ el }) => {
   const [isHidden, setIsHidden] = useState(false)
 
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl(style)
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(style.cont)
 
   const { control, register, setValue, watch } = useForm<cargoCheckBox>({
     defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }

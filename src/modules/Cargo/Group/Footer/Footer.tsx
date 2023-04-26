@@ -7,7 +7,7 @@ import {
   PlusSquareTwoTone
 } from '@ant-design/icons'
 import { useRouter } from 'next/router'
-import { SaveSvg } from '@/assets/svgComponent/SaveSvg'
+import { SaveSvg } from '@/public/svg/SaveSvg'
 
 const Footer = () => {
   const [clientWidth, setClientWidth] = useState(0)
@@ -38,7 +38,7 @@ const Footer = () => {
       ) : (
         <>
           <FileAddOutlined className={s.img}/>
-          <PlusSquareTwoTone className={s.img} />
+          <PlusSquareTwoTone className={s.img} onClick={()=>nav.push('cargo/new')}/>
           <SaveSvg/>
         </>
       )}

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import s from './TemplateEl.module.scss'
 import { RightCircleTwoTone } from '@ant-design/icons'
 import boxSvg from '@/public/svg/box/box1blue.svg'
-import { Typography } from 'antd'
+import { Space, Typography } from 'antd'
 import Image from 'next/image'
+import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 
 const { Text, Title } = Typography
 
@@ -20,6 +21,11 @@ const TemplateEl: React.FC<TemplateElProps> = ({
   handleTouchStart,
   ind
 }) => {
+  const [clientWidth, setClientWidth] = useState(0)
+
+  useEffect(() => {
+    setClientWidth(document?.documentElement.scrollWidth)
+  }, [])
   return (
     <div className={s.wrapperCont}>
       <div
@@ -37,9 +43,30 @@ const TemplateEl: React.FC<TemplateElProps> = ({
             </Text>
           </div>
         </div>
-        <RightCircleTwoTone className={s.img} />
+        <Space align='center'>
+          {clientWidth > 460 ? (
+            <Image
+            alt='Удалить'
+            width={28}
+            height={28}
+            className={s.img}
+            src={trashSvg.src}
+            />
+            ) : (
+            <></>
+          )}
+          <RightCircleTwoTone className={s.img} />
+        </Space>
       </div>
-      <RightCircleTwoTone className={s.img_mod} />
+      <div className={s.img_mod}>
+        <Image
+          alt='Удалить'
+          width={24}
+          height={24}
+          className={s.img}
+          src={trashSvg.src}
+        />
+      </div>
     </div>
   )
 }

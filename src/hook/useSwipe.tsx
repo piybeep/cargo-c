@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-export const useSwipe = (s: any, right: number = -128) => {
+export const useSwipe = (style: any, right: number = -128) => {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
     const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined);
 
     function handleTouchStart(e: any, index: any) {
         const current = index
+        console.log(current)
         let firstTouch = e.touches[0].clientX;
         if (touchEnd != 0 && current === saveCurrentIndex) {
             firstTouch = e.touches[0].clientX - touchEnd
@@ -15,7 +16,7 @@ export const useSwipe = (s: any, right: number = -128) => {
         setTouchStart(firstTouch)
 
         if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
-            const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
+            const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + style))
 
             allCard.map((current: any, currentIndex: number) => {
                 if (index != currentIndex) {
@@ -32,14 +33,14 @@ export const useSwipe = (s: any, right: number = -128) => {
     }
 
     function handleTouchMove(e: any, index: number) {
-        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        const current = document.querySelectorAll<HTMLElement>('.' + style)[index]
         let clientX = e.targetTouches[0].clientX - touchStart
         setTouchEnd(clientX)
         current.style.transform = `translateX(${Math.round(clientX)}px)`
     }
 
     function handleTouchEnd(index: any) {
-        const current = document.querySelectorAll<HTMLElement>('.' + s.item)[index]
+        const current = document.querySelectorAll<HTMLElement>('.' + style)[index]
         if (touchEnd <= right) {
             current.style.transform = `translateX(${right}px)`
             current.style.transition = '.3s'
@@ -58,7 +59,7 @@ export const useSwipe = (s: any, right: number = -128) => {
     }
 
     function handleClick() {
-        const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + s.item))
+        const allCard = Array.from(document.querySelectorAll<HTMLElement>('.' + style))
 
         allCard.map((current: any) => {
             current.style.transform = `translateX(0px)`

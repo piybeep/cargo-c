@@ -40,7 +40,7 @@ export function Transport({ ...props }: TransportProps) {
     // zustand 
 
     // Swipe logic
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick } = useSwipe(s)
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick } = useSwipe(s.item)
     // Swipe logic
 
     const handleRemoveTransport = (id: number) => {

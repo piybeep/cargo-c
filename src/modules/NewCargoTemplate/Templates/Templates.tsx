@@ -1,13 +1,13 @@
 import React from 'react'
 import s from './Templates.module.scss'
 import TemplateEl from './TemplateEl/TemplateEl'
-import { useDragEl } from '@/modules/Cargo/Group/useDragEl'
 import style from './TemplateEl/TemplateEl.module.scss'
+import { useSwipe } from '@/hook/useSwipe'
 
 const arr = [1, 2, 3]
 
 const Templates = () => {
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useDragEl(style)
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(style.cont)
 
   return (
     <div className={s.cont}>
