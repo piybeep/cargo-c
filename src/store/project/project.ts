@@ -8,6 +8,7 @@ export const useProjects = create<projectsProps>()(set => ({
         { id: 2, title: "Проект 3", date: "Добавлено 23.03.2023, обновлено 25.03.2023", },
     ],
     selectProject: null,
+    sortProjects: { text: '', sortUp: 0, sortType: 0 },
     setSelectProject: (id) => set(state => {
         const currentProject = state.projects.find(current => current.id === id)
 
@@ -29,7 +30,6 @@ export const useProjects = create<projectsProps>()(set => ({
     setEditProject: (id, title) => set(state => {
         return { projects: state.projects.map(item => item.id == id ?? item.title != title ? { ...item, title: title } : item) }
     }),
-    sortProjects: { text: '', sortUp: 0, sortType: 0 },
     setEditSortType: (value) => set(state => {
         return { sortProjects: { ...state.sortProjects, sortType: value } }
     }),

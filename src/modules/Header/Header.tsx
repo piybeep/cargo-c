@@ -18,13 +18,13 @@ export function Header({ ...props }: HeaderProps) {
                 <div className={s.info}>
                     <div className={s.logo}>
                         <Logo size='default' />
-                        <Link style={{ cursor: 'default' }}>
+                        <Link className={s.logo__link} style={{ cursor: 'default' }}>
                             Название компании
                         </Link>
                     </div>
                     <div className={s.logo__title}>
-                        <Text>Текущий проект: </Text>
-                        <Link href="/projects">{selectProject?.title}</Link>
+                        <Text className={s.logo__text}>Текущий проект: </Text>
+                        <Link className={s.logo__text} href="/projects">{selectProject?.title}</Link>
                     </div>
                 </div>
 

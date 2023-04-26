@@ -1,15 +1,17 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
 import { ReactNode } from "react";
 
-export default function Transport() {
+import { Transport } from "@/modules";
+
+export default function TransportPage() {
 	return (
 		<main>
-            Transport
+			<Transport/>
 		</main>
 	);
 }
 
-Transport.getLayout = (page: ReactNode) => (
+TransportPage.getLayout = (page: ReactNode) => (
 	<BaseLayout>
 		{page}
 	</BaseLayout>
