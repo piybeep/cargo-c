@@ -1,0 +1,302 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+
+    margin: 0 auto;
+    margin-top: 30px;
+
+    width: 100%;
+    max-width: 1280px;
+
+    overflow: hidden;
+}
+
+.header {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #FFFFFF;
+    border-radius: 8px;
+
+    padding: 0px 24px;
+
+    &__search {
+        display: flex;
+        align-items: center;
+        column-gap: 24px;
+
+        width: 100%;
+
+        padding: 16px 0px;
+    }
+
+    &__title {
+        margin: 0px !important;
+
+        min-width: fit-content;
+    }
+
+    &__input {
+        width: 100%;
+        max-width: 519px;
+    }
+
+    &__sort {
+        display: flex;
+        align-items: center;
+        column-gap: 24px;
+
+        padding: 16px 0px;
+    }
+
+    &__select {
+        div {
+            min-width: 140px;
+            padding-left: 0px !important;
+        }
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+
+    &__wrapper {
+        position: relative;
+    }
+
+    &__menu {
+        position: absolute;
+        right: 0px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        z-index: 1;
+
+        max-width: 128px;
+        width: 100%;
+        height: 100%;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+
+    padding: 16px 24px;
+
+    cursor: pointer;
+
+    background-color: #FFFFFF;
+
+    transition: background .3s;
+
+    position: relative;
+
+    z-index: 2;
+
+    &:hover {
+        background-color: #F5F5F5;
+    }
+
+    &_active {
+        background-color: #F5F5F5;
+
+        .list__svg {
+            fill: transparent;
+        }
+
+        .list__open {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    &__svg {
+        transition: .2s;
+    }
+
+    &__info {
+        width: 100%;
+        max-width: 958px;
+    }
+
+    &__button {
+        transition: .2s;
+    }
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 12px;
+
+    &__svg {
+        cursor: pointer;
+
+        transition: .2s;
+
+        &:hover {
+            opacity: .7;
+        }
+    }
+}
+
+.remove {
+    width: 100% !important;
+    max-width: 440px;
+}
+
+.add {
+    display: flex;
+    justify-content: center;
+
+    &__button {
+        display: flex;
+        align-items: center;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.modal {
+    max-width: 400px;
+
+    form {
+        margin-top: 40px;
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .header {
+        background-color: transparent;
+
+        &__title {
+            display: none;
+        }
+
+        &__sort {
+            flex-direction: column-reverse;
+            align-items: flex-end;
+            row-gap: 20px;
+
+            padding-top: 10px;
+            padding-bottom: 0px;
+        }
+
+        &__search {
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        &__select {
+            max-width: 120px;
+
+            span {
+                font-size: 12px;
+            }
+        }
+
+        &__group {
+            display: flex;
+            column-gap: 6px;
+            width: 100%;
+
+            span {
+                font-size: 12px;
+            }
+
+            label {
+                border-radius: 20px !important;
+
+                &::before {
+                    display: none !important;
+                }
+            }
+        }
+    }
+
+    .list{
+
+        &__menu{
+            display: flex;
+        }
+    }
+
+    .item {
+
+        &__open {
+            display: none;
+        }
+
+        &_active {
+            background-color: #F5F5F5;
+        }
+
+        &__buttons {
+            display: none;
+        }
+    }
+}
+
+
+@media screen and (max-width: 430px) {
+    .header {
+        padding: 0px;
+
+        &__input {
+            padding: 0px 16px;
+        }
+
+        &__sort {
+            padding-left: 16px;
+        }
+
+        &__group {
+            overflow-x: scroll;
+
+            label {
+                min-width: fit-content;
+            }
+
+            padding-bottom: 10px;
+        }
+
+        &__select {
+            margin-right: 16px;
+        }
+    }
+
+    .list {
+
+        &__item {
+            column-gap: 12px;
+
+            padding: 12px 12px;
+        }
+
+        &__text {
+            font-size: 12px;
+        }
+    }
+
+    .modal {
+        max-width: 288px;
+
+        padding: 16px;
+    }
+
+}

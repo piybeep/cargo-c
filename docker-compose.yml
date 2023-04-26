@@ -1,0 +1,7 @@
+services:
+  client:
+    build: .
+  proxy:
+    build: ./proxy
+    ports:
+      - 80:80
