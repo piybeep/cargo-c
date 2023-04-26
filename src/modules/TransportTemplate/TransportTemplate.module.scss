@@ -1,0 +1,174 @@
+.wrapper {
+    margin: 0 auto;
+    margin-top: 20px;
+
+    width: 100%;
+    max-width: 1280px;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+
+    overflow: hidden;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+
+    &__wrapper {
+        position: relative;
+    }
+
+    &__menu {
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        z-index: 0;
+
+        transform: translateY(-50%);
+
+        display: none;
+    }
+}
+
+.menu {
+    display: flex;
+    column-gap: 12px;
+
+    &__svg{
+        cursor: pointer;
+
+        transition: .2s;
+
+        &:hover{
+            opacity: .7;
+        }
+    }
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 16px;
+
+    padding: 16px 24px;
+
+    background-color: #fff;
+
+    position: relative;
+    z-index: 1;
+    transform: translateX(0);
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: unset;
+    }
+
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        column-gap: 16px;
+    }
+
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        row-gap: 4px;
+    }
+
+    &__icon {
+        width: 100%;
+        max-width: 40px;
+
+        svg {
+            width: inherit;
+            height: auto;
+        }
+    }
+
+    &__title {
+        margin-bottom: 0px !important;
+    }
+
+    &__menu {
+        display: flex;
+        align-items: center;
+        flex-direction: row-reverse;
+        column-gap: 16px;
+    }
+
+    &__svg {
+        transition: .3s;
+
+        cursor: pointer;
+
+        &:hover{
+            opacity: .7;
+        }
+    }
+
+    &__buttons {
+        &_svg {
+            cursor: pointer;
+        }
+    }
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 30px;
+}
+
+@media screen and (max-width: 1300px) {
+    .footer {
+        padding: 0px 16px;
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .item:hover {
+        background-color: #fff;
+    }
+
+    .list__menu{
+        display: flex;
+    }
+
+    .item__buttons {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 430px) {
+    .footer {
+        column-gap: 13px;
+
+        // пока тест
+        padding: 0px 6px;
+    }
+
+    .item{
+        column-gap: 12px;
+
+        padding: 16px;
+
+        &__wrapper{
+            column-gap: 10px;
+        }
+
+        &__icon{
+            max-width: 36px;
+
+            svg{
+                scale: 0.8;
+            }
+        }
+    }
+}

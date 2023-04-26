@@ -1,6 +1,6 @@
 import * as React from "react"
 
-const svgProjects = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
+const IconProjects = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
   <svg
     width={24}
     height={24}
@@ -27,4 +27,4 @@ const svgProjects = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGEleme
   </svg>
 )
 
-export default svgProjects
+export default IconProjects

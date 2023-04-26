@@ -1,6 +1,6 @@
 import * as React from "react"
 
-const svgTransport = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
+const IconVisualization = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
   <svg
     width={18}
     height={18}
@@ -16,8 +16,7 @@ const svgTransport = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElem
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M5.25 14.25a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12.75 14.25a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
-      <path d="M3.75 12.75h-1.5V4.5A.75.75 0 0 1 3 3.75h6.75v9m-3 0h4.5m3 0h1.5v-4.5m0 0h-6m6 0L13.5 4.5H9.75" />
+      <path d="M4.5 13.2 3 12.375V10.5M3 7.5V5.625L4.5 4.8M7.5 3.075 9 2.25l1.5.825M13.5 4.8l1.5.825V7.5M15 10.5v1.875l-1.5.84M10.5 14.925 9 15.75l-1.5-.825M9 9l1.5-.825M13.5 6.45l1.5-.825M9 9v1.875M9 13.875v1.875M9 9l-1.5-.84M4.5 6.45 3 5.625" />
     </g>
     <defs>
       <clipPath id="a">
@@ -27,4 +26,4 @@ const svgTransport = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElem
   </svg>
 )
 
-export default svgTransport
+export default IconVisualization
