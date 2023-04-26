@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 const { Paragraph, Text } = Typography
 
@@ -34,7 +35,9 @@ const Header: React.FC<HeaderProps> = ({ isHidden, setIsHidden }) => {
         </div>
         <Paragraph
           editable={{
-            icon: <img src={editSvg.src} />,
+            icon: (
+              <Image alt='Изменить' height={16} width={16} src={editSvg.src} />
+            ),
             onChange: setTitle,
             triggerType: ['text', 'icon']
           }}

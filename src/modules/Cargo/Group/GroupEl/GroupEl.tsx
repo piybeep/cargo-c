@@ -13,6 +13,7 @@ import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 import { Control, Controller, UseFormRegister } from 'react-hook-form'
 import { cargoCheckBox } from '../Group'
+import Image from 'next/image'
 
 const { Text, Title } = Typography
 
@@ -66,7 +67,7 @@ const GroupEl: React.FC<GroupElProps> = ({
           <div className={s.el}>
             <div className={s.checkBox_mod}>
               <label htmlFor={`checkBox${ind}`} className={s.ico}>
-                <img src={box1SVG.src} alt='box' />
+                <Image width={25} height={25} src={box1SVG.src} alt='Ящик' />
               </label>
               <Checkbox
                 className={s.checkBox}
@@ -82,24 +83,24 @@ const GroupEl: React.FC<GroupElProps> = ({
                 Ящик 1200 х 500 х 600 мм, 12 кг, 5 шт.
               </Text>
               <div className={s.info__icons}>
-                <img src={listSvg.src} />
-                <PlusOutlined />
-                <img src={arrowXSvg.src} />
-                <img src={arrowYSvg.src} />
+                <Image width={16} height={16} src={listSvg.src} alt='ярусы' />
+                <PlusOutlined alt='нагрузка' />
+                <Image width={16} height={16} src={arrowXSvg.src} alt='поворот' />
+                <Image width={16} height={16} src={arrowYSvg.src} alt='кантирование' />
               </div>
             </div>
           </div>
           <div className={s.icons}>
-            <img src={saveSvg.src} />
-            <img src={listFrSvg.src} />
-            <img src={trashSvg.src} />
+            <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+            <Image src={listFrSvg.src} alt='клонировать' width={24} height={24} />
+            <Image src={trashSvg.src} alt='удалить' width={24} height={24} />
           </div>
         </div>
       </div>
       <div className={s.menu}>
-        <img src={saveSvg.src} />
-        <img src={listFrSvg.src} />
-        <img src={trashSvg.src} />
+        <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+        <Image src={listFrSvg.src} alt='клонировать' width={24} height={24} />
+        <Image src={trashSvg.src} alt='удалить' width={24} height={24} />
       </div>
     </div>
   )

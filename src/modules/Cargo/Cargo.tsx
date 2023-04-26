@@ -10,6 +10,7 @@ import replace from '../../../public/svg/replace.svg'
 //style
 import s from './Cargo.module.scss'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export const Cargo = () => {
   const [cards, setCards] = useState([
@@ -41,17 +42,25 @@ export const Cargo = () => {
     <>
       <Header />
       <div className={s.roll}>
-        <img src={down.src} alt='down' onClick={scrollDown} />
+        <Image
+          src={down.src}
+          alt='Вниз'
+          onClick={scrollDown}
+          width={22}
+          height={22}
+        />
       </div>
       {cards.map((el, ind) => (
         <React.Fragment key={el.id}>
           <Group el={el} />
           {cards[ind + 1] ? (
             <motion.div className={s.replace}>
-              <img
+              <Image
                 src={replace.src}
-                alt='replace'
+                alt='Поменять'
                 onClick={() => handleSwap(ind)}
+                width={20}
+                height={20}
               />
             </motion.div>
           ) : (
@@ -60,7 +69,13 @@ export const Cargo = () => {
         </React.Fragment>
       ))}
       <div className={classNames(s.roll, s.roll_mod)}>
-        <img src={down.src} alt='top' onClick={scrollTop} />
+        <Image
+          width={22}
+          height={22}
+          src={down.src}
+          alt='Вверх'
+          onClick={scrollTop}
+        />
       </div>
       <Footer />
     </>

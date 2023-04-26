@@ -9,6 +9,7 @@ import { createCargo } from '../Body/type'
 import { HexColorPicker } from 'react-colorful'
 import classNames from 'classnames'
 import { useThrottle } from '@/utils/useTrottle'
+import Image from 'next/image'
 
 const { Title } = Typography
 
@@ -56,9 +57,9 @@ const Param: React.FC<ParamProps> = ({
             onFocus={() => setIsSelectColor(true)}
           />
         </div>
-        <img src={saveSvg.src} alt='' />
-        <img src={reverseSvg.src} alt='' onClick={clearForm} />
-        <img src={trashSvg.src} alt='' />
+        <Image width={24} height={24} src={saveSvg.src} alt='Сохранить' />
+        <Image width={24} height={24} src={reverseSvg.src} alt='Очистить' onClick={clearForm} />
+        <Image width={24} height={24} src={trashSvg.src} alt='Удалить' />
       </Space>
     </div>
   )

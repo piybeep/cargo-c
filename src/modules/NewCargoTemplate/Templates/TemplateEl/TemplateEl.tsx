@@ -3,6 +3,7 @@ import s from './TemplateEl.module.scss'
 import { RightCircleTwoTone } from '@ant-design/icons'
 import boxSvg from '@/public/svg/box/box1blue.svg'
 import { Typography } from 'antd'
+import Image from 'next/image'
 
 const { Text, Title } = Typography
 
@@ -28,7 +29,7 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         onTouchEnd={() => handleTouchEnd(ind)}
       >
         <div className={s.wrapper}>
-          <img src={boxSvg.src} />
+          <Image alt='Ящик' width={26} height={30} src={boxSvg.src} />
           <div className={s.text}>
             <Title level={5}>Ящик 40м2</Title>
             <Text type='secondary'>

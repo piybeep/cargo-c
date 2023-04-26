@@ -9,6 +9,7 @@ import arrowYSvg from '@/public/svg/boxEl/arrowY.svg'
 import { PlusOutlined } from '@ant-design/icons'
 import { BodyProps } from './type'
 import { Controller } from 'react-hook-form'
+import Image from 'next/image'
 
 const { Text } = Typography
 
@@ -175,7 +176,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <img src={boxSvg.src} alt='box' />
+            <Image src={boxSvg.src} alt='Ящик' width={20} height={20}/>
           </div>
         </div>
         <div className={s.el}>
@@ -201,7 +202,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <img src={listSvg.src} alt='list' />
+            <Image src={listSvg.src} alt='Ярусы' width={20} height={20}/>
           </div>
         </div>
         <div className={classNames(s.breakInput, s.el)}>
@@ -242,7 +243,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <img src={arrowXSvg.src} />
+            <Image src={arrowXSvg.src} width={20} height={20} alt='Поворот'/>
           </div>
         </div>
         <div className={s.el}>
@@ -263,7 +264,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <img src={arrowYSvg.src} />
+            <Image src={arrowYSvg.src} width={20} height={20} alt='Кантование'/>
           </div>
         </div>
       </div>

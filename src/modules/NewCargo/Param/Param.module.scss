@@ -9,8 +9,15 @@
 }
 
 .ico {
+  &>div{
+    display: flex;
+  }
   * {
     cursor: pointer;
+  }
+
+  img{
+    align-self: center;
   }
 }
 
