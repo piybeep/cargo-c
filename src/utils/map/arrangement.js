@@ -22,16 +22,17 @@ export default class Arrangement {
 
   // Расстановки блоков
   start() {
+    // Ставим все блоки за карту, чтобы не мешала расстановке
+    this.defaultPosition();
+
     for (let i = 0; i < this.cargos.length; i++) {
       // Стартовая позиция
       if (i === 0) {
         this.startPosition(this.cargos[i]);
         continue;
       }
-
       // Получаем позицию предыдущего блока
       const previous = this.cargos[i - 1];
-
       // Ставим следующий блок, относительно предыдущего X
       if (previous.parameters.width === this.cargos[i].parameters.width) {
         this.setPosition(this.cargos[i], previous.block.position.x, "x");
@@ -44,21 +45,17 @@ export default class Arrangement {
           "x"
         );
       }
-
       // Ставим следующий блок, относительно предыдущего Z
       this.setPosition(this.cargos[i], previous.block.position.z, "z");
-
       // Ставим следующий блок, относительно предыдущего Y
       if (previous.parameters.height == this.cargos[i].parameters.height) {
         this.setPosition(this.cargos[i], previous.block.position.y, "y");
       } else {
-        this.setPosition(this.cargos[i], previous.parameters.height / 2 / 2, "y");
+        this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
       }
-
       if (!this.isOutwardsMaxZ(this.cargos[i])) {
         this.offset(this.cargos[i], "+z");
       }
-
       if (this.isOutwardsMaxZ(this.cargos[i])) {
         this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
         this.offset(this.cargos[i], "+x");
@@ -67,7 +64,7 @@ export default class Arrangement {
   }
 
   // Помощники
-  isCollision(cargo, check) {
+  isCollision(cargo) {
     const currentCargo = new THREE.Box3().setFromObject(cargo.block);
 
     for (let i = 0; i < this.cargos.length; i++) {
@@ -123,9 +120,15 @@ export default class Arrangement {
     this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
   }
 
+  defaultPosition() {
+    for (let i = 0; i < this.cargos.length; i++) {
+      this.setPosition(this.cargos[i], -this.cargos[i].parameters.height / 2 - 10, "y");
+    }
+  }
+
   // Сдвиг с проверкой на коллизию
-  offset(cargo, direction, check = true) {
-    while (this.isCollision(cargo, check)) {
+  offset(cargo, direction) {
+    while (this.isCollision(cargo)) {
       this.setPosition(cargo, 0.1, direction);
     }
   }

@@ -24,7 +24,7 @@ export const CARGOS: CargosTypes = [
     count: 3,
     color: "#0fa2a9",
     width: 5,
-    height: 4,
+    height: 10,
     length: 4,
   },
   {
