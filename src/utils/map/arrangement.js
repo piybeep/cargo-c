@@ -55,16 +55,19 @@ export default class Arrangement {
         this.setPosition(this.cargos[i], previous.parameters.height / 2 / 2, "y");
       }
 
-      if (!this.isOutwardsMaxZ(this.cargos[i])) this.offset(this.cargos[i], "+z");
+      if (!this.isOutwardsMaxZ(this.cargos[i])) {
+        this.offset(this.cargos[i], "+z");
+      }
 
       if (this.isOutwardsMaxZ(this.cargos[i])) {
         this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
+        this.offset(this.cargos[i], "+x");
       }
     }
   }
 
   // Помощники
-  isCollision(cargo) {
+  isCollision(cargo, check) {
     const currentCargo = new THREE.Box3().setFromObject(cargo.block);
 
     for (let i = 0; i < this.cargos.length; i++) {
@@ -121,11 +124,9 @@ export default class Arrangement {
   }
 
   // Сдвиг с проверкой на коллизию
-  offset(cargo, direction) {
-    for (let i = 0; i < this.cargos.length; i++) {
-      while (this.isCollision(cargo)) {
-        this.setPosition(cargo, 0.1, direction);
-      }
+  offset(cargo, direction, check = true) {
+    while (this.isCollision(cargo, check)) {
+      this.setPosition(cargo, 0.1, direction);
     }
   }
 
