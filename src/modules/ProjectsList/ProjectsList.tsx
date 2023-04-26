@@ -42,7 +42,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     // useSwipe
     const [windowInnerWidth, setWindowInnerWidth] = useState(false)
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick } = useSwipe(s)
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, setSaveCurrentIndex, handleClick } = useSwipe(s.item)
     // useSwipe
 
     const onSearch = (text: string) => {

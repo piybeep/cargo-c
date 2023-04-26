@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import classNames from 'classnames';
 
@@ -19,6 +20,7 @@ import s from './TransportConfig.module.scss'
 import { useTransport } from '@/store/transport';
 
 export function TransportConfig({ ...props }: TransportConfigProps) {
+    const router = useRouter()
 
     // zustand
     const { setAddTransport } = useTransport(state => state)
@@ -164,6 +166,8 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                 text: `${values.type} ${values.length} x ${values.width} x ${values.height} ${values.configWidth}, ${values.tonnage} ${values.configHeight}, "тут подсчёт"`,
                 type: values.type
             })
+
+            router.push({pathname: '/transport'})
     }
 
     const changeWidth = (e: RadioChangeEvent) => {
