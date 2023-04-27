@@ -22,6 +22,7 @@ interface GroupElProps {
   handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
   handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
   handleTouchEnd: (id: string) => void
+  handleClick: () => void
   el: any
   groupIndex: number
   //ПЕРЕДЕЛАТЬ ТИП
@@ -35,10 +36,11 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleTouchEnd,
   handleTouchMove,
   handleTouchStart,
+  handleClick,
   el,
   groupIndex,
   control,
-  elId
+  elId,
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
 
@@ -51,6 +53,7 @@ const GroupEl: React.FC<GroupElProps> = ({
     <div className={s.wrapperCont}>
       <div
         className={s.cont + ' ' + `cont__` + groupIndex}
+        onClick={() => handleClick()}
         onTouchStart={(e) => handleTouchStart(e, elId)}
         onTouchMove={(e) => handleTouchMove(e, elId)}
         onTouchEnd={() => handleTouchEnd(elId)}

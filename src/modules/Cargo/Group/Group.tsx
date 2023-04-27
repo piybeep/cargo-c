@@ -24,7 +24,7 @@ const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
 const Group: React.FC<GroupProps> = ({ group }) => {
   const [isHidden, setIsHidden] = useState(false)
 
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(`cont__` + group.id)
+  const { handleTouchEnd, handleTouchMove, handleTouchStart, handleClick } = useSwipe(`cont__` + group.id)
 
   const { control, setValue, watch } = useForm<cargoCheckBox>({
     defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
@@ -57,6 +57,7 @@ const Group: React.FC<GroupProps> = ({ group }) => {
               handleTouchEnd={handleTouchEnd}
               handleTouchMove={handleTouchMove}
               handleTouchStart={handleTouchStart}
+              handleClick={handleClick}
               control={control}
               groupIndex={group.id}
             />

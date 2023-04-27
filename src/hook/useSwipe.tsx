@@ -76,6 +76,8 @@ export const useSwipe = (style: any, right: number = -128) => {
                 current.style.transition = '0s'
             }, 300)
         })
+
+        setTouchEnd(0)
     }
 
     return {
