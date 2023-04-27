@@ -107,9 +107,10 @@ export function Transport({ ...props }: TransportProps) {
                             <div key={current.id} className={s.item__wrapper}>
                                 <div className={s.item}
                                     onClick={() => handleClickItem(current.id)}
-                                    onTouchStart={(e) => windowWidth && handleTouchStart(e, index)}
-                                    onTouchMove={(e) => windowWidth && handleTouchMove(e, index)}
-                                    onTouchEnd={() => windowWidth && handleTouchEnd(index)}
+                                    onTouchStart={(e) => windowWidth && handleTouchStart(e, current.id)}
+                                    onTouchMove={(e) => windowWidth && handleTouchMove(e, ''+current.id)}
+                                    onTouchEnd={() => windowWidth && handleTouchEnd(''+current.id)}
+                                    id={''+current.id}
                                 >
                                     <Icon className={s.item__icon} component={getIcon(current.id)} />
                                     <div className={s.item__info}>

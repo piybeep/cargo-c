@@ -4,7 +4,7 @@ import TemplateEl from './TemplateEl/TemplateEl'
 import style from './TemplateEl/TemplateEl.module.scss'
 import { useSwipe } from '@/hook/useSwipe'
 
-const arr = [1, 2, 3]
+const arr = [{name:'card1'},{name:'card2'},{name:'card3'},{name:'card4'}]
 
 const Templates = () => {
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(style.cont)
@@ -18,6 +18,7 @@ const Templates = () => {
           handleTouchStart={handleTouchStart}
           ind={ind}
           key={ind}
+          el={el}
         />
       ))}
     </div>

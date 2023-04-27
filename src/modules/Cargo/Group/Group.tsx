@@ -11,7 +11,7 @@ import { motion } from 'framer-motion'
 import { useSwipe } from '@/hook/useSwipe'
 
 interface GroupProps {
-  el: any
+  group: any
 }
 
 //ПЕРЕДЕЛАТЬ ТИП
@@ -21,12 +21,14 @@ export interface cargoCheckBox {
 
 const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
 
-const Group: React.FC<GroupProps> = ({ el }) => {
+const Group: React.FC<GroupProps> = ({ group }) => {
   const [isHidden, setIsHidden] = useState(false)
 
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(style.cont)
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(
+    style.cont
+  )
 
-  const { control, register, setValue, watch } = useForm<cargoCheckBox>({
+  const { control, setValue, watch } = useForm<cargoCheckBox>({
     defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
   })
   const { fields } = useFieldArray({
@@ -48,15 +50,15 @@ const Group: React.FC<GroupProps> = ({ el }) => {
       >
         <Tool selectAll={selectAll} watch={watch} />
         <div className={s.wrapper}>
-          {fields.map((el, index) => (
+          {fields.map((el: any, index: any) => (
             <GroupEl
               ind={index}
               key={index}
               el={el}
+              elId={group.name + el.name}
               handleTouchEnd={handleTouchEnd}
               handleTouchMove={handleTouchMove}
               handleTouchStart={handleTouchStart}
-              register={register}
               control={control}
             />
           ))}

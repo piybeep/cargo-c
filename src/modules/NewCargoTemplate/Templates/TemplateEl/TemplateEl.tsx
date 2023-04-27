@@ -10,16 +10,18 @@ const { Text, Title } = Typography
 
 interface TemplateElProps {
   ind: number
-  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
-  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
-  handleTouchEnd: (ind: number) => void
+  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchEnd: (id: string) => void
+  el: any
 }
 
 const TemplateEl: React.FC<TemplateElProps> = ({
   handleTouchEnd,
   handleTouchMove,
   handleTouchStart,
-  ind
+  ind,
+  el
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
 
@@ -30,9 +32,10 @@ const TemplateEl: React.FC<TemplateElProps> = ({
     <div className={s.wrapperCont}>
       <div
         className={s.cont}
-        onTouchStart={(e) => handleTouchStart(e, ind)}
-        onTouchMove={(e) => handleTouchMove(e, ind)}
-        onTouchEnd={() => handleTouchEnd(ind)}
+        onTouchStart={(e) => handleTouchStart(e, el.name)}
+        onTouchMove={(e) => handleTouchMove(e, el.name)}
+        onTouchEnd={() => handleTouchEnd(el.name)}
+        id={el.name}
       >
         <div className={s.wrapper}>
           <Image alt='Ящик' width={26} height={30} src={boxSvg.src} />
@@ -46,13 +49,13 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         <Space align='center'>
           {clientWidth > 460 ? (
             <Image
-            alt='Удалить'
-            width={28}
-            height={28}
-            className={s.img}
-            src={trashSvg.src}
+              alt='Удалить'
+              width={28}
+              height={28}
+              className={s.img}
+              src={trashSvg.src}
             />
-            ) : (
+          ) : (
             <></>
           )}
           <RightCircleTwoTone className={s.img} />

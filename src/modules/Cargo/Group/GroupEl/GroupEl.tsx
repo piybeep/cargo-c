@@ -19,13 +19,13 @@ const { Text, Title } = Typography
 
 interface GroupElProps {
   ind: number
-  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
-  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, ind: number) => void
-  handleTouchEnd: (ind: number) => void
+  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchEnd: (id: string) => void
   el: any
   //ПЕРЕДЕЛАТЬ ТИП
-  register: UseFormRegister<any>
   control: Control<cargoCheckBox, any>
+  elId:string
 }
 
 const GroupEl: React.FC<GroupElProps> = ({
@@ -34,8 +34,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleTouchMove,
   handleTouchStart,
   el,
-  register,
-  control
+  control,
+  elId
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
 
@@ -47,9 +47,10 @@ const GroupEl: React.FC<GroupElProps> = ({
     <div className={s.wrapperCont}>
       <div
         className={s.cont}
-        onTouchStart={(e) => handleTouchStart(e, ind)}
-        onTouchMove={(e) => handleTouchMove(e, ind)}
-        onTouchEnd={() => handleTouchEnd(ind)}
+        onTouchStart={(e) => handleTouchStart(e, elId)}
+        onTouchMove={(e) => handleTouchMove(e, elId)}
+        onTouchEnd={() => handleTouchEnd(elId)}
+        id={elId}
       >
         <Controller
           control={control}

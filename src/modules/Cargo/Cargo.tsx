@@ -52,7 +52,7 @@ export const Cargo = () => {
       </div>
       {cards.map((el, ind) => (
         <React.Fragment key={el.id}>
-          <Group el={el} />
+          <Group group={el} />
           {cards[ind + 1] ? (
             <motion.div className={s.replace}>
               <Image
