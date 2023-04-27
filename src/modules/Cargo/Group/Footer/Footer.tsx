@@ -18,7 +18,7 @@ const Footer = () => {
   }, [])
 
   return (
-    <div className={s.cont}>
+    <div className={s.cont} >
       {clientWidth > 460 ? (
         <>
           <Button icon={<FileAddOutlined />}>Из файла</Button>
@@ -39,7 +39,7 @@ const Footer = () => {
         <>
           <FileAddOutlined className={s.img}/>
           <PlusSquareTwoTone className={s.img} onClick={()=>nav.push('cargo/new')}/>
-          <SaveSvg/>
+          <SaveSvg onClick={()=>nav.push('cargo/new/template')} style={{width:28,height:28}}/>
         </>
       )}
     </div>
