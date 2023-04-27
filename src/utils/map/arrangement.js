@@ -22,6 +22,8 @@ export default class Arrangement {
 
   // Расстановки блоков
   start() {
+    this.isSwap = false;
+
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
 
@@ -32,33 +34,46 @@ export default class Arrangement {
         continue;
       }
       // Получаем позицию предыдущего блока
-      const previous = this.cargos[i - 1];
+      this.previous = this.cargos[i - 1];
+
+      // Ставим следующий блок, относительно предыдущего Z
+      this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
+
       // Ставим следующий блок, относительно предыдущего X
-      if (previous.parameters.width === this.cargos[i].parameters.width) {
-        this.setPosition(this.cargos[i], previous.block.position.x, "x");
+      if (this.previous.parameters.width === this.cargos[i].parameters.width) {
+        this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
       } else {
+        this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
         this.setPosition(
           this.cargos[i],
-          previous.block.position.x -
-            previous.parameters.width / 2 +
-            this.cargos[i].parameters.width / 2,
+          this.previous.block.position.x +
+            this.previous.parameters.width / 2 +
+            this.cargos[i].parameters.width / 2 +
+            0.1,
           "x"
         );
+
+        // this.setPosition(
+        //   this.cargos[i],
+        //   this.previous.block.position.x -
+        //     this.previous.parameters.width / 2 +
+        //     this.cargos[i].parameters.width / 2,
+        //   "x"
+        // );
       }
-      // Ставим следующий блок, относительно предыдущего Z
-      this.setPosition(this.cargos[i], previous.block.position.z, "z");
+
       // Ставим следующий блок, относительно предыдущего Y
-      if (previous.parameters.height == this.cargos[i].parameters.height) {
-        this.setPosition(this.cargos[i], previous.block.position.y, "y");
+      if (this.previous.parameters.height == this.cargos[i].parameters.height) {
+        this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
       } else {
         this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
       }
-      if (!this.isOutwardsMaxZ(this.cargos[i])) {
-        this.offset(this.cargos[i], "+z");
-      }
-      if (this.isOutwardsMaxZ(this.cargos[i])) {
-        this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
-        this.offset(this.cargos[i], "+x");
+
+      this.arrange(this.cargos[i]);
+
+      if (this.isSwap) {
+        i = -1;
+        this.isSwap = false;
       }
     }
   }
@@ -123,18 +138,61 @@ export default class Arrangement {
   defaultPosition() {
     for (let i = 0; i < this.cargos.length; i++) {
       this.setPosition(this.cargos[i], -this.cargos[i].parameters.height / 2 - 10, "y");
+      // this.setPosition(this.cargos[i], 50, "z");
+    }
+  }
+
+  arrange(cargo) {
+    if (!this.isOutwardsMaxZ(cargo)) {
+      this.offset(cargo, "+z");
+    }
+
+    if (this.isOutwardsMaxZ(cargo)) {
+      this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+      this.offset(cargo, "+x");
     }
   }
 
   // Сдвиг с проверкой на коллизию
   offset(cargo, direction) {
+    const step = 0.1;
+    let buff = 0;
+
     while (this.isCollision(cargo)) {
-      this.setPosition(cargo, 0.1, direction);
+      if (direction === "+z") {
+        this.setPosition(cargo, step, direction);
+        buff += step;
+
+        // if (buff.toFixed(2) > cargo.parameters.length + step) {
+        //   // console.log(Math.round(buff));
+        //   // while (this.isCollision(cargo)) {
+        //   //   this.setPosition(cargo, step, "+x");
+        //   // }
+        //   // console.log(cargo.block.name);
+        //   this.swap(cargo.block.name);
+        //   this.defaultPosition();
+        //   this.isSwap = true;
+        //   return;
+        // }
+      } else {
+        this.setPosition(cargo, step, direction);
+      }
     }
   }
 
   // Проверка пересечения контейнера по оси +Z
   isOutwardsMaxZ(cargo) {
     return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
+  }
+
+  swap(name) {
+    this.cargos = [
+      ...this.cargos.filter((cargo) => cargo.block.name === name),
+      ...this.cargos.filter((cargo) => cargo.block.name !== name),
+    ];
+    // return [
+    //   ...this.cargos.filter((block) => block.name === name),
+    //   ...blocks.filter((block) => block.name !== name),
+    // ];
   }
 }

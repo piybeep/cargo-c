@@ -161,10 +161,7 @@ export class MapCargo {
     this.geometry = new THREE.PlaneGeometry(this.#planeSize, this.#planeSize);
     this.geometry.rotateX(-Math.PI / 2);
 
-    this.plane = new THREE.Mesh(
-      this.geometry,
-      new THREE.MeshBasicMaterial({ visible: false })
-    );
+    this.plane = new THREE.Mesh(this.geometry, new THREE.MeshBasicMaterial({ visible: false }));
     this.plane.name = "platform";
     this.scene.add(this.plane);
 
