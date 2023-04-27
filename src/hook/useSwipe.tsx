@@ -15,21 +15,22 @@ export const useSwipe = (style: any, right: number = -128) => {
 
         setTouchStart(firstTouch)
 
-        if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
-            const allCard = Array.from(
-                document.querySelectorAll<HTMLElement>('.' + style)
-            )
+        // Условия были лишними
+        // if (current !== saveCurrentIndex && saveCurrentIndex != undefined) {
+        const allCard = Array.from(
+            document.querySelectorAll<HTMLElement>('.' + style)
+        )
 
-            allCard.map((current: any, currentIndex: number) => {
-                if (id != currentIndex) {
-                    current.style.transform = `translateX(0px)`
-                    current.style.transition = '.3s'
-                    setTimeout(() => {
-                        current.style.transition = '0s'
-                    }, 300)
-                }
-            })
-        }
+        allCard.map((current: any, currentIndex: number) => {
+            if (id !== currentIndex) {
+                current.style.transform = `translateX(0px)`
+                current.style.transition = '.3s'
+                setTimeout(() => {
+                    current.style.transition = '0s'
+                }, 300)
+            }
+        })
+        // }
 
         setSaveCurrentIndex(id)
     }
@@ -40,6 +41,8 @@ export const useSwipe = (style: any, right: number = -128) => {
             let clientX = e.targetTouches[0].clientX - touchStart
             setTouchEnd(clientX)
             current.style.transform = `translateX(${Math.round(clientX)}px)`
+            // Начал обнулять всегда transition при свайпе, по-другому он лагал
+            current.style.transition = '0s'
         }
     }
 
