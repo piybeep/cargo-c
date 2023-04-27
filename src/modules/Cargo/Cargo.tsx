@@ -14,10 +14,10 @@ import Image from 'next/image'
 
 export const Cargo = () => {
   const [cards, setCards] = useState([
-    { id: 0, name: 'Card 1' },
-    { id: 1, name: 'Card 2' },
-    { id: 2, name: 'Card 3' },
-    { id: 3, name: 'Card 4' }
+    { id: 0, name: 'Card 0' },
+    { id: 1, name: 'Card 1' },
+    { id: 2, name: 'Card 2' },
+    { id: 3, name: 'Card 3' }
   ])
 
   const handleSwap = (index: number) => {

@@ -23,10 +23,12 @@ interface GroupElProps {
   handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
   handleTouchEnd: (id: string) => void
   el: any
+  groupIndex: number
   //ПЕРЕДЕЛАТЬ ТИП
   control: Control<cargoCheckBox, any>
-  elId:string
+  elId: string
 }
+
 
 const GroupEl: React.FC<GroupElProps> = ({
   ind,
@@ -34,6 +36,7 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleTouchMove,
   handleTouchStart,
   el,
+  groupIndex,
   control,
   elId
 }) => {
@@ -43,10 +46,11 @@ const GroupEl: React.FC<GroupElProps> = ({
     setClientWidth(document?.documentElement.scrollWidth)
   }, [])
 
+
   return (
     <div className={s.wrapperCont}>
       <div
-        className={s.cont}
+        className={s.cont + ' ' + `cont__` + groupIndex}
         onTouchStart={(e) => handleTouchStart(e, elId)}
         onTouchMove={(e) => handleTouchMove(e, elId)}
         onTouchEnd={() => handleTouchEnd(elId)}
