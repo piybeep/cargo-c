@@ -5,6 +5,7 @@ export const useSwipe = (style: any, right: number = -128) => {
   const [touchEnd, setTouchEnd] = useState(0)
   const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined)
 
+
   function handleTouchStart(e: any, id: any) {
     const current = id
     let firstTouch = e.touches[0].clientX
