@@ -410,9 +410,10 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                                 [s.item_active]: Number(router.query.currentId) == current.id
                             })}
                                 onClick={() => handleClickProject(current)}
-                                onTouchStart={(e) => windowInnerWidth && handleTouchStart(e, index)}
-                                onTouchMove={(e) => windowInnerWidth && handleTouchMove(e, index)}
-                                onTouchEnd={() => windowInnerWidth && handleTouchEnd(index)}
+                                onTouchStart={(e) => windowInnerWidth && handleTouchStart(e, current.id)}
+                                onTouchMove={(e) => windowInnerWidth && handleTouchMove(e, current.id)}
+                                onTouchEnd={() => windowInnerWidth && handleTouchEnd(current.id)}
+                                id={current.id}
                             >
                                 <svg
                                     className={s.item__svg}

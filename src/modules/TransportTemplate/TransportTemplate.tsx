@@ -72,9 +72,10 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
                     <div key={current.id} className={s.list__wrapper}>
                         <div className={s.item}
                             onClick={() => handleClick()}
-                            onTouchStart={(e) => windowSwipe && handleTouchStart(e, index)}
-                            onTouchMove={(e) => windowSwipe && handleTouchMove(e, index)}
-                            onTouchEnd={() => windowSwipe && handleTouchEnd(index)}
+                            onTouchStart={(e) => windowSwipe && handleTouchStart(e, current.id)}
+                            onTouchMove={(e) => windowSwipe && handleTouchMove(e, ''+current.id)}
+                            onTouchEnd={() => windowSwipe && handleTouchEnd(''+current.id)}
+                            id={''+current.id}
                         >
                             <div className={s.item__wrapper}>
                                 <Icon className={s.item__icon} component={getIcon(current.id)} />
