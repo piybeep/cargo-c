@@ -1,0 +1,1 @@
+export {GetPassword} from './GetPassword'
