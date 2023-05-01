@@ -22,7 +22,8 @@ export default class Arrangement {
 
   // Расстановки блоков
   start() {
-    this.isSwap = false;
+    // this.isSwap = false;
+    this.isTier = true;
 
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
@@ -37,13 +38,18 @@ export default class Arrangement {
       this.previous = this.cargos[i - 1];
 
       // Ставим следующий блок, относительно предыдущего Z
-      this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
-
-      // Ставим следующий блок, относительно предыдущего X
-      if (this.previous.parameters.width === this.cargos[i].parameters.width) {
+      if (
+        this.previous.parameters.length === this.cargos[i].parameters.length &&
+        this.previous.parameters.width === this.cargos[i].parameters.width &&
+        this.previous.parameters.height === this.cargos[i].parameters.height
+      ) {
+        this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
         this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
+        this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
       } else {
         this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
+        this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
+
         this.setPosition(
           this.cargos[i],
           this.previous.block.position.x +
@@ -52,29 +58,36 @@ export default class Arrangement {
             0.1,
           "x"
         );
-
-        // this.setPosition(
-        //   this.cargos[i],
-        //   this.previous.block.position.x -
-        //     this.previous.parameters.width / 2 +
-        //     this.cargos[i].parameters.width / 2,
-        //   "x"
-        // );
       }
+
+      // Ставим следующий блок, относительно предыдущего X
+      // if (this.previous.parameters.width === this.cargos[i].parameters.width) {
+      //   this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
+      // } else {
+      //   this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
+      //   this.setPosition(
+      //     this.cargos[i],
+      //     this.previous.block.position.x +
+      //       this.previous.parameters.width / 2 +
+      //       this.cargos[i].parameters.width / 2 +
+      //       0.1,
+      //     "x"
+      //   );
+      // }
 
       // Ставим следующий блок, относительно предыдущего Y
-      if (this.previous.parameters.height == this.cargos[i].parameters.height) {
-        this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
-      } else {
-        this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
-      }
+      // if (this.previous.parameters.height == this.cargos[i].parameters.height) {
+      //   this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
+      // } else {
+      //   this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
+      // }
 
       this.arrange(this.cargos[i]);
 
-      if (this.isSwap) {
-        i = -1;
-        this.isSwap = false;
-      }
+      // if (this.isSwap) {
+      //   i = -1;
+      //   this.isSwap = false;
+      // }
     }
   }
 
@@ -143,12 +156,23 @@ export default class Arrangement {
   }
 
   arrange(cargo) {
+    // Сдвигать по оси Z, если есть еще место
     if (!this.isOutwardsMaxZ(cargo)) {
       this.offset(cargo, "+z");
     }
 
+    // Если блок вышел за пределы контейнера по Z
     if (this.isOutwardsMaxZ(cargo)) {
       this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+
+      if (this.isTier) {
+        this.offset(cargo, "+y");
+      } else this.offset(cargo, "+x");
+    }
+
+    // Если блок вышел за пределы контейнера по Y
+    if (this.isOutwardsMaxY(cargo)) {
+      this.setPosition(cargo, cargo.parameters.height / 2, "y");
       this.offset(cargo, "+x");
     }
   }
@@ -185,14 +209,18 @@ export default class Arrangement {
     return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
   }
 
-  swap(name) {
-    this.cargos = [
-      ...this.cargos.filter((cargo) => cargo.block.name === name),
-      ...this.cargos.filter((cargo) => cargo.block.name !== name),
-    ];
-    // return [
-    //   ...this.cargos.filter((block) => block.name === name),
-    //   ...blocks.filter((block) => block.name !== name),
-    // ];
+  isOutwardsMaxY(cargo) {
+    return cargo.block.position.y + cargo.parameters.height / 2 > this.spaceMaxY ? true : false;
   }
+
+  // swap(name) {
+  //   this.cargos = [
+  //     ...this.cargos.filter((cargo) => cargo.block.name === name),
+  //     ...this.cargos.filter((cargo) => cargo.block.name !== name),
+  //   ];
+  //   return [
+  //     ...this.cargos.filter((block) => block.name === name),
+  //     ...blocks.filter((block) => block.name !== name),
+  //   ];
+  // }
 }
