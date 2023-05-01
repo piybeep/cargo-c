@@ -39,7 +39,7 @@ export const Auth = () => {
             <Logo size='large' />
             <Title level={1}>Логистика</Title>
           </div>
-          <Text type='secondary'>
+          <Text type='secondary' style={{textAlign:'center'}}>
             Сервис для оптимизации загрузки грузовых контейнеров
           </Text>
         </div>
