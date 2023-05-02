@@ -1,0 +1,1 @@
+export {NewCargo} from "./NewCargo";

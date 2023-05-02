@@ -1,0 +1,41 @@
+.cont {
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.ico {
+  &>div{
+    display: flex;
+  }
+  * {
+    cursor: pointer;
+  }
+
+  img{
+    align-self: center;
+  }
+}
+
+.color {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  position: relative;
+}
+
+.picker {
+  z-index: 100;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 11%);
+
+  &_mod{
+    display: none !important;
+  }
+}

@@ -1,0 +1,39 @@
+.cont {
+  width: 100%;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 20px;
+}
+
+.button {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+
+  &:hover svg{
+    path{
+      stroke: #4096ff;
+    }
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .img {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg{
+        object-fit: contain;
+        width: 75%;
+        height: 75%;
+    }
+  }
+  .cont{
+    column-gap: 40px;
+  }
+}
