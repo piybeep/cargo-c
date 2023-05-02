@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import s from './GetPassword.module.scss'
 import { Typography, Button, Input } from 'antd'
-import { MailOutlined, LockOutlined } from '@ant-design/icons'
+import { LockOutlined } from '@ant-design/icons'
 import { useForm, Controller } from 'react-hook-form'
 import { Logo } from '@/component'
+import { useRouter } from 'next/router'
 
 const { Title, Text } = Typography
 interface AuthInputs {
@@ -11,6 +12,17 @@ interface AuthInputs {
   password: string
 }
 export const GetPassword = () => {
+  const { query, replace } = useRouter()
+  const [init, setInit] = useState(false)
+
+  useEffect(() => {
+    if (!query?.code&&init) {
+      replace('/login')
+    }else{
+      setInit(true)
+    }
+  }, [query])
+
   const {
     control,
     handleSubmit,
@@ -22,6 +34,7 @@ export const GetPassword = () => {
     console.log(data)
   }
 
+  if (!query?.code || !init) return <></>
   return (
     <div className={s.cont}>
       <div className={s.formCont}>
@@ -30,7 +43,7 @@ export const GetPassword = () => {
             <Logo size='large' />
             <Title level={1}>Логистика</Title>
           </div>
-          <Text type='secondary' style={{textAlign:'center'}}>
+          <Text type='secondary' style={{ textAlign: 'center' }}>
             Сервис для оптимизации загрузки грузовых контейнеров
           </Text>
         </div>

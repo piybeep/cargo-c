@@ -29,6 +29,7 @@ export const Auth = () => {
   const closeModal = () => {
     form.resetFields()
     setIsModalOpen(false)
+    setIsFetched(false)
   }
 
   return (
@@ -115,15 +116,17 @@ export const Auth = () => {
         open={isModalOpen}
         onOk={() => console.log(2222)}
         onCancel={closeModal}
+        width={400}
         footer={[
-          <Form onFinish={sendEmail} form={form}>
+          <Form onFinish={sendEmail} form={form} key={'submit'}>
             {isFetched ? (
               <Space style={{ width: '100%' }}>
                 <Text
                   style={{
-                    width: '50%',
+                    width: '80%',
                     marginRight: 'auto',
-                    textAlign: 'start'
+                    textAlign: 'start',
+                    display:'flex'
                   }}
                 >
                   Перейдите по ссылке, которая отправлена на вашу почту
@@ -137,12 +140,12 @@ export const Auth = () => {
                 <Form.Item
                   name={'email'}
                   rules={[{ required: true, type: 'email' }]}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%',margin:0 }}
                 >
-                  <Input placeholder='Введите почту...' inputMode='email' />
+                  <Input placeholder='Введите почту...' inputMode='email'/>
                 </Form.Item>
-                <Form.Item>
-                  <Button type='primary' htmlType='submit'>
+                <Form.Item style={{margin:0}}>
+                  <Button type='primary' htmlType='submit' >
                     Отправить
                   </Button>
                 </Form.Item>
