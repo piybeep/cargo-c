@@ -12,6 +12,7 @@ export default class Arrangement {
     this.spaceMaxY = this.space.position.faceY.max;
     this.spaceMinZ = this.space.position.faceZ.min;
     this.spaceMaxZ = this.space.position.faceZ.max;
+    this.countSpace = 0;
 
     // Группы грузов
     this.groups = groups;
@@ -23,7 +24,9 @@ export default class Arrangement {
   // Расстановки блоков
   start() {
     // this.isSwap = false;
-    this.isTier = true;
+
+    // Ярус
+    this.isTier = false;
 
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
@@ -37,7 +40,7 @@ export default class Arrangement {
       // Получаем позицию предыдущего блока
       this.previous = this.cargos[i - 1];
 
-      // Ставим следующий блок, относительно предыдущего Z
+      // Ставим следующий блок, относительно предыдущего
       if (
         this.previous.parameters.length === this.cargos[i].parameters.length &&
         this.previous.parameters.width === this.cargos[i].parameters.width &&
@@ -58,6 +61,15 @@ export default class Arrangement {
             0.1,
           "x"
         );
+      }
+
+      if (this.countSpace >= 1) {
+        this.setPosition(this.cargos[i], -90, "x");
+        this.setPosition(this.cargos[i], -90, "z");
+        this.offset(this.cargos[i], "+x");
+      } else {
+        // Сдвиг блока
+        this.arrange(this.cargos[i]);
       }
 
       // Ставим следующий блок, относительно предыдущего X
@@ -82,8 +94,6 @@ export default class Arrangement {
       //   this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
       // }
 
-      this.arrange(this.cargos[i]);
-
       // if (this.isSwap) {
       //   i = -1;
       //   this.isSwap = false;
@@ -91,7 +101,7 @@ export default class Arrangement {
     }
   }
 
-  // Помощники
+  // Проверка на коллизию
   isCollision(cargo) {
     const currentCargo = new THREE.Box3().setFromObject(cargo.block);
 
@@ -148,13 +158,14 @@ export default class Arrangement {
     this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
   }
 
+  // Место для расположения всех неотсортированных коробок
   defaultPosition() {
     for (let i = 0; i < this.cargos.length; i++) {
       this.setPosition(this.cargos[i], -this.cargos[i].parameters.height / 2 - 10, "y");
-      // this.setPosition(this.cargos[i], 50, "z");
     }
   }
 
+  // Расстановка блоков
   arrange(cargo) {
     // Сдвигать по оси Z, если есть еще место
     if (!this.isOutwardsMaxZ(cargo)) {
@@ -174,6 +185,13 @@ export default class Arrangement {
     if (this.isOutwardsMaxY(cargo)) {
       this.setPosition(cargo, cargo.parameters.height / 2, "y");
       this.offset(cargo, "+x");
+    }
+
+    if (this.isOutwardsMaxX(cargo)) {
+      this.countSpace++;
+      this.setPosition(cargo, cargo.parameters.height / 2, "y");
+      this.setPosition(cargo, -100, "x");
+      this.setPosition(cargo, -90, "z");
     }
   }
 
@@ -209,8 +227,13 @@ export default class Arrangement {
     return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
   }
 
+  // Проверка пересечения контейнера по оси +Y
   isOutwardsMaxY(cargo) {
     return cargo.block.position.y + cargo.parameters.height / 2 > this.spaceMaxY ? true : false;
+  }
+
+  isOutwardsMaxX(cargo) {
+    return cargo.block.position.x + cargo.parameters.width / 2 > this.spaceMaxX ? true : false;
   }
 
   // swap(name) {

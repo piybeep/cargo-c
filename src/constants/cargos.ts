@@ -39,7 +39,7 @@ export const CARGOS: CargosTypes = [
   {
     cargoId: 3,
     name: "group3",
-    count: 6,
+    count: 10,
     color: "yellow",
     width: 7,
     height: 4,
