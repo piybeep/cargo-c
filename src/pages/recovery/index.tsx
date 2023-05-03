@@ -1,4 +1,4 @@
-import { GetPassword } from '@/modules/GetPassword'
+import { GetPassword } from "@/modules"
 
 const GetPasswordPage = () => {
   return <GetPassword />
