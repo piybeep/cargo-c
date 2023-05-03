@@ -5,9 +5,13 @@ const instance = axios.create({
     withCredentials: true,
 });
 
-instance.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
-    return config;
+instance.interceptors.response.use((config) => {
+    return config
+}, error => {
+    console.log(error.response.status)
+    if (error.response.status === 401){
+        console.log('Ошибка авторизации 401')
+    }
 })
 
 export default instance

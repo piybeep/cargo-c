@@ -42,21 +42,6 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         }
     )
 
-    useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_HOST}auth/signin`, {
-            email: 'lolgurda@mail.ru',
-            password: 'Pass_1',
-            rememberMe: true,
-        })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }, [])
-
-
     // zustand
     const {
         projects,
