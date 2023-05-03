@@ -12,12 +12,12 @@ export interface projectsProps {
     setRemoveProject: (id: number) => void,
     setCopyProject: (data: any) => void,
     setEditProject: (id: number, title: string) => void,
-    sortProjects: {
-        text: string,
-        sortUp: number,
-        sortType: number,
-    }
-    setEditSortType: (value: number) => void,
-    setEditSortText: (value: string) => void,
-    setEditSortUp: (id: number) => void,
+    // sortProjects: {
+    //     text: string,
+    //     sortUp: number,
+    //     sortType: number,
+    // }
+    // setEditSortType: (value: number) => void,
+    // setEditSortText: (value: string) => void,
+    // setEditSortUp: (id: number) => void,
 }

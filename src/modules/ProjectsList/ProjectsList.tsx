@@ -17,12 +17,39 @@ import svgAdd from "../../../public/svg/IconAdd";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
+import axios from "axios";
+import { useMutation, useQuery } from "react-query";
+
+async function fetchProjects(sortProjects: any) {
+    return (await axios.get(`${process.env.NEXT_PUBLIC_HOST}projects/all?${sortProjects.searchString != '' ? `searchString=${sortProjects.searchString}` : ''}&sortField=${sortProjects.sortField}&sortDirection=${sortProjects.sortDirection}`)).data
+}
+
+async function createProject(data: string) {
+    return axios.post(`${process.env.NEXT_PUBLIC_HOST}projects/all`, data)
+}
 
 export function ProjectsList({ ...props }: PorjectsProps) {
     const router = useRouter()
 
     const { Title, Text } = Typography;
     const { Search } = Input;
+
+    const [sortProjects, setSortProjects] = useState({ searchString: '', sortField: 'createdAt', sortDirection: 'ASC' })
+
+    useEffect(() => {
+        axios.post(`${process.env.NEXT_PUBLIC_HOST}auth/signin`, {
+            email: 'lolgurda@mail.ru',
+            password: 'Pass_1',
+            rememberMe: true,
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, [])
+
 
     // zustand
     const {
@@ -33,12 +60,22 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         setCopyProject,
         setEditProject,
         setSelectProject,
-        sortProjects,
-        setEditSortType,
-        setEditSortText,
-        setEditSortUp
+        // sortProjects,
+        // setEditSortType,
+        // setEditSortText,
+        // setEditSortUp
     } = useProjects(state => state)
     // zustand
+    const { data, isLoading, error } = useQuery(
+        ['projects', sortProjects],
+        () => fetchProjects(sortProjects),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+        }
+    )
+
+    // const mutation = useMutation((newProject: string) => createProject(newProject))
 
     // useSwipe
     const [windowInnerWidth, setWindowInnerWidth] = useState(false)
@@ -46,7 +83,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     // useSwipe
 
     const onSearch = (text: string) => {
-        setEditSortText(text)
+        setSortProjects({ ...sortProjects, searchString: text })
     };
 
     const options = [
@@ -55,16 +92,13 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         { label: "По названию", value: 2 },
     ];
 
-    const [sort, setSort] = useState("По дате добавления");
-
     const onChangeSort = (value: any) => {
-        const text = value.target.value;
-        setSort(text);
-        setEditSortType(text)
+        value.target.value === 0 ? setSortProjects({ ...sortProjects, sortField: 'createdAt' }) : value.target.value === 1 ? setSortProjects({ ...sortProjects, sortField: 'updatedAt' }) : setSortProjects({ ...sortProjects, sortField: 'name' })
     };
 
     const onChangeSortUp = (value: any) => {
-        setEditSortUp(value)
+        console.log(value)
+        value === 0 ? setSortProjects({...sortProjects, sortDirection: 'ASC'}) : setSortProjects({...sortProjects, sortDirection: 'DESC'})
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -124,7 +158,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const addProject = (data: any) => {
         if (data.title) {
-            setAddProject(data)
+            // setAddProject(data)
+            // mutation.mutate(data.title)
             close()
         }
     }
@@ -177,7 +212,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const Menu = ({ current }: { current: any }) => {
         return (
-            <div className={s.menu}>
+            <div className={s.menu} onClick={() => handleClickProject(current)}>
                 <span title="Редактировать">
                     <svg className={s.menu__svg}
                         onClick={() => edit(current)}
