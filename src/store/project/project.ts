@@ -8,7 +8,6 @@ export const useProjects = create<projectsProps>()(set => ({
         { id: 2, title: "Проект 3", date: "Добавлено 23.03.2023, обновлено 25.03.2023", },
     ],
     selectProject: null,
-    // sortProjects: { text: '', sortUp: 0, sortType: 0 },
     setSelectProject: (id) => set(state => {
         const currentProject = state.projects.find(current => current.id === id)
 

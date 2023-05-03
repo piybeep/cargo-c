@@ -17,15 +17,12 @@ import svgAdd from "../../../public/svg/IconAdd";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
+import { ProjectsAPI } from "@/API/ProjectsAPI";
+import { useQuery } from "react-query";
 import axios from "axios";
-import { useMutation, useQuery } from "react-query";
 
 async function fetchProjects(sortProjects: any) {
-    return (await axios.get(`${process.env.NEXT_PUBLIC_HOST}projects/all?${sortProjects.searchString != '' ? `searchString=${sortProjects.searchString}` : ''}&sortField=${sortProjects.sortField}&sortDirection=${sortProjects.sortDirection}`)).data
-}
-
-async function createProject(data: string) {
-    return axios.post(`${process.env.NEXT_PUBLIC_HOST}projects/all`, data)
+    return (await ProjectsAPI.getAllProjects(sortProjects)).data
 }
 
 export function ProjectsList({ ...props }: PorjectsProps) {
@@ -35,6 +32,15 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     const { Search } = Input;
 
     const [sortProjects, setSortProjects] = useState({ searchString: '', sortField: 'createdAt', sortDirection: 'ASC' })
+
+    const { data, isLoading, error } = useQuery(
+        ['projects', sortProjects],
+        () => fetchProjects(sortProjects),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+        }
+    )
 
     useEffect(() => {
         axios.post(`${process.env.NEXT_PUBLIC_HOST}auth/signin`, {
@@ -66,16 +72,6 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         // setEditSortUp
     } = useProjects(state => state)
     // zustand
-    const { data, isLoading, error } = useQuery(
-        ['projects', sortProjects],
-        () => fetchProjects(sortProjects),
-        {
-            keepPreviousData: true,
-            refetchOnWindowFocus: false,
-        }
-    )
-
-    // const mutation = useMutation((newProject: string) => createProject(newProject))
 
     // useSwipe
     const [windowInnerWidth, setWindowInnerWidth] = useState(false)
@@ -97,8 +93,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     };
 
     const onChangeSortUp = (value: any) => {
-        console.log(value)
-        value === 0 ? setSortProjects({...sortProjects, sortDirection: 'ASC'}) : setSortProjects({...sortProjects, sortDirection: 'DESC'})
+        value === 0 ? setSortProjects({ ...sortProjects, sortDirection: 'ASC' }) : setSortProjects({ ...sortProjects, sortDirection: 'DESC' })
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
