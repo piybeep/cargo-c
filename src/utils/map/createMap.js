@@ -62,10 +62,6 @@ export class MapCargo {
   }
 
   init(space, cargos) {
-    // Создаем грузовое пространство
-    this.space = new LoadSpace(this.scene, space);
-    this.space.create({ x: 0, z: 0 });
-
     // Список грузовых групп
     this.groups = [];
 
@@ -93,7 +89,7 @@ export class MapCargo {
 
     const settings = {
       scene: this.scene,
-      space: this.space,
+      space,
       groups: this.groups,
       cargos: this.#objects,
     };

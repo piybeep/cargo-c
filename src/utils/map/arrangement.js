@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import LoadSpace from "./loadSpace";
 
 export default class Arrangement {
   constructor({ scene, space, groups, cargos }) {
@@ -6,13 +7,14 @@ export default class Arrangement {
     this.scene = scene;
 
     // Грузовое пространство
-    this.space = space;
-    this.spaceMinX = this.space.position.faceX.min;
-    this.spaceMaxX = this.space.position.faceX.max;
-    this.spaceMaxY = this.space.position.faceY.max;
-    this.spaceMinZ = this.space.position.faceZ.min;
-    this.spaceMaxZ = this.space.position.faceZ.max;
-    this.countSpace = 0;
+    this.space = [new LoadSpace(this.scene, space)];
+    this.space[0].create({ x: 0, z: 0 });
+    this.spaceMinX = this.space[0].position.faceX.min;
+    this.spaceMaxX = this.space[0].position.faceX.max;
+    this.spaceMaxY = this.space[0].position.faceY.max;
+    this.spaceMinZ = this.space[0].position.faceZ.min;
+    this.spaceMaxZ = this.space[0].position.faceZ.max;
+    this.quantitySpace = 0;
 
     // Группы грузов
     this.groups = groups;
@@ -21,12 +23,19 @@ export default class Arrangement {
     this.cargos = cargos.filter((cargo) => cargo.name !== "platform");
   }
 
+  nextSpace() {
+    this.spaceMinX = this.space[this.quantitySpace].position.faceX.min;
+    this.spaceMaxX = this.space[this.quantitySpace].position.faceX.max;
+    this.spaceMaxY = this.space[this.quantitySpace].position.faceY.max;
+    this.spaceMinZ = this.space[this.quantitySpace].position.faceZ.min;
+    this.spaceMaxZ = this.space[this.quantitySpace].position.faceZ.max;
+  }
+
   // Расстановки блоков
   start() {
     // this.isSwap = false;
-
     // Ярус
-    this.isTier = false;
+    this.isTier = true;
 
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
@@ -63,14 +72,7 @@ export default class Arrangement {
         );
       }
 
-      if (this.countSpace >= 1) {
-        this.setPosition(this.cargos[i], -90, "x");
-        this.setPosition(this.cargos[i], -90, "z");
-        this.offset(this.cargos[i], "+x");
-      } else {
-        // Сдвиг блока
-        this.arrange(this.cargos[i]);
-      }
+      this.arrange(this.cargos[i]);
 
       // Ставим следующий блок, относительно предыдущего X
       // if (this.previous.parameters.width === this.cargos[i].parameters.width) {
@@ -187,11 +189,19 @@ export default class Arrangement {
       this.offset(cargo, "+x");
     }
 
+    // Если блок вышел за пределы контейнера по X
     if (this.isOutwardsMaxX(cargo)) {
-      this.countSpace++;
-      this.setPosition(cargo, cargo.parameters.height / 2, "y");
-      this.setPosition(cargo, -100, "x");
-      this.setPosition(cargo, -90, "z");
+      this.space.push(new LoadSpace(this.scene, this.space[this.quantitySpace].size));
+      this.quantitySpace += 1;
+      this.space[this.quantitySpace].create({
+        x: 0,
+        z:
+          this.space[this.quantitySpace !== 0 && this.quantitySpace - 1].position.faceZ.min -
+          this.space[this.quantitySpace].size.length,
+      });
+
+      this.nextSpace();
+      this.startPosition(cargo);
     }
   }
 
