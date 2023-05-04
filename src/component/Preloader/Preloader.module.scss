@@ -1,0 +1,17 @@
+.wrapper {
+    position: absolute;
+    top: 0px;
+
+    z-index: 99;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__spin {
+        width: inherit;
+    }
+}

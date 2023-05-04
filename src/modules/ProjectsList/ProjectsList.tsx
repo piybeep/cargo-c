@@ -17,6 +17,9 @@ import svgAdd from "../../../public/svg/IconAdd";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
+
+import { Preloader } from "@/component/Preloader/Preloader";
+
 import { ProjectsAPI } from "@/API/ProjectsAPI";
 import { useQuery } from "react-query";
 import axios from "axios";
@@ -33,7 +36,17 @@ export function ProjectsList({ ...props }: PorjectsProps) {
 
     const [sortProjects, setSortProjects] = useState({ searchString: '', sortField: 'createdAt', sortDirection: 'ASC' })
 
-    const { data, isLoading, error } = useQuery(
+    axios.post(`${process.env.NEXT_PUBLIC_HOST}auth/signin`, {
+        email: "lolgurda@mail.ru",
+        password: "Pass_1",
+        rememberMe: true
+    }).then((response) => {
+        console.log(response)
+    }).catch(error => {
+        console.log(error)
+    })
+
+    const { data, isLoading, isError} = useQuery(
         ['projects', sortProjects],
         () => fetchProjects(sortProjects),
         {
@@ -41,6 +54,18 @@ export function ProjectsList({ ...props }: PorjectsProps) {
             refetchOnWindowFocus: false,
         }
     )
+
+    if (isLoading) {
+        return (
+            <Preloader isLoading={isLoading}/>
+        )
+    }
+
+    if (isError){
+        return(
+            <Preloader isError={isError}/>
+        )
+    }
 
     // zustand
     const {
