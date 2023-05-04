@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import s from './GetPassword.module.scss'
 import { Typography, Button, Input } from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import { useForm, Controller } from 'react-hook-form'
 import { Logo } from '@/component'
-import { useRouter } from 'next/router'
 
 const { Title, Text } = Typography
 interface AuthInputs {
   repPassword: string
   password: string
 }
-export const GetPassword = () => {
-  const { query, replace } = useRouter()
-  const [init, setInit] = useState(false)
 
-  useEffect(() => {
-    if (!query?.code&&init) {
-      replace('/login')
-    }else{
-      setInit(true)
-    }
-  }, [query])
+export const GetPassword = ({ code }: { code: number }) => {
+  console.log(code)
 
   const {
     control,
@@ -34,7 +25,6 @@ export const GetPassword = () => {
     console.log(data)
   }
 
-  if (!query?.code || !init) return <></>
   return (
     <div className={s.cont}>
       <div className={s.formCont}>
