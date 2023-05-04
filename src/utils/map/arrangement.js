@@ -123,33 +123,43 @@ export default class Arrangement {
     if (axis === "x") {
       cargo.block.position.x = position;
       cargo.line.position.x = position;
+      cargo.label.position.x = position;
     } else if (axis === "+x") {
       cargo.block.position.x += position;
       cargo.line.position.x += position;
+      cargo.label.position.x += position;
     } else if (axis === "-x") {
       cargo.block.position.x -= position;
       cargo.line.position.x -= position;
+      cargo.label.position.x -= position;
     } else if (axis === "y") {
       cargo.block.position.y = position;
       cargo.line.position.y = position;
+      cargo.label.position.y = position;
     } else if (axis === "+y") {
       cargo.block.position.y += position;
       cargo.line.position.y += position;
+      cargo.label.position.y += position;
     } else if (axis === "-y") {
       cargo.block.position.y -= position;
       cargo.line.position.y -= position;
+      cargo.label.position.y -= position;
     } else if (axis === "z") {
       cargo.block.position.z = position;
       cargo.line.position.z = position;
+      cargo.label.position.z = position;
     } else if (axis === "+z") {
       cargo.block.position.z += position;
       cargo.line.position.z += position;
+      cargo.label.position.z += position;
     } else if (axis === "-z") {
       cargo.block.position.z -= position;
       cargo.line.position.z -= position;
+      cargo.label.position.z -= position;
     } else {
       cargo.block.position.y -= position;
       cargo.line.position.y -= position;
+      cargo.label.position.y -= position;
     }
   }
 

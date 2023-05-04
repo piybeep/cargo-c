@@ -73,17 +73,18 @@ export class MapCargo {
 
       for (let i = 0; i < cargo.count; i++) {
         // Создаем груз
-        const block = new Cargo(cargo);
+        const block = new Cargo(cargo, id);
 
         // Добавляем в глобальный массив
         this.#objects.push(block.get);
 
         // Деструктурируем блок, тк группы ругаются на объекты
-        const { block: gBlock, line: gLine } = block.get;
+        const { block: gBlock, line: gLine, label: gLabel } = block.get;
 
         // Добавляем в группу, текущие блоки
         this.groups[id].add(gBlock);
         this.groups[id].add(gLine);
+        this.groups[id].add(gLabel);
       }
     });
 

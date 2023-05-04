@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  constructor({ name, width, height, length, color }) {
+  constructor({ name, width, height, length, color }, id) {
     // this.group = groupCargo;
     // Сцена холста
     // this.scene = scene;
@@ -25,6 +25,25 @@ export default class Cargo {
     // Имя груза
     this.name = name;
 
+    const labelGeometry = new THREE.PlaneGeometry(5, 5);
+    labelGeometry.rotateX(-Math.PI / 2);
+    labelGeometry.rotateY(Math.PI / 2);
+    labelGeometry.translate(0, height / 2 + 0.001, 0);
+    console.log(labelGeometry);
+
+    const canvas = this.makeLabelCanvas(82, id + 1);
+    const texture = new THREE.CanvasTexture(canvas);
+
+    texture.minFilter = THREE.LinearFilter;
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+
+    const labelMaterial = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      transparent: true,
+    });
+
     this.geometry = new THREE.BoxGeometry(width, height, length);
     this.material = new THREE.MeshBasicMaterial({
       color: color,
@@ -42,10 +61,13 @@ export default class Cargo {
 
     // Создать фигуру
     this.block = new THREE.Mesh(this.geometry, this.material);
+    this.label = new THREE.Mesh(labelGeometry, labelMaterial);
 
     // Имя фигуры
     this.block.name = this.name;
     this.line.name = this.name;
+    this.label.name = this.name;
+    this.label.position.x = width;
 
     // Ставим блок на платформу [!возможен баг]
     // this.block.position.y = this.height / 2;
@@ -294,7 +316,7 @@ export default class Cargo {
   // }
 
   get get() {
-    return { block: this.block, line: this.line, parameters: this.parameters };
+    return { block: this.block, line: this.line, label: this.label, parameters: this.parameters };
   }
 
   get parameters() {
@@ -303,5 +325,17 @@ export default class Cargo {
       height: this.block.geometry.parameters.height,
       length: this.block.geometry.parameters.depth,
     };
+  }
+
+  makeLabelCanvas(size, name) {
+    const borderSize = 2;
+    const ctx = document.createElement("canvas").getContext("2d");
+    const font = `24px bold Arial`;
+    ctx.font = font;
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "black";
+    ctx.fillText(name, borderSize, borderSize);
+
+    return ctx.canvas;
   }
 }
