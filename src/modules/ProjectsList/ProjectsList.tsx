@@ -18,6 +18,7 @@ import svgAdd from "../../../public/svg/IconAdd";
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
 import { SkeletonProjects } from "../SkeletonProjects";
+import { SkeletonVisualization } from "../SleletonVisualization";
 
 export function ProjectsList({ ...props }: PorjectsProps) {
     const router = useRouter()
@@ -461,7 +462,8 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         </div>
                     </>
                     :
-                    <SkeletonProjects/>
+                    // <SkeletonProjects/>
+                    <SkeletonVisualization/>
             }
 
         </div>
