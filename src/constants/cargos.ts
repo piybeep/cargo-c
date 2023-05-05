@@ -1,50 +1,77 @@
+enum SizeUnit {
+  mm = "мм",
+  cm = "см",
+  m = "м",
+}
+
 type CargosTypes = {
-  cargoId: number;
+  id: number;
   name: string;
+  groupId: string;
+  loadSpaceId: string;
   count: number;
   color: string;
   width: number;
   height: number;
   length: number;
+  weight: number;
+  turn: boolean;
+  tilting: boolean;
+  isTemplate: boolean;
+  sizeUnit: SizeUnit;
 }[];
 
 export const CARGOS: CargosTypes = [
   {
-    cargoId: 0,
-    name: "group0",
-    count: 3,
+    id: 0,
+    name: "name0",
+    groupId: "group0",
+    loadSpaceId: "loadSpace0",
+    count: 10,
     color: "rgb(20, 100, 120)",
-    width: 25,
-    height: 4,
-    length: 6,
-  },
-  {
-    cargoId: 1,
-    name: "group1",
-    count: 20,
-    color: "#0fa2a9",
-    width: 5,
+    width: 8,
     height: 8,
-    length: 5,
+    length: 8,
+    weight: 10,
+    turn: false,
+    tilting: false,
+    isTemplate: false,
+    sizeUnit: SizeUnit.mm,
   },
   {
-    cargoId: 2,
-    name: "group2",
-    count: 5,
-    color: "#ff8f99",
+    id: 1,
+    name: "name1",
+    groupId: "group1",
+    loadSpaceId: "loadSpace0",
+    count: 10,
+    color: "rgb(200, 100, 120)",
     width: 8,
     height: 4,
-    length: 10,
+    length: 4,
+    weight: 10,
+    turn: false,
+    tilting: false,
+    isTemplate: false,
+    sizeUnit: SizeUnit.mm,
   },
-  {
-    cargoId: 3,
-    name: "group3",
-    count: 25,
-    color: "yellow",
-    width: 7,
-    height: 4,
-    length: 10,
-  },
+  // {
+  //   cargoId: 2,
+  //   name: "group2",
+  //   count: 5,
+  //   color: "#ff8f99",
+  //   width: 8,
+  //   height: 4,
+  //   length: 10,
+  // },
+  // {
+  //   cargoId: 3,
+  //   name: "group3",
+  //   count: 25,
+  //   color: "yellow",
+  //   width: 7,
+  //   height: 4,
+  //   length: 10,
+  // },
   // {
   //   cargoId: 4,
   //   name: "group4",

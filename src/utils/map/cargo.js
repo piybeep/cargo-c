@@ -25,11 +25,13 @@ export default class Cargo {
     // Имя груза
     this.name = name;
 
-    const labelGeometry = new THREE.PlaneGeometry(5, 5);
+    const labelGeometry = new THREE.PlaneGeometry(
+      length > width ? width * 0.7 : length * 0.7,
+      length > width ? width * 0.7 : length * 0.7
+    );
     labelGeometry.rotateX(-Math.PI / 2);
     labelGeometry.rotateY(Math.PI / 2);
     labelGeometry.translate(0, height / 2 + 0.001, 0);
-    console.log(labelGeometry);
 
     const canvas = this.makeLabelCanvas(82, id + 1);
     const texture = new THREE.CanvasTexture(canvas);
@@ -40,8 +42,8 @@ export default class Cargo {
 
     const labelMaterial = new THREE.MeshBasicMaterial({
       map: texture,
-      side: THREE.DoubleSide,
       transparent: true,
+      side: THREE.DoubleSide,
     });
 
     this.geometry = new THREE.BoxGeometry(width, height, length);
@@ -67,7 +69,6 @@ export default class Cargo {
     this.block.name = this.name;
     this.line.name = this.name;
     this.label.name = this.name;
-    this.label.position.x = width;
 
     // Ставим блок на платформу [!возможен баг]
     // this.block.position.y = this.height / 2;
@@ -330,8 +331,7 @@ export default class Cargo {
   makeLabelCanvas(size, name) {
     const borderSize = 2;
     const ctx = document.createElement("canvas").getContext("2d");
-    const font = `24px bold Arial`;
-    ctx.font = font;
+    ctx.font = `70px Consolas`;
     ctx.textBaseline = "top";
     ctx.fillStyle = "black";
     ctx.fillText(name, borderSize, borderSize);

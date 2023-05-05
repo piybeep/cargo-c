@@ -100,26 +100,7 @@ export class MapCargo {
 
     // После расстановки добавить все группы на сцену
     this.groups.forEach((group) => this.scene.add(group));
-    // Тест
-    // cargos.forEach((cargo, i) => {
-    //   setTimeout(() => {
-    //     this.test(cargo);
-    //   }, cargo.count * (i * 150));
-    // });
   }
-
-  // test(cargo) {
-  //   for (let i = 0; i < cargo.count; i++) {
-  //     setTimeout(() => {
-  //       const block = new Cargo(this.scene, this.space, this.groupCargo, cargo);
-  //       block.arrange(this.#objects);
-
-  //       this.scene.add(this.groupCargo);
-  //       this.#objects.push(block.get);
-  //       this.render();
-  //     }, i * 100);
-  //   }
-  // }
 
   create() {
     // Создание сцены

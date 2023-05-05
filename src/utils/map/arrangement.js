@@ -35,7 +35,9 @@ export default class Arrangement {
   start() {
     // this.isSwap = false;
     // Ярус
-    this.isTier = true;
+    this.isTier = false;
+
+    this.isRotate = true;
 
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
@@ -73,28 +75,6 @@ export default class Arrangement {
       }
 
       this.arrange(this.cargos[i]);
-
-      // Ставим следующий блок, относительно предыдущего X
-      // if (this.previous.parameters.width === this.cargos[i].parameters.width) {
-      //   this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
-      // } else {
-      //   this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
-      //   this.setPosition(
-      //     this.cargos[i],
-      //     this.previous.block.position.x +
-      //       this.previous.parameters.width / 2 +
-      //       this.cargos[i].parameters.width / 2 +
-      //       0.1,
-      //     "x"
-      //   );
-      // }
-
-      // Ставим следующий блок, относительно предыдущего Y
-      // if (this.previous.parameters.height == this.cargos[i].parameters.height) {
-      //   this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
-      // } else {
-      //   this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
-      // }
 
       // if (this.isSwap) {
       //   i = -1;
@@ -179,6 +159,11 @@ export default class Arrangement {
 
   // Расстановка блоков
   arrange(cargo) {
+    if (this.isRotate) {
+      // cargo.block.rotateX(1.5708);
+      // cargo.block.rotateX(Math.PI / 2);
+    }
+
     // Сдвигать по оси Z, если есть еще место
     if (!this.isOutwardsMaxZ(cargo)) {
       this.offset(cargo, "+z");
