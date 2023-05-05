@@ -462,8 +462,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                         </div>
                     </>
                     :
-                    // <SkeletonProjects/>
-                    <SkeletonVisualization/>
+                    <SkeletonProjects/>
             }
 
         </div>
