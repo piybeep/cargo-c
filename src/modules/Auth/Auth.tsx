@@ -5,24 +5,34 @@ import { MailOutlined, LockOutlined } from '@ant-design/icons'
 import { Checkbox, Modal, Space, Form } from 'antd'
 import { useForm, Controller } from 'react-hook-form'
 import { Logo } from '@/component'
+import { useLogin } from './hook/useLogin'
+import { useRouter } from 'next/router'
 
 const { Title, Text, Link } = Typography
 interface AuthInputs {
   email: string
   password: string
+  rememberMe: boolean
 }
 export const Auth = () => {
+  const router = useRouter()
   const [form] = Form.useForm()
   const [isFetched, setIsFetched] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { control, handleSubmit } = useForm<AuthInputs>()
+  const { control, handleSubmit } = useForm<AuthInputs>({
+    defaultValues: { rememberMe: false }
+  })
+  const { mutate, isError, isSuccess } = useLogin()
+
+  if (isSuccess && !isError) {
+    router.replace('/')
+  }
 
   const Submit = (data: AuthInputs) => {
-    console.log(data)
+    mutate(data)
   }
 
   const sendEmail = (data: any) => {
-    console.log(data)
     setIsFetched(true)
   }
 
@@ -40,7 +50,7 @@ export const Auth = () => {
             <Logo size='large' />
             <Title level={1}>Логистика</Title>
           </div>
-          <Text type='secondary' style={{textAlign:'center'}}>
+          <Text type='secondary' style={{ textAlign: 'center' }}>
             Сервис для оптимизации загрузки грузовых контейнеров
           </Text>
         </div>
@@ -50,14 +60,18 @@ export const Auth = () => {
             <Controller
               name='email'
               control={control}
-              rules={{required:true}}
-              render={({ field: { onChange } }) => (
+              rules={{
+                required: true,
+                pattern: /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i
+              }}
+              render={({ field: { onChange }, fieldState: { error } }) => (
                 <Input
                   onChange={onChange}
                   width={'100%'}
                   size='large'
                   placeholder='Почта'
                   inputMode='email'
+                  status={error ? 'error' : ''}
                   prefix={
                     <MailOutlined
                       style={{ color: '#1890FF', fontSize: '18px' }}
@@ -69,12 +83,13 @@ export const Auth = () => {
             <Controller
               name='password'
               control={control}
-              rules={{required:true}}
-              render={({ field: { onChange } }) => (
+              rules={{ required: true }}
+              render={({ field: { onChange }, fieldState: { error } }) => (
                 <Input.Password
                   onChange={onChange}
                   width={'100%'}
                   size='large'
+                  status={error ? 'error' : ''}
                   placeholder='Пароль'
                   prefix={
                     <LockOutlined
@@ -85,8 +100,21 @@ export const Auth = () => {
               )}
             />
           </div>
+          {isError ? (
+            <Text type='danger'>Неверный логин или пароль</Text>
+          ) : (
+            <></>
+          )}
           <div className={s.tool}>
-            <Checkbox>Запомнить меня</Checkbox>
+            <Controller
+              name='rememberMe'
+              control={control}
+              render={({ field }) => (
+                <Checkbox {...field} checked={field.value}>
+                  Запомнить меня
+                </Checkbox>
+              )}
+            />
             <Link href='#' onClick={() => setIsModalOpen(true)}>
               Забыли пароль?
             </Link>
@@ -126,7 +154,7 @@ export const Auth = () => {
                     width: '80%',
                     marginRight: 'auto',
                     textAlign: 'start',
-                    display:'flex'
+                    display: 'flex'
                   }}
                 >
                   Перейдите по ссылке, которая отправлена на вашу почту
@@ -140,12 +168,12 @@ export const Auth = () => {
                 <Form.Item
                   name={'email'}
                   rules={[{ required: true, type: 'email' }]}
-                  style={{ width: '100%',margin:0 }}
+                  style={{ width: '100%', margin: 0 }}
                 >
-                  <Input placeholder='Введите почту...' inputMode='email'/>
+                  <Input placeholder='Введите почту...' inputMode='email' />
                 </Form.Item>
-                <Form.Item style={{margin:0}}>
-                  <Button type='primary' htmlType='submit' >
+                <Form.Item style={{ margin: 0 }}>
+                  <Button type='primary' htmlType='submit'>
                     Отправить
                   </Button>
                 </Form.Item>
