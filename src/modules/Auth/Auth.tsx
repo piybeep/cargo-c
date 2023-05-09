@@ -7,6 +7,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { Logo } from '@/component'
 import { useLogin } from './hook/useLogin'
 import { useRouter } from 'next/router'
+import { useRecovery } from './hook/useRecovery'
 
 const { Title, Text, Link } = Typography
 interface AuthInputs {
@@ -17,12 +18,12 @@ interface AuthInputs {
 export const Auth = () => {
   const router = useRouter()
   const [form] = Form.useForm()
-  const [isFetched, setIsFetched] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { control, handleSubmit } = useForm<AuthInputs>({
     defaultValues: { rememberMe: false }
   })
   const { mutate, isError, isSuccess } = useLogin()
+  const { mutate: recovery, isFetched, setIsFetched, isLoading } = useRecovery()
 
   if (isSuccess && !isError) {
     router.replace('/')
@@ -32,8 +33,8 @@ export const Auth = () => {
     mutate(data)
   }
 
-  const sendEmail = (data: any) => {
-    setIsFetched(true)
+  const sendEmail = ({ email }: { email: string }) => {
+    recovery({ email })
   }
 
   const closeModal = () => {
@@ -173,7 +174,7 @@ export const Auth = () => {
                   <Input placeholder='Введите почту...' inputMode='email' />
                 </Form.Item>
                 <Form.Item style={{ margin: 0 }}>
-                  <Button type='primary' htmlType='submit'>
+                  <Button type='primary' htmlType='submit' loading={isLoading}>
                     Отправить
                   </Button>
                 </Form.Item>
