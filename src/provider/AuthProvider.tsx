@@ -19,7 +19,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (id) {
       mutate()
     } else {
-      if (router.pathname !== '/login') {
+      if (router.pathname !== '/login' && router.pathname !== '/recovery') {
         router.replace('/login').finally(() => setInit(true))
       } else {
         setInit(true)

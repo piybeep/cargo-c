@@ -3,3 +3,9 @@ export interface signProps {
   password: string
   rememberMe: boolean
 }
+
+export interface changePasProps {
+  email: string
+  password: string
+  code: string
+}

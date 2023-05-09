@@ -4,6 +4,7 @@ import { Typography, Button, Input } from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import { useForm, Controller } from 'react-hook-form'
 import { Logo } from '@/component'
+import { useChangePassword } from './hook/useChangePassword'
 
 const { Title, Text } = Typography
 interface AuthInputs {
@@ -12,8 +13,6 @@ interface AuthInputs {
 }
 
 export const GetPassword = ({ code }: { code: number }) => {
-  console.log(code)
-
   const {
     control,
     handleSubmit,
@@ -21,8 +20,13 @@ export const GetPassword = ({ code }: { code: number }) => {
     formState: { errors }
   } = useForm<AuthInputs>()
 
+  const { mutate, isLoading } = useChangePassword()
+
   const Submit = (data: AuthInputs) => {
-    console.log(data)
+    const email = localStorage.getItem('emailForRecovery')
+    if (email) {
+      mutate({ code: String(code), ...data, email })
+    }
   }
 
   return (
@@ -87,6 +91,7 @@ export const GetPassword = ({ code }: { code: number }) => {
             size='large'
             htmlType='submit'
             className={s.button}
+            loading={isLoading}
           >
             Продолжить
           </Button>

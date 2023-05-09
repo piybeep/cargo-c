@@ -23,7 +23,12 @@ export const Auth = () => {
     defaultValues: { rememberMe: false }
   })
   const { mutate, isError, isSuccess } = useLogin()
-  const { mutate: recovery, isFetched, setIsFetched, isLoading } = useRecovery()
+  const {
+    mutateAsync: recovery,
+    isFetched,
+    setIsFetched,
+    isLoading
+  } = useRecovery()
 
   if (isSuccess && !isError) {
     router.replace('/')
@@ -33,8 +38,10 @@ export const Auth = () => {
     mutate(data)
   }
 
-  const sendEmail = ({ email }: { email: string }) => {
-    recovery({ email })
+  const sendEmail = async ({ email }: { email: string }) => {
+    await recovery({ email }).then(() => {
+      localStorage.setItem('emailForRecovery', email)
+    })
   }
 
   const closeModal = () => {

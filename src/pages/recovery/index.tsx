@@ -6,6 +6,7 @@ const GetPasswordPage = ({ code }: { code: number }) => {
 }
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+  console.log(query.code)
   if (!query.code) {
     return {
       redirect: {
