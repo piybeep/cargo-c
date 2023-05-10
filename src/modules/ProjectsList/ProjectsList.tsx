@@ -17,6 +17,8 @@ import svgAdd from "../../../public/svg/IconAdd";
 
 import s from "./ProjectsList.module.scss";
 import classNames from "classnames";
+import { SkeletonProjects } from "../SkeletonProjects";
+import { SkeletonVisualization } from "../SleletonVisualization";
 
 export function ProjectsList({ ...props }: PorjectsProps) {
     const router = useRouter()
@@ -294,6 +296,9 @@ export function ProjectsList({ ...props }: PorjectsProps) {
         )
     }
 
+    // Пока заглушка
+    const [isLoading, setIsLoading] = useState(true)
+
     return (
         <div className={s.wrapper}>
             <Modal
@@ -402,56 +407,64 @@ export function ProjectsList({ ...props }: PorjectsProps) {
                 </div>
             </div>
 
-            <div className={s.list}>
-                {projects.map((current: any, index: number) => {
-                    return (
-                        <div className={s.list__wrapper} key={current.id}>
-                            <div className={classNames(s.item, {
-                                [s.item_active]: Number(router.query.currentId) == current.id
+            {
+                !isLoading ?
+                    <>
+                        <div className={s.list}>
+                            {projects.map((current: any, index: number) => {
+                                return (
+                                    <div className={s.list__wrapper} key={current.id}>
+                                        <div className={classNames(s.item, {
+                                            [s.item_active]: Number(router.query.currentId) == current.id
+                                        })}
+                                            onClick={() => handleClickProject(current)}
+                                            onTouchStart={(e) => windowInnerWidth && handleTouchStart(e, current.id)}
+                                            onTouchMove={(e) => windowInnerWidth && handleTouchMove(e, current.id)}
+                                            onTouchEnd={() => windowInnerWidth && handleTouchEnd(current.id)}
+                                            id={current.id}
+                                        >
+                                            <svg
+                                                className={s.item__svg}
+                                                width="34"
+                                                height="28"
+                                                viewBox="0 0 34 28"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    className={s.item__svg}
+                                                    stroke="#1890FF"
+                                                    d="M4.03709 0.666748H11.4445L17.0001 6.00008H29.963C30.9453 6.00008 31.8874 6.37468 32.5819 7.04148C33.2765 7.70828 33.6667 8.61265 33.6667 9.55564V23.7779C33.6667 24.7209 33.2765 25.6252 32.5819 26.292C31.8874 26.9588 30.9453 27.3334 29.963 27.3334H4.03709C3.05481 27.3334 2.11276 26.9588 1.41818 26.292C0.723598 25.6252 0.333387 24.7209 0.333387 23.7779V4.2223C0.333387 3.27931 0.723598 2.37494 1.41818 1.70815C2.11276 1.04135 3.05481 0.666748 4.03709 0.666748Z"
+                                                    fill="#1890FF"
+                                                />
+                                            </svg>
+                                            <div className={s.item__info}>
+                                                <Title level={5}>{current.title}</Title>
+                                                <Text className={s.item__text} type="secondary">{current.date}</Text>
+                                            </div>
+                                            <Button className={s.item__open} onClick={open}>Открыть</Button>
+                                            <div className={s.item__buttons}>
+                                                <Menu current={current} />
+                                            </div>
+                                        </div>
+                                        <div className={s.list__menu}>
+                                            <Menu current={current} />
+                                        </div>
+                                    </div>
+                                );
                             })}
-                                onClick={() => handleClickProject(current)}
-                                onTouchStart={(e) => windowInnerWidth && handleTouchStart(e, current.id)}
-                                onTouchMove={(e) => windowInnerWidth && handleTouchMove(e, current.id)}
-                                onTouchEnd={() => windowInnerWidth && handleTouchEnd(current.id)}
-                                id={current.id}
-                            >
-                                <svg
-                                    className={s.item__svg}
-                                    width="34"
-                                    height="28"
-                                    viewBox="0 0 34 28"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        className={s.item__svg}
-                                        stroke="#1890FF"
-                                        d="M4.03709 0.666748H11.4445L17.0001 6.00008H29.963C30.9453 6.00008 31.8874 6.37468 32.5819 7.04148C33.2765 7.70828 33.6667 8.61265 33.6667 9.55564V23.7779C33.6667 24.7209 33.2765 25.6252 32.5819 26.292C31.8874 26.9588 30.9453 27.3334 29.963 27.3334H4.03709C3.05481 27.3334 2.11276 26.9588 1.41818 26.292C0.723598 25.6252 0.333387 24.7209 0.333387 23.7779V4.2223C0.333387 3.27931 0.723598 2.37494 1.41818 1.70815C2.11276 1.04135 3.05481 0.666748 4.03709 0.666748Z"
-                                        fill="#1890FF"
-                                    />
-                                </svg>
-                                <div className={s.item__info}>
-                                    <Title level={5}>{current.title}</Title>
-                                    <Text className={s.item__text} type="secondary">{current.date}</Text>
-                                </div>
-                                <Button className={s.item__open} onClick={open}>Открыть</Button>
-                                <div className={s.item__buttons}>
-                                    <Menu current={current} />
-                                </div>
-                            </div>
-                            <div className={s.list__menu}>
-                                <Menu current={current} />
-                            </div>
                         </div>
-                    );
-                })}
-            </div>
 
-            <div className={s.add}>
-                <Button type="primary" className={s.add__button} onClick={() => { setAddIsModalOpen(true) }}>
-                    <Icon component={svgAdd} />
-                    Добавить новый проект</Button>
-            </div>
+                        <div className={s.add}>
+                            <Button type="primary" className={s.add__button} onClick={() => { setAddIsModalOpen(true) }}>
+                                <Icon component={svgAdd} />
+                                Добавить новый проект</Button>
+                        </div>
+                    </>
+                    :
+                    <SkeletonProjects/>
+            }
+
         </div>
     );
 }
