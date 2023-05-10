@@ -34,9 +34,10 @@ export default class Arrangement {
   // Расстановки блоков
   start() {
     // this.isSwap = false;
-    // Ярус
-    this.isTier = false;
 
+    // Ярус
+    this.isTier = true;
+    // Кантовка
     this.isRotate = true;
 
     // Ставим все блоки за карту, чтобы не мешала расстановке
@@ -145,6 +146,7 @@ export default class Arrangement {
 
   // Установить стартовую позицию внутри контейнера
   startPosition(cargo) {
+    this.rotate(cargo);
     this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
     this.setPosition(cargo, cargo.parameters.height / 2, "y");
     this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
@@ -160,8 +162,7 @@ export default class Arrangement {
   // Расстановка блоков
   arrange(cargo) {
     if (this.isRotate) {
-      // cargo.block.rotateX(1.5708);
-      // cargo.block.rotateX(Math.PI / 2);
+      this.rotate(cargo);
     }
 
     // Сдвигать по оси Z, если есть еще место
@@ -225,6 +226,14 @@ export default class Arrangement {
         this.setPosition(cargo, step, direction);
       }
     }
+  }
+
+  rotate(cargo) {
+    // cargo.block.scale.x
+    // console.log(cargo.block);
+    cargo.block.rotateZ(Math.PI / 2);
+    cargo.line.rotateZ(Math.PI / 2);
+    cargo.label.rotateZ(Math.PI / 2);
   }
 
   // Проверка пересечения контейнера по оси +Z
