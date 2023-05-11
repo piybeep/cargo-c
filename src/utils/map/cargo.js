@@ -325,6 +325,7 @@ export default class Cargo {
       width: this.block.geometry.parameters.width,
       height: this.block.geometry.parameters.height,
       length: this.block.geometry.parameters.depth,
+      rotated: false,
     };
   }
 

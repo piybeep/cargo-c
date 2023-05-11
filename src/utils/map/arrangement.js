@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import LoadSpace from "./loadSpace";
+import Cargo from "./cargo";
 
 export default class Arrangement {
   constructor({ scene, space, groups, cargos }) {
@@ -75,7 +76,7 @@ export default class Arrangement {
         );
       }
 
-      this.arrange(this.cargos[i]);
+      this.arrange(this.cargos[i], i);
 
       // if (this.isSwap) {
       //   i = -1;
@@ -146,10 +147,29 @@ export default class Arrangement {
 
   // Установить стартовую позицию внутри контейнера
   startPosition(cargo) {
-    this.rotate(cargo);
+    // this.rotate(cargo);
     this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
     this.setPosition(cargo, cargo.parameters.height / 2, "y");
-    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+    this.setPosition(cargo, cargo.parameters.length / 2, "z");
+  }
+
+  // Фильтр
+  filter(cargo, direction) {
+    if (cargo.parameters.rotated && direction === "x") return cargo.parameters.length / 2;
+    if (direction === "x") return cargo.parameters.width / 2;
+
+    if (cargo.parameters.rotated && direction === "z") return cargo.parameters.width;
+    if (direction === "z") return cargo.parameters.length / 2;
+
+    // if (cargo.parameters.rotated && direction === "y") return cargo.parameters.width / 2;
+    // if (direction === "y") return cargo.parameters.height / 2;
+  }
+
+  rotate(cargo) {
+    cargo.block.rotateY(Math.PI / 2);
+    cargo.line.rotateY(Math.PI / 2);
+    cargo.label.rotateY(Math.PI / 2);
+    cargo.parameters.rotated = true;
   }
 
   // Место для расположения всех неотсортированных коробок
@@ -160,8 +180,8 @@ export default class Arrangement {
   }
 
   // Расстановка блоков
-  arrange(cargo) {
-    if (this.isRotate) {
+  arrange(cargo, i) {
+    if ((this.isRotate && i === 8) || i === 9) {
       this.rotate(cargo);
     }
 
@@ -226,14 +246,6 @@ export default class Arrangement {
         this.setPosition(cargo, step, direction);
       }
     }
-  }
-
-  rotate(cargo) {
-    // cargo.block.scale.x
-    // console.log(cargo.block);
-    cargo.block.rotateZ(Math.PI / 2);
-    cargo.line.rotateZ(Math.PI / 2);
-    cargo.label.rotateZ(Math.PI / 2);
   }
 
   // Проверка пересечения контейнера по оси +Z
