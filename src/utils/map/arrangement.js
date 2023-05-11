@@ -53,19 +53,42 @@ export default class Arrangement {
       // Получаем позицию предыдущего блока
       this.previous = this.cargos[i - 1];
 
+      if (i === 40 || i === 41) {
+        console.log(this.cargos[i].parameters);
+        this.rotate(this.cargos[i]);
+      }
       // Ставим следующий блок, относительно предыдущего
       if (
         this.previous.parameters.length === this.cargos[i].parameters.length &&
         this.previous.parameters.width === this.cargos[i].parameters.width &&
         this.previous.parameters.height === this.cargos[i].parameters.height
       ) {
-        this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
-        this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
+        // Если блок перевернут - покрасить
+        // if (this.cargos[i].parameters.rotate && this.cargos[i].parameters.rotated) {
+        //   this.cargos[i].block.material.color.set("blue");
+        // }
+
+        // Если предыдущий блок перевернут, а текущий нет
+        if (this.previous.parameters.rotated && !this.cargos[i].parameters.rotated) {
+          this.cargos[i].block.material.color.set("blue");
+          this.setPosition(
+            this.cargos[i],
+            this.previous.block.position.x +
+              this.previous.parameters.width / 2 -
+              this.cargos[i].parameters.length / 2,
+            "x"
+          );
+        }
+        // Если предыдущий блок перевернут и текущий
+        else {
+          this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
+        }
+
         this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
+        this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
       } else {
         this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
         this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
-
         this.setPosition(
           this.cargos[i],
           this.previous.block.position.x +
@@ -76,7 +99,7 @@ export default class Arrangement {
         );
       }
 
-      this.arrange(this.cargos[i], i);
+      this.arrange(this.cargos[i], this.previous);
 
       // if (this.isSwap) {
       //   i = -1;
@@ -150,7 +173,7 @@ export default class Arrangement {
     // this.rotate(cargo);
     this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
     this.setPosition(cargo, cargo.parameters.height / 2, "y");
-    this.setPosition(cargo, cargo.parameters.length / 2, "z");
+    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
   }
 
   // Фильтр
@@ -180,19 +203,30 @@ export default class Arrangement {
   }
 
   // Расстановка блоков
-  arrange(cargo, i) {
-    if ((this.isRotate && i === 8) || i === 9) {
-      this.rotate(cargo);
-    }
-
+  arrange(cargo, previous) {
     // Сдвигать по оси Z, если есть еще место
     if (!this.isOutwardsMaxZ(cargo)) {
+      // Если блок перевернут
+      if (cargo.parameters.rotate && cargo.parameters.rotated && !previous.parameters.rotated) {
+        this.setPosition(
+          cargo,
+          previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
+          "x"
+        );
+      }
       this.offset(cargo, "+z");
     }
 
     // Если блок вышел за пределы контейнера по Z
     if (this.isOutwardsMaxZ(cargo)) {
-      this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+      // Если блок перевернут
+      if (cargo.parameters.rotate && cargo.parameters.rotated) {
+        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
+        this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+      } else {
+        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+        // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+      }
 
       if (this.isTier) {
         this.offset(cargo, "+y");
