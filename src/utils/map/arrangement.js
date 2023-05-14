@@ -55,32 +55,36 @@ export default class Arrangement {
 
       // Ставим следующий блок, относительно предыдущего
       if (this.cargos[i].parameters.group === this.previous.parameters.group) {
-        // Если предыдущий блок перевернут, а текущий нет
-        // if (this.previous.parameters.rotated && !this.cargos[i].parameters.rotated) {
-        //   this.cargos[i].block.material.color.set("blue");
-        //   this.setPosition(
-        //     this.cargos[i],
-        //     this.previous.block.position.x +
-        //       this.previous.parameters.width / 2 -
-        //       this.cargos[i].parameters.length / 2,
-        //     "x"
-        //   );
-        // }
-        // Если предыдущий блок перевернут и текущий
         this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
         this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
         this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
       } else {
         this.setPosition(this.cargos[i], this.spaceMinZ + this.cargos[i].parameters.length / 2, "z");
         this.setPosition(this.cargos[i], this.cargos[i].parameters.height / 2, "y");
-        this.setPosition(
-          this.cargos[i],
-          this.previous.block.position.x +
-            this.previous.parameters.width / 2 +
-            this.cargos[i].parameters.width / 2 +
-            0.1,
-          "x"
-        );
+
+        // Ставим по оригинальному блоку, который не перевернут
+        if (
+          this.previous.parameters.rotated &&
+          this.previous.parameters.length !== this.previous.parameters.width
+        ) {
+          this.setPosition(
+            this.cargos[i],
+            this.previous.parameters.width +
+              this.previous.block.position.x +
+              this.cargos[i].parameters.length / 2 +
+              0.1,
+            "x"
+          );
+        } else {
+          this.setPosition(
+            this.cargos[i],
+            this.previous.block.position.x +
+              this.previous.parameters.width / 2 +
+              this.cargos[i].parameters.width / 2 +
+              0.1,
+            "x"
+          );
+        }
       }
 
       this.arrange(this.cargos[i], this.previous);
@@ -92,20 +96,125 @@ export default class Arrangement {
     }
   }
 
-  // Проверка на коллизию
-  isCollision(cargo) {
-    const currentCargo = new THREE.Box3().setFromObject(cargo.block);
+  rotate(cargo) {
+    cargo.block.rotateY(Math.PI / 2);
+    cargo.line.rotateY(Math.PI / 2);
+    cargo.label.rotateY(Math.PI / 2);
+    cargo.parameters.rotated = true;
+    // cargo.block.material.color.set("yellow");
+  }
 
+  // Место для расположения всех неотсортированных коробок
+  defaultPosition() {
     for (let i = 0; i < this.cargos.length; i++) {
-      // Если тот же самый груз, пропускаем итерацию
-      if (cargo.block.uuid === this.cargos[i].block.uuid) continue;
+      this.setPosition(this.cargos[i], -this.cargos[i].parameters.height / 2 - 10, "y");
+    }
+  }
 
-      const otherCargo = new THREE.Box3().setFromObject(this.cargos[i].block);
-
-      if (currentCargo.intersectsBox(otherCargo)) return true;
+  // Расстановка блоков
+  arrange(cargo, previous) {
+    // Сколько может поместиться блоков в один контейнер
+    const baseAmount = Math.floor((this.spaceMaxZ + Math.abs(this.spaceMinZ)) / cargo.parameters.length);
+    // Сколько может поместиться ровное кол-во оснований в один контейнер
+    const baseStep = baseAmount * Math.floor(cargo.parameters.count / baseAmount);
+    // Если включен параметр turn(переворот)
+    if (
+      baseStep != 0 &&
+      cargo.parameters.id > baseStep &&
+      cargo.parameters.count % baseAmount !== 0 &&
+      cargo.parameters.rotate &&
+      !previous.parameters.rotated
+    ) {
+      this.rotate(cargo);
     }
 
-    return false;
+    // Сдвигать по оси Z, если есть еще место
+    if (!this.isOutwardsMaxZ(cargo)) {
+      // Если блок перевернут
+      if (
+        cargo.parameters.rotate &&
+        cargo.parameters.rotated &&
+        !previous.parameters.rotated &&
+        cargo.parameters.group === previous.parameters.group
+      ) {
+        this.setPosition(
+          cargo,
+          previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
+          "x"
+        );
+      } else if (previous.parameters.rotated && cargo.parameters.group === previous.parameters.group) {
+        this.rotate(cargo);
+      }
+
+      this.offset(cargo, "+z");
+    }
+
+    // Если блок вышел за пределы контейнера по Z
+    if (this.isOutwardsMaxZ(cargo)) {
+      // Если блок перевернут
+      if (
+        cargo.parameters.rotate &&
+        cargo.parameters.rotated &&
+        cargo.parameters.group === previous.parameters.group
+      ) {
+        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
+
+        // Если предыдущий груз перевернут - ставить по x
+        if (previous.parameters.rotated) {
+          // cargo.block.material.color.set("red");
+          this.setPosition(cargo, previous.block.position.x, "x");
+        } else {
+          // Если не перевернут, высчитать и поставить у края не перевернутого блока
+          this.setPosition(
+            cargo,
+            previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
+            "x"
+          );
+        }
+      } else {
+        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+        // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+      }
+
+      if (this.isTier) {
+        this.offset(cargo, "+y");
+      } else this.offset(cargo, "+x");
+    }
+
+    // Если блок вышел за пределы контейнера по Y
+    if (this.isOutwardsMaxY(cargo)) {
+      this.setPosition(cargo, cargo.parameters.height / 2, "y");
+      this.offset(cargo, "+x");
+    }
+
+    // Если блок вышел за пределы контейнера по X
+    if (this.isOutwardsMaxX(cargo)) {
+      this.space.push(new LoadSpace(this.scene, this.space[this.quantitySpace].size));
+      this.quantitySpace += 1;
+      this.space[this.quantitySpace].create({
+        x: 0,
+        z:
+          this.space[this.quantitySpace !== 0 && this.quantitySpace - 1].position.faceZ.min -
+          this.space[this.quantitySpace].size.length,
+      });
+
+      this.nextSpace();
+      this.startPosition(cargo);
+    }
+  }
+
+  // Проверка пересечения контейнера по оси +Z
+  isOutwardsMaxZ(cargo) {
+    return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
+  }
+
+  // Проверка пересечения контейнера по оси +Y
+  isOutwardsMaxY(cargo) {
+    return cargo.block.position.y + cargo.parameters.height / 2 > this.spaceMaxY ? true : false;
+  }
+
+  isOutwardsMaxX(cargo) {
+    return cargo.block.position.x + cargo.parameters.width / 2 > this.spaceMaxX ? true : false;
   }
 
   setPosition(cargo, position, axis) {
@@ -152,112 +261,6 @@ export default class Arrangement {
     }
   }
 
-  // Установить стартовую позицию внутри контейнера
-  startPosition(cargo) {
-    // this.rotate(cargo);
-    this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
-    this.setPosition(cargo, cargo.parameters.height / 2, "y");
-    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
-  }
-
-  // Фильтр
-  filter(cargo, direction) {
-    if (cargo.parameters.rotated && direction === "x") return cargo.parameters.length / 2;
-    if (direction === "x") return cargo.parameters.width / 2;
-
-    if (cargo.parameters.rotated && direction === "z") return cargo.parameters.width;
-    if (direction === "z") return cargo.parameters.length / 2;
-
-    // if (cargo.parameters.rotated && direction === "y") return cargo.parameters.width / 2;
-    // if (direction === "y") return cargo.parameters.height / 2;
-  }
-
-  rotate(cargo) {
-    cargo.block.rotateY(Math.PI / 2);
-    cargo.line.rotateY(Math.PI / 2);
-    cargo.label.rotateY(Math.PI / 2);
-    cargo.parameters.rotated = true;
-  }
-
-  // Место для расположения всех неотсортированных коробок
-  defaultPosition() {
-    for (let i = 0; i < this.cargos.length; i++) {
-      this.setPosition(this.cargos[i], -this.cargos[i].parameters.height / 2 - 10, "y");
-    }
-  }
-
-  // Расстановка блоков
-  arrange(cargo, previous) {
-    // Сдвигать по оси Z, если есть еще место
-    if (!this.isOutwardsMaxZ(cargo)) {
-      // Если блок перевернут
-      if (
-        cargo.parameters.rotate &&
-        cargo.parameters.rotated &&
-        !previous.parameters.rotated &&
-        cargo.parameters.group === previous.parameters.group
-      ) {
-        this.setPosition(
-          cargo,
-          previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
-          "x"
-        );
-      } else if (previous.parameters.rotated && cargo.parameters.group === previous.parameters.group) {
-        this.rotate(cargo);
-      }
-
-      this.offset(cargo, "+z");
-    }
-
-    // Если блок вышел за пределы контейнера по Z
-    if (this.isOutwardsMaxZ(cargo)) {
-      // Если включен параметр turn(переворот)
-      if (cargo.parameters.rotate && !previous.parameters.rotated) this.rotate(cargo);
-
-      // Если блок перевернут
-      if (
-        cargo.parameters.rotate &&
-        cargo.parameters.rotated &&
-        cargo.parameters.group === previous.parameters.group
-      ) {
-        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
-        this.setPosition(
-          cargo,
-          previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
-          "x"
-        );
-      } else {
-        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
-        // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
-      }
-
-      if (this.isTier) {
-        this.offset(cargo, "+y");
-      } else this.offset(cargo, "+x");
-    }
-
-    // Если блок вышел за пределы контейнера по Y
-    if (this.isOutwardsMaxY(cargo)) {
-      this.setPosition(cargo, cargo.parameters.height / 2, "y");
-      this.offset(cargo, "+x");
-    }
-
-    // Если блок вышел за пределы контейнера по X
-    if (this.isOutwardsMaxX(cargo)) {
-      this.space.push(new LoadSpace(this.scene, this.space[this.quantitySpace].size));
-      this.quantitySpace += 1;
-      this.space[this.quantitySpace].create({
-        x: 0,
-        z:
-          this.space[this.quantitySpace !== 0 && this.quantitySpace - 1].position.faceZ.min -
-          this.space[this.quantitySpace].size.length,
-      });
-
-      this.nextSpace();
-      this.startPosition(cargo);
-    }
-  }
-
   // Сдвиг с проверкой на коллизию
   offset(cargo, direction) {
     const step = 0.1;
@@ -285,18 +288,40 @@ export default class Arrangement {
     }
   }
 
-  // Проверка пересечения контейнера по оси +Z
-  isOutwardsMaxZ(cargo) {
-    return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
+  // Проверка на коллизию
+  isCollision(cargo) {
+    const currentCargo = new THREE.Box3().setFromObject(cargo.block);
+
+    for (let i = 0; i < this.cargos.length; i++) {
+      // Если тот же самый груз, пропускаем итерацию
+      if (cargo.block.uuid === this.cargos[i].block.uuid) continue;
+
+      const otherCargo = new THREE.Box3().setFromObject(this.cargos[i].block);
+
+      if (currentCargo.intersectsBox(otherCargo)) return true;
+    }
+
+    return false;
   }
 
-  // Проверка пересечения контейнера по оси +Y
-  isOutwardsMaxY(cargo) {
-    return cargo.block.position.y + cargo.parameters.height / 2 > this.spaceMaxY ? true : false;
+  // Установить стартовую позицию внутри контейнера
+  startPosition(cargo) {
+    // this.rotate(cargo);
+    this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+    this.setPosition(cargo, cargo.parameters.height / 2, "y");
+    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
   }
 
-  isOutwardsMaxX(cargo) {
-    return cargo.block.position.x + cargo.parameters.width / 2 > this.spaceMaxX ? true : false;
+  // Фильтр
+  filter(cargo, direction) {
+    if (cargo.parameters.rotated && direction === "x") return cargo.parameters.length / 2;
+    if (direction === "x") return cargo.parameters.width / 2;
+
+    if (cargo.parameters.rotated && direction === "z") return cargo.parameters.width;
+    if (direction === "z") return cargo.parameters.length / 2;
+
+    // if (cargo.parameters.rotated && direction === "y") return cargo.parameters.width / 2;
+    // if (direction === "y") return cargo.parameters.height / 2;
   }
 
   // swap(name) {

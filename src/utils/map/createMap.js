@@ -73,7 +73,7 @@ export class MapCargo {
 
       for (let i = 0; i < cargo.count; i++) {
         // Создаем груз
-        const block = new Cargo(cargo, id, this.groups[id].name);
+        const block = new Cargo(cargo, id, this.groups[id].name, i);
 
         // Добавляем в глобальный массив
         this.#objects.push(block.get);

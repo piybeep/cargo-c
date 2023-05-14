@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  constructor({ name, width, height, length, color, turn }, id, group) {
+  constructor({ name, width, height, length, color, turn, count }, id, group, numberId) {
     // this.group = groupCargo;
     // Сцена холста
     // this.scene = scene;
@@ -30,6 +30,12 @@ export default class Cargo {
 
     // Группа
     this.group = group;
+
+    // Количество
+    this.count = count;
+
+    // Номер груза
+    this.numberId = numberId + 1;
 
     const labelGeometry = new THREE.PlaneGeometry(
       length > width ? width * 0.7 : length * 0.7,
@@ -334,6 +340,8 @@ export default class Cargo {
       rotated: false,
       rotate: this.rotate,
       group: this.group,
+      count: this.count,
+      id: this.numberId,
     };
   }
 
