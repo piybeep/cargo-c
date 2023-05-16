@@ -34,13 +34,6 @@ export default class Arrangement {
 
   // Расстановки блоков
   start() {
-    // this.isSwap = false;
-
-    // Ярус
-    this.isTier = true;
-    // Кантовка
-    this.isRotate = true;
-
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
 
@@ -176,7 +169,11 @@ export default class Arrangement {
         // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
       }
 
-      if (this.isTier) {
+      if (
+        cargo.parameters.tiers === "Да - оптимально" ||
+        cargo.parameters.tiers === "Да - только на другой груз" ||
+        cargo.parameters.tiers === "Да - максимально"
+      ) {
         this.offset(cargo, "+y");
       } else this.offset(cargo, "+x");
     }

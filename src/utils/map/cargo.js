@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export default class Cargo {
-  constructor({ name, width, height, length, color, turn, count }, id, group, numberId) {
+  constructor({ name, width, height, length, color, turn, count, tiers }, id, group, numberId) {
     // this.group = groupCargo;
     // Сцена холста
     // this.scene = scene;
@@ -27,6 +27,9 @@ export default class Cargo {
 
     // Поворот груза
     this.rotate = turn;
+
+    // Ярус груза
+    this.tiers = tiers;
 
     // Группа
     this.group = group;
@@ -342,6 +345,7 @@ export default class Cargo {
       group: this.group,
       count: this.count,
       id: this.numberId,
+      tiers: this.tiers,
     };
   }
 

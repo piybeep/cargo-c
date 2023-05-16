@@ -1,9 +1,3 @@
-enum SizeUnit {
-  mm = "мм",
-  cm = "см",
-  m = "м",
-}
-
 type CargosTypes = {
   id: number;
   name: string;
@@ -18,7 +12,8 @@ type CargosTypes = {
   turn: boolean;
   tilting: boolean;
   isTemplate: boolean;
-  sizeUnit: SizeUnit;
+  tiers: "Нет" | "Да - оптимально" | "Да - только на другой груз" | "Да - максимально";
+  sizeUnit: "см" | "мм" | "м";
 }[];
 
 export const CARGOS: CargosTypes = [
@@ -36,7 +31,8 @@ export const CARGOS: CargosTypes = [
     turn: false,
     tilting: false,
     isTemplate: false,
-    sizeUnit: SizeUnit.mm,
+    sizeUnit: "мм",
+    tiers: "Да - оптимально",
   },
   {
     id: 1,
@@ -49,10 +45,11 @@ export const CARGOS: CargosTypes = [
     height: 3,
     length: 4,
     weight: 10,
-    turn: true,
+    turn: false,
     tilting: false,
     isTemplate: false,
-    sizeUnit: SizeUnit.mm,
+    sizeUnit: "мм",
+    tiers: "Нет",
   },
   // {
   //   id: 2,
