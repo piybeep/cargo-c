@@ -64,8 +64,9 @@ export default class Cargo {
     this.geometry = new THREE.BoxGeometry(width, height, length);
     this.material = new THREE.MeshBasicMaterial({
       color: color,
-      opacity: 0.6,
+      opacity: 0.7,
       transparent: true,
+      // side: THREE.DoubleSide,
     });
 
     this.edges = new THREE.EdgesGeometry(this.geometry);

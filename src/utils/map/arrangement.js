@@ -60,14 +60,13 @@ export default class Arrangement {
           this.previous.parameters.rotated &&
           this.previous.parameters.length !== this.previous.parameters.width
         ) {
-          this.setPosition(
-            this.cargos[i],
+          const formula =
+            this.previous.block.position.x -
+            this.previous.parameters.length / 2 +
+            this.cargos[i].parameters.width / 2 +
             this.previous.parameters.width +
-              this.previous.block.position.x +
-              this.cargos[i].parameters.length / 2 +
-              0.1,
-            "x"
-          );
+            0.1;
+          this.setPosition(this.cargos[i], formula, "x");
         } else {
           this.setPosition(
             this.cargos[i],
@@ -106,8 +105,16 @@ export default class Arrangement {
 
   // Расстановка блоков
   arrange(cargo, previous) {
-    // Сколько может поместиться блоков в один контейнер
-    const baseAmount = Math.floor((this.spaceMaxZ + Math.abs(this.spaceMinZ)) / cargo.parameters.length);
+    console.log(this.spaceMaxZ);
+    // Учитываем отступы между блоков
+    const baseAmountSpace =
+      Math.floor((this.spaceMaxZ + Math.abs(this.spaceMinZ)) / cargo.parameters.length) * 0.1;
+
+    // Сколько может поместиться блоков в один контейнер с учетом отступов
+    const baseAmount = Math.floor(
+      (this.spaceMaxZ + Math.abs(this.spaceMinZ) - baseAmountSpace) / cargo.parameters.length
+    );
+
     // Сколько может поместиться ровное кол-во оснований в один контейнер
     const baseStep = baseAmount * Math.floor(cargo.parameters.count / baseAmount);
     // Если включен параметр turn(переворот)
@@ -304,9 +311,16 @@ export default class Arrangement {
   // Установить стартовую позицию внутри контейнера
   startPosition(cargo) {
     // this.rotate(cargo);
-    this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
-    this.setPosition(cargo, cargo.parameters.height / 2, "y");
-    this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+    if (this.spaceMaxZ < cargo.parameters.length) {
+      this.rotate(cargo);
+      this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
+      this.setPosition(cargo, cargo.parameters.height / 2, "y");
+      this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
+    } else {
+      this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
+      this.setPosition(cargo, cargo.parameters.height / 2, "y");
+      this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
+    }
   }
 
   // Фильтр
