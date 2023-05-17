@@ -127,22 +127,30 @@ export default class Arrangement {
   arrange(cargo, previous) {
     // Учитываем отступы между блоков
     const baseAmountSpace =
-      Math.floor((this.spaceMaxZ + Math.abs(this.spaceMinZ)) / cargo.parameters.length) * 0.1;
+      Math.floor(
+        (this.spaceMaxZ + Math.abs(this.spaceMinZ)) /
+          (cargo.parameters.length > this.spaceLength && cargo.parameters.rotate
+            ? cargo.parameters.width
+            : cargo.parameters.length)
+      ) * 0.1;
 
     // Сколько может поместиться блоков в один контейнер с учетом отступов
     const baseAmount = Math.floor(
-      (Math.abs(this.spaceMaxZ) + Math.abs(this.spaceMinZ) - baseAmountSpace) / cargo.parameters.length
+      (Math.abs(this.spaceMaxZ) + Math.abs(this.spaceMinZ) - baseAmountSpace) /
+        (cargo.parameters.length > this.spaceLength && cargo.parameters.rotate
+          ? cargo.parameters.width
+          : cargo.parameters.length)
     );
-
     // Сколько может поместиться ровное кол-во оснований в один контейнер
     const baseStep = baseAmount * Math.floor(cargo.parameters.count / baseAmount);
     // Если включен параметр turn(переворот)
     if (
-      baseStep != 0 &&
-      cargo.parameters.id > baseStep &&
-      cargo.parameters.count % baseAmount !== 0 &&
-      cargo.parameters.rotate &&
-      !previous.parameters.rotated
+      (baseStep != 0 &&
+        cargo.parameters.id > baseStep &&
+        cargo.parameters.count % baseAmount !== 0 &&
+        cargo.parameters.rotate &&
+        !previous.parameters.rotated) ||
+      cargo.parameters.length > this.spaceLength
     ) {
       this.rotate(cargo);
     }
@@ -161,7 +169,13 @@ export default class Arrangement {
           previous.block.position.x - previous.parameters.width / 2 + cargo.parameters.length / 2,
           "x"
         );
-      } else if (previous.parameters.rotated && cargo.parameters.group === previous.parameters.group) {
+      }
+      // переворачиваем блок, если предыдущий перевернут
+      else if (
+        previous.parameters.rotated &&
+        cargo.parameters.group === previous.parameters.group &&
+        cargo.parameters.length < this.spaceLength
+      ) {
         this.rotate(cargo);
       }
 
@@ -192,8 +206,6 @@ export default class Arrangement {
           );
         }
       } else {
-        cargo.block.material.color.set("yellow");
-
         this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
 
         // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
@@ -201,7 +213,10 @@ export default class Arrangement {
 
       if (this.isTiers(cargo)) {
         this.offset(cargo, "+y");
-      } else this.offset(cargo, "+x");
+      } else {
+        this.offset(cargo, "+x");
+        cargo.block.material.color.set("lime");
+      }
     }
 
     // Если блок вышел за пределы контейнера по Y
@@ -232,7 +247,7 @@ export default class Arrangement {
 
   // Проверка пересечения контейнера по оси +Z
   isOutwardsMaxZ(cargo) {
-    if (cargo.parameters.rotate && cargo.parameters.rotated) {
+    if (cargo.parameters.rotate && cargo.parameters.length > this.spaceLength) {
       return cargo.block.position.z + cargo.parameters.width / 2 > this.spaceMaxZ ? true : false;
     }
     return cargo.block.position.z + cargo.parameters.length / 2 > this.spaceMaxZ ? true : false;
@@ -336,7 +351,7 @@ export default class Arrangement {
 
   // Установить стартовую позицию внутри контейнера
   startPosition(cargo) {
-    if (this.spaceLength < cargo.parameters.length && cargo.parameters.rotate) {
+    if (cargo.parameters.length > this.spaceLength && cargo.parameters.rotate) {
       this.rotate(cargo);
       this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
       this.setPosition(cargo, cargo.parameters.height / 2, "y");
