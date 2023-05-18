@@ -6,7 +6,7 @@ export const useLogin = () => {
   const setUser = useUserStore((state) => state.setUser)
   return useMutation('login', AuthApi.signIn, {
     onSuccess(data) {
-      setUser(data)
+      setUser(data.user)
     }
   })
 }

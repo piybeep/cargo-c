@@ -5,12 +5,10 @@ import { Logo } from '../../component/Logo';
 import { Button } from 'antd';
 import { Typography } from 'antd';
 
-import { useProjects } from '@/store';
 
 import s from './Header.module.scss'
 
 export function Header({ ...props }: HeaderProps) {
-    const selectProject = useProjects(state => state.selectProject)
     const { Link, Text } = Typography
     return (
         <header className={s.wrapper}>
@@ -24,7 +22,7 @@ export function Header({ ...props }: HeaderProps) {
                     </div>
                     <div className={s.logo__title}>
                         <Text className={s.logo__text}>Текущий проект: </Text>
-                        <Link className={s.logo__text} href="/projects">{selectProject?.title}</Link>
+                        <Link className={s.logo__text} href="/projects">zustand</Link>
                     </div>
                 </div>
 
