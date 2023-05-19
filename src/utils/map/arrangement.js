@@ -192,10 +192,8 @@ export default class Arrangement {
 
       if (isRotate) {
         this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
-
         // Если предыдущий груз перевернут - ставить по x
         if (previous.parameters.rotated) {
-          // cargo.block.material.color.set("red");
           this.setPosition(cargo, previous.block.position.x, "x");
         } else {
           // Если не перевернут, высчитать и поставить у края не перевернутого блока
@@ -222,7 +220,12 @@ export default class Arrangement {
     // Если блок вышел за пределы контейнера по Y
     if (this.isOutwardsMaxY(cargo)) {
       this.setPosition(cargo, cargo.parameters.height / 2, "y");
-      if (cargo.parameters.length > this.spaceLength && cargo.parameters.rotated) {
+
+      if (
+        cargo.parameters.length > this.spaceLength &&
+        cargo.parameters.rotated &&
+        this.isOutwardsMaxZ(cargo)
+      ) {
         this.offset(cargo, "+z");
       } else {
         this.offset(cargo, "+x");
