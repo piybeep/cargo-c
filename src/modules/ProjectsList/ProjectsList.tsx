@@ -93,29 +93,32 @@ export function ProjectsList() {
   const { control, handleSubmit, setValue } = useForm<{ name: string }>()
 
   // Открывает конкретный проект
-  const open = () => {}
+  const open = (id: string, e: any) => {
+    e.stopPropagation()
+    window.localStorage.setItem('lastSelectedProject', id)
+    router.replace(`/cargo?projectId=${id}`, undefined, { shallow: true })
+  }
 
   const copyProject = async ({ name }: { name: string }) => {
     if (userId) {
-      await mutateAsync({ name, userId })
+      const newProject = await mutateAsync({ name, userId })
+      router.push({
+        pathname: '/projects',
+        query: {
+          projectId: newProject.id
+        }
+      })
     }
   }
 
   const close = () => {
     setIsModalOpen(false)
     setAddIsModalOpen(false)
-
     setValue('name', '')
-    const lastProjectId = window.localStorage.getItem('lastSelectedProject')
-    router.replace(
-      `/projects${lastProjectId ? '?=currentId' + lastProjectId : ''}`,
-      undefined,
-      { shallow: true }
-    )
   }
 
   const onSubmit = async ({ name }: { name: string }) => {
-    const id = router.query.currentId
+    const id = router.query.projectId
     if (typeof id === 'string' && userId) {
       const newProject = await updateProject({ name, id, userId })
       setSelectProject(newProject)
@@ -127,10 +130,11 @@ export function ProjectsList() {
     if (data.name && userId) {
       const newProject = await mutateAsync({ name: data.name, userId })
       setSelectProject(newProject)
+      window.localStorage.setItem('lastSelectedProject', newProject.id)
       router.push({
         pathname: '/projects',
         query: {
-          currentId: newProject.id ?? 0
+          projectId: newProject.id
         }
       })
       close()
@@ -138,20 +142,24 @@ export function ProjectsList() {
   }
 
   const removeProject = ({ id }: { id: string }) => {
-    router.push({
-      pathname: '/projects',
-      query: { remove: id }
-    })
-
     Modal.confirm({
       title: 'Вы уверены, что хотите удалить этот проект?',
       icon: <ExclamationCircleOutlined />,
       onCancel: () => close(),
       onOk: async () => {
-        deleteProject({ id })
-        setSaveCurrentIndex(undefined)
-        setSelectProject(null)
-        localStorage.removeItem('lastSelectedProject')
+        await deleteProject({ id })
+        const firstProject = projects?.pages.at(0)?.data.at(0)
+        if (firstProject) {
+          setSaveCurrentIndex(firstProject.id)
+          setSelectProject(firstProject)
+          window.localStorage.setItem('lastSelectedProject', firstProject.id)
+          router.push({
+            pathname: '/projects',
+            query: {
+              projectId: firstProject.id
+            }
+          })
+        }
         close()
       },
       maskClosable: true,
@@ -164,11 +172,21 @@ export function ProjectsList() {
   }
 
   useEffect(() => {
-    if (window) {
+    const lastSelectedProject = localStorage.getItem('lastSelectedProject')
+    const firstProject = projects?.pages.at(0)?.data.at(0)?.id
+    if (window && firstProject) {
+      window.localStorage.setItem('lastSelectedProject', firstProject)
       router.push({
         pathname: '/projects',
         query: {
-          currentId: window.localStorage.getItem('lastSelectedProject') ?? 0
+          projectId: firstProject
+        }
+      })
+    } else if (window && lastSelectedProject) {
+      router.push({
+        pathname: '/projects',
+        query: {
+          projectId: lastSelectedProject
         }
       })
     }
@@ -180,7 +198,7 @@ export function ProjectsList() {
     setSelectProject(current)
     router.push({
       pathname: '/projects',
-      query: { currentId: current.id }
+      query: { projectId: current.id }
     })
   }
 
@@ -299,7 +317,7 @@ export function ProjectsList() {
             <div className={s.list__wrapper} key={elem.id}>
               <div
                 className={classNames(s.item, {
-                  [s.item_active]: router.query.currentId == elem.id
+                  [s.item_active]: router.query.projectId == elem.id
                 })}
                 onClick={() => handleClickProject(elem)}
                 onTouchStart={(e) =>
@@ -332,7 +350,10 @@ export function ProjectsList() {
                     {getDatePretty(elem.createdAt, elem.updatedAt)}
                   </Text>
                 </div>
-                <Button className={s.item__open} onClick={open}>
+                <Button
+                  className={s.item__open}
+                  onClick={(e) => open(elem.id, e)}
+                >
                   Открыть
                 </Button>
                 <div className={s.item__buttons}>

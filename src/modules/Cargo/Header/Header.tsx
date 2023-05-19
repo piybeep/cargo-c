@@ -16,7 +16,12 @@ const SearchButton = () => {
   )
 }
 
-const Header = () => {
+interface HeaderProps{
+  searchString: string 
+  setSearchString: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Header:React.FC<HeaderProps> = ({searchString,setSearchString}) => {
   return (
     <div className={s.cont}>
       <Title level={5}>Список грузовых мест</Title>
@@ -25,7 +30,7 @@ const Header = () => {
         allowClear
         enterButton={<SearchButton />}
         size='large'
-        onSearch={console.log}
+        onSearch={(data)=>setSearchString(data)}
         className={s.search}
       />
     </div>

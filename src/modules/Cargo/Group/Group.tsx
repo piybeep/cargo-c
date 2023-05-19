@@ -9,9 +9,13 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useSwipe } from '@/hook/useSwipe'
+import { editGroupProps, groupEntity } from '@/api/groups/type'
+import { UseMutateAsyncFunction } from 'react-query'
 
 interface GroupProps {
-  group: any
+  group: groupEntity
+  indGroup: number
+  editGroup: UseMutateAsyncFunction<any, unknown, editGroupProps, unknown>
 }
 
 //ПЕРЕДЕЛАТЬ ТИП
@@ -21,10 +25,15 @@ export interface cargoCheckBox {
 
 const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
 
-const Group: React.FC<GroupProps> = ({ group }) => {
+const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
   const [isHidden, setIsHidden] = useState(false)
 
-  const { handleTouchEnd, handleTouchMove, handleTouchStart, handleClick } = useSwipe(`cont__` + group.id)
+  const {
+    handleTouchEnd,
+    handleTouchMove,
+    handleTouchStart,
+    handleClick
+  } = useSwipe(`cont__` + group.id)
 
   const { control, setValue, watch } = useForm<cargoCheckBox>({
     defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
@@ -42,7 +51,13 @@ const Group: React.FC<GroupProps> = ({ group }) => {
 
   return (
     <motion.div className={s.cont} layout>
-      <Header isHidden={isHidden} setIsHidden={setIsHidden} />
+      <Header
+        isHidden={isHidden}
+        setIsHidden={setIsHidden}
+        group={group}
+        indGroup={indGroup}
+        editGroup={editGroup}
+      />
       <motion.div
         className={classNames(s.hidden, { [s.hidden_mod]: isHidden })}
       >

@@ -11,7 +11,7 @@ import arrowYSvg from '../../../../../public/svg/boxEl/arrowY.svg'
 import saveSvg from '../../../../../public/svg/boxEl/save.svg'
 import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
-import { Control, Controller, UseFormRegister } from 'react-hook-form'
+import { Control, Controller } from 'react-hook-form'
 import { cargoCheckBox } from '../Group'
 import Image from 'next/image'
 
@@ -24,7 +24,7 @@ interface GroupElProps {
   handleTouchEnd: (id: string) => void
   handleClick: () => void
   el: any
-  groupIndex: number
+  groupIndex: string
   //ПЕРЕДЕЛАТЬ ТИП
   control: Control<cargoCheckBox, any>
   elId: string

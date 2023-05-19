@@ -3,7 +3,7 @@ import { useState } from 'react'
 export const useSwipe = (style: any, right: number = -128) => {
     const [touchStart, setTouchStart] = useState(0)
     const [touchEnd, setTouchEnd] = useState(0)
-    const [saveCurrentIndex, setSaveCurrentIndex] = useState(undefined)
+    const [saveCurrentIndex, setSaveCurrentIndex] = useState<undefined|string>(undefined)
 
     function handleTouchStart(e: any, id: any) {
         const current = id
