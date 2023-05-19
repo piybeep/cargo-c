@@ -19,12 +19,13 @@ import svgAdd from '../../../public/svg/IconAdd'
 import s from './ProjectsList.module.scss'
 import classNames from 'classnames'
 import { useGetAllProjects } from './hook/useGetAllProjects'
-import { useUserStore } from '@/store'
+import { useProjectStore, useUserStore } from '@/store'
 import { useCreateProject } from './hook/useCreateProject'
 import { format, parseISO } from 'date-fns'
 import { useUpdateProjcet } from './hook/useUpdateProjcet'
 import Menu from './Menu'
 import { useRemoveProject } from './hook/useRemoveProject'
+import { projectEntity } from '@/api/projects/type'
 
 export function ProjectsList() {
   const router = useRouter()
@@ -34,6 +35,8 @@ export function ProjectsList() {
   const [searchText, setSearchText] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState('ASC')
   const [sortField, setSortField] = useState('createdAt')
+
+  const setSelectProject = useProjectStore((state) => state.setSelectProject)
 
   const userId = useUserStore((state) => state.id)
 
@@ -114,7 +117,8 @@ export function ProjectsList() {
   const onSubmit = async ({ name }: { name: string }) => {
     const id = router.query.currentId
     if (typeof id === 'string' && userId) {
-      await updateProject({ name, id, userId })
+      const newProject = await updateProject({ name, id, userId })
+      setSelectProject(newProject)
     }
     close()
   }
@@ -122,6 +126,7 @@ export function ProjectsList() {
   const addProject = async (data: { name: string }) => {
     if (data.name && userId) {
       const newProject = await mutateAsync({ name: data.name, userId })
+      setSelectProject(newProject)
       router.push({
         pathname: '/projects',
         query: {
@@ -145,6 +150,7 @@ export function ProjectsList() {
       onOk: async () => {
         deleteProject({ id })
         setSaveCurrentIndex(undefined)
+        setSelectProject(null)
         localStorage.removeItem('lastSelectedProject')
         close()
       },
@@ -168,9 +174,10 @@ export function ProjectsList() {
     }
   }, [])
 
-  const handleClickProject = (current: any) => {
+  const handleClickProject = (current: projectEntity) => {
     handleClick()
     window.localStorage.setItem('lastSelectedProject', current.id)
+    setSelectProject(current)
     router.push({
       pathname: '/projects',
       query: { currentId: current.id }
