@@ -33,6 +33,7 @@ export default class Cargo {
 
     // Группа
     this.group = group;
+    this.groupId = id;
 
     // Количество
     this.count = count;
@@ -61,7 +62,7 @@ export default class Cargo {
       side: THREE.DoubleSide,
     });
 
-    this.geometry = new THREE.BoxGeometry(width, height, length);
+    this.geometry = new THREE.BoxGeometry(length, height, width);
     this.material = new THREE.MeshBasicMaterial({
       color: color,
       opacity: 0.7,
@@ -338,15 +339,17 @@ export default class Cargo {
 
   get parameters() {
     return {
-      width: this.block.geometry.parameters.width,
+      width: this.block.geometry.parameters.depth,
       height: this.block.geometry.parameters.height,
-      length: this.block.geometry.parameters.depth,
+      length: this.block.geometry.parameters.width,
       rotated: false,
       rotate: this.rotate,
       group: this.group,
       count: this.count,
       id: this.numberId,
+      groupId: this.groupId,
       tiers: this.tiers,
+      row: true,
     };
   }
 

@@ -7,7 +7,7 @@ type LoadSpaceTypes = {
 
 export const LOADSPACE: LoadSpaceTypes = {
   loadSpaceId: "0",
-  width: 100,
+  width: 50,
   height: 20,
   length: 25,
 };
