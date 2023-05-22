@@ -122,23 +122,11 @@ export default class Arrangement {
         );
       }
 
-      // Если груз помещается ниже от другой группы
-      // if (this.previousCargo !== 0)
-      //   if (
-      //     this.cargos[i].parameters.group !== this.previousGroup &&
-      //     this.spaceWidth / this.previousCargo.parameters.width < 2 &&
-      //     this.spaceWidth - this.previousCargo.parameters.width > this.cargos[i].parameters.width
-      //   ) {
-      //     this.cargos[i].block.material.color.set("lime");
-      //     this.setPosition(this.cargos[i], this.spaceMinX + this.cargos[i].parameters.length / 2, "x");
-      //   }
+      if (this.previousGroup !== 0 && this.previousGroup !== this.cargos[i].parameters.group) {
+        // this.cargos[i].block.material.color.set("red");
+      }
 
       this.arrange(this.cargos[i], this.previous);
-
-      // if (this.isSwap) {
-      //   i = -1;
-      //   this.isSwap = false;
-      // }
     }
   }
 
@@ -190,14 +178,24 @@ export default class Arrangement {
       this.rotate(cargo);
     }
 
+    // Если есть свободное место по Z, сделать проверку и расставить груз
     if (this.previousCargo !== 0) {
-      this.isNoEmptyPlace =
+      this.isEmptyPlace =
         cargo.parameters.group !== this.previousGroup &&
         this.spaceWidth / this.previousCargo.parameters.width < 2 &&
         this.spaceWidth - this.previousCargo.parameters.width > cargo.parameters.width;
-      if (this.isNoEmptyPlace) {
-        cargo.block.material.color.set("lime");
+
+      if (
+        this.previousGroup !== cargo.parameters.group &&
+        cargo.parameters.id === 1 &&
+        this.isEmptyPlace
+      ) {
         this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
+        cargo.block.material.color.set("yellow");
+      }
+
+      if (this.isEmptyPlace) {
+        // cargo.block.material.color.set("lime");
         this.setPosition(
           cargo,
           this.spaceMinZ +
@@ -269,7 +267,7 @@ export default class Arrangement {
             "x"
           );
         }
-      } else if (this.isNoEmptyPlace) {
+      } else if (this.isEmptyPlace) {
         this.setPosition(
           cargo,
           this.spaceMinZ +
@@ -279,6 +277,7 @@ export default class Arrangement {
             0.1,
           "z"
         );
+        // this.setPosition(cargo, previous.block.position.x + cargo.parameters.length + 0.1, "x");
       } else {
         this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
         // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
@@ -286,9 +285,9 @@ export default class Arrangement {
 
       if (this.isTiers(cargo)) {
         this.offset(cargo, "+y");
+        cargo.block.material.color.set("red");
       } else {
         this.offset(cargo, "+x");
-        cargo.block.material.color.set("red");
       }
     }
 
@@ -394,18 +393,6 @@ export default class Arrangement {
       if (direction === "+z") {
         this.setPosition(cargo, step, direction);
         buff += step;
-
-        // if (buff.toFixed(2) > cargo.parameters.length + step) {
-        //   // console.log(Math.round(buff));
-        //   // while (this.isCollision(cargo)) {
-        //   //   this.setPosition(cargo, step, "+x");
-        //   // }
-        //   // console.log(cargo.block.name);
-        //   this.swap(cargo.block.name);
-        //   this.defaultPosition();
-        //   this.isSwap = true;
-        //   return;
-        // }
       } else {
         this.setPosition(cargo, step, direction);
       }
