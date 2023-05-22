@@ -178,12 +178,21 @@ export default class Arrangement {
       this.rotate(cargo);
     }
 
-    // Если есть свободное место по Z, сделать проверку и расставить груз
     if (this.previousCargo !== 0) {
+      // Сколько вмещается грузов в ширину
+      const cargoCount = Math.floor(this.spaceWidth / this.previousCargo.parameters.width);
+
+      // Остаток
+      const residueWidth = this.spaceWidth - cargoCount * this.previousCargo.parameters.width;
+      this.test = this.previousCargo.parameters.count * this.previousCargo.parameters.length;
       this.isEmptyPlace =
-        cargo.parameters.group !== this.previousGroup &&
-        this.spaceWidth / this.previousCargo.parameters.width < 2 &&
-        this.spaceWidth - this.previousCargo.parameters.width > cargo.parameters.width;
+        cargo.parameters.group !== this.previousGroup && residueWidth > cargo.parameters.width;
+      console.log(this.test);
+    }
+
+    // Если есть свободное место по Z, сделать проверку и расставить груз
+    if (this.previousCargo !== 0 && this.test > (cargo.parameters.id / 2) * cargo.parameters.length) {
+      // console.log(Math.floor(this.spaceWidth / this.previousCargo.parameters.width));
 
       if (
         this.previousGroup !== cargo.parameters.group &&
@@ -193,19 +202,11 @@ export default class Arrangement {
         this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
         cargo.block.material.color.set("yellow");
       }
+      cargo.block.material.color.set("lime");
 
-      if (this.isEmptyPlace) {
-        // cargo.block.material.color.set("lime");
-        this.setPosition(
-          cargo,
-          this.spaceMinZ +
-            this.previousCargo.parameters.width / 2 +
-            this.previousCargo.parameters.width / 2 +
-            cargo.parameters.width / 2 +
-            0.1,
-          "z"
-        );
-      }
+      // if (this.isEmptyPlace) {
+      //   this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
+      // }
     }
 
     // Сдвигать по оси Z, если есть еще место
@@ -267,7 +268,7 @@ export default class Arrangement {
             "x"
           );
         }
-      } else if (this.isEmptyPlace) {
+      } else if (this.test > (cargo.parameters.id / 2) * cargo.parameters.length) {
         this.setPosition(
           cargo,
           this.spaceMinZ +
