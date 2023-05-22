@@ -14,7 +14,7 @@ interface toolProps {
 
 const Tool: React.FC<toolProps> = ({ selectAll, watch }) => {
   const isCheckAll =
-    watch('cargo').filter((el) => el.select).length === watch('cargo').length
+    watch('cargo')?.filter((el) => el.select).length === watch('cargo')?.length
 
   return (
     <div className={s.cont}>
@@ -24,7 +24,7 @@ const Tool: React.FC<toolProps> = ({ selectAll, watch }) => {
           value={isCheckAll}
           checked={isCheckAll}
         />
-        <Text onClick={()=>selectAll(!isCheckAll)}>Выбрать все</Text>
+        <Text onClick={() => selectAll(!isCheckAll)}>Выбрать все</Text>
       </div>
       <Text>25 шт, 125 кг, 270 м3</Text>
     </div>

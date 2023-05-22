@@ -3,6 +3,8 @@ import s from './Body.module.scss'
 import { Radio, Typography, Input, InputNumber, Select } from 'antd'
 import classNames from 'classnames'
 import boxSvg from '@/public/svg/newBox/box.svg'
+import cartonSvg from '@/public/svg/newBox/carton.svg'
+import palletSvg from '@/public/svg/newBox/pallet.svg'
 import listSvg from '@/public/svg/boxEl/list.svg'
 import arrowXSvg from '@/public/svg/boxEl/arrowX.svg'
 import arrowYSvg from '@/public/svg/boxEl/arrowY.svg'
@@ -17,17 +19,27 @@ const Body: React.FC<BodyProps> = ({
   control,
   setUnitLength,
   setUnitWeight,
-  unitLength,
-  unitWeight,
-  watch
+  watch,
+  sizeUnit,
+  weightUnit
 }) => {
   const getMaxLength = () => {
-    if (unitLength === 'мм') {
+    if (sizeUnit === 'мм') {
       return 50000
-    } else if (unitLength === 'cм') {
+    } else if (sizeUnit === 'cм') {
       return 5000
     } else {
       return 50
+    }
+  }
+
+  const getImgForPackagingType = (name: string) => {
+    if (name === 'Ящик') {
+      return <Image src={boxSvg.src} alt='Ящик' width={20} height={20} />
+    } else if (name === 'Коробка') {
+      return <Image src={cartonSvg.src} alt='Коробка' width={20} height={20} />
+    } else {
+      return <Image src={palletSvg.src} alt='Паллет' width={20} height={20} />
     }
   }
 
@@ -36,7 +48,7 @@ const Body: React.FC<BodyProps> = ({
       <div className={s.header}>
         <Radio.Group
           size='large'
-          value={unitLength}
+          value={sizeUnit}
           onChange={(e) => setUnitLength(e.target.value)}
         >
           <Radio value={'мм'}>мм</Radio>
@@ -45,7 +57,7 @@ const Body: React.FC<BodyProps> = ({
         </Radio.Group>
         <Radio.Group
           size='large'
-          value={unitWeight}
+          value={weightUnit}
           onChange={(e) => setUnitWeight(e.target.value)}
         >
           <Radio value={'кг'}>кг</Radio>
@@ -91,7 +103,7 @@ const Body: React.FC<BodyProps> = ({
                 style={{ width: '100%' }}
                 {...field}
                 type='text'
-                addonAfter={unitLength}
+                addonAfter={sizeUnit}
                 max={getMaxLength()}
                 required
               />
@@ -111,7 +123,7 @@ const Body: React.FC<BodyProps> = ({
                 {...field}
                 style={{ width: '100%' }}
                 type='text'
-                addonAfter={unitLength}
+                addonAfter={sizeUnit}
                 max={getMaxLength()}
                 required
               />
@@ -131,7 +143,7 @@ const Body: React.FC<BodyProps> = ({
                 {...field}
                 style={{ width: '100%' }}
                 type='text'
-                addonAfter={unitLength}
+                addonAfter={sizeUnit}
                 max={getMaxLength()}
                 required
               />
@@ -151,7 +163,7 @@ const Body: React.FC<BodyProps> = ({
                 {...field}
                 style={{ width: '100%' }}
                 type='text'
-                addonAfter={unitWeight}
+                addonAfter={weightUnit}
                 required
               />
             )}
@@ -170,13 +182,13 @@ const Body: React.FC<BodyProps> = ({
                   options={[
                     { label: 'Ящик', value: 'Ящик' },
                     { label: 'Коробка', value: 'Коробка' },
-                    { label: 'Палет', value: 'Палет' }
+                    { label: 'Паллет', value: 'Паллет' }
                   ]}
                   style={{ width: '100%' }}
                 />
               )}
             />
-            <Image src={boxSvg.src} alt='Ящик' width={20} height={20}/>
+            {getImgForPackagingType(watch('type'))}
           </div>
         </div>
         <div className={s.el}>
@@ -202,7 +214,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <Image src={listSvg.src} alt='Ярусы' width={20} height={20}/>
+            <Image src={listSvg.src} alt='Ярусы' width={20} height={20} />
           </div>
         </div>
         <div className={classNames(s.breakInput, s.el)}>
@@ -216,7 +228,7 @@ const Body: React.FC<BodyProps> = ({
                   {...field}
                   style={{ width: '100%' }}
                   type='text'
-                  addonAfter={unitWeight}
+                  addonAfter={weightUnit}
                   required
                 />
               )}
@@ -243,7 +255,7 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <Image src={arrowXSvg.src} width={20} height={20} alt='Поворот'/>
+            <Image src={arrowXSvg.src} width={20} height={20} alt='Поворот' />
           </div>
         </div>
         <div className={s.el}>
@@ -264,7 +276,12 @@ const Body: React.FC<BodyProps> = ({
                 />
               )}
             />
-            <Image src={arrowYSvg.src} width={20} height={20} alt='Кантование'/>
+            <Image
+              src={arrowYSvg.src}
+              width={20}
+              height={20}
+              alt='Кантование'
+            />
           </div>
         </div>
       </div>

@@ -20,9 +20,9 @@ export interface createCargo {
 
 export interface BodyProps {
   control: Control<createCargo, any>
-  unitLength: string
-  setUnitLength: React.Dispatch<React.SetStateAction<string>>
-  unitWeight: string
-  setUnitWeight: React.Dispatch<React.SetStateAction<string>>
+  sizeUnit: string
+  setUnitLength: React.Dispatch<React.SetStateAction<'мм' | 'м' | 'см'>>
+  weightUnit: string
+  setUnitWeight: React.Dispatch<React.SetStateAction<'кг' | 'тн'>>
   watch:UseFormWatch<createCargo>
 }

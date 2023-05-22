@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 //component
 import Header from './Header/Header'
@@ -19,6 +19,21 @@ import { queryClient } from '@/provider/ReactQueryProvider'
 
 export const Cargo = () => {
   const router = useRouter()
+
+  useEffect(() => {
+    if (!router.query.projectId) {
+      const projectId = localStorage.getItem('lastSelectedProject')
+      if (projectId) {
+        router.replace({
+          query: {
+            projectId
+          }
+        })
+      }else{
+        router.replace('/projects')
+      }
+    }
+  }, [router.query])
 
   const [searchString, setSearchString] = useState<string>('')
 

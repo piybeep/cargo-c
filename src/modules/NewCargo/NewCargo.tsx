@@ -4,8 +4,10 @@ import Body from './Body/Body'
 import Footer from './Footer/Footer'
 import { useForm } from 'react-hook-form'
 import { createCargo } from './Body/type'
+import { useCreateCargo } from './hook/useCreateCargo'
 
-export const NewCargo = () => {
+export const NewCargo = ({ groupId }: { groupId: string }) => {
+  const { mutateAsync, isLoading } = useCreateCargo()
   const [color, setColor] = useState('#aabbcc')
   const {
     handleSubmit,
@@ -21,10 +23,18 @@ export const NewCargo = () => {
       tilting: true
     }
   })
-  const [unitLength, setUnitLength] = useState('мм')
-  const [unitWeight, setUnitWeight] = useState('кг')
+  const [sizeUnit, setUnitLength] = useState<'мм' | 'м' | 'см'>('мм')
+  const [weightUnit, setUnitWeight] = useState<'кг' | 'тн'>('кг')
 
-  const Submit = (data: createCargo) => {
+  const Submit = async (data: createCargo) => {
+    await mutateAsync({
+      ...data,
+      weightUnit,
+      sizeUnit,
+      color,
+      isTemplate: false,
+      groupId
+    })
     console.log(data)
   }
 
@@ -39,13 +49,13 @@ export const NewCargo = () => {
       />
       <Body
         control={control}
-        unitLength={unitLength}
+        sizeUnit={sizeUnit}
         setUnitLength={setUnitLength}
-        unitWeight={unitWeight}
+        weightUnit={weightUnit}
         setUnitWeight={setUnitWeight}
         watch={watch}
       />
-      <Footer />
+      <Footer isLoading={isLoading} />
     </form>
   )
 }

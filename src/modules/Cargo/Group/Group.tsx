@@ -4,13 +4,17 @@ import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
 import Tool from './Tool/Tool'
 import Footer from './Footer/Footer'
-import style from './GroupEl/GroupEl.module.scss'
 import { useFieldArray, useForm } from 'react-hook-form'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useSwipe } from '@/hook/useSwipe'
 import { editGroupProps, groupEntity } from '@/api/groups/type'
 import { UseMutateAsyncFunction } from 'react-query'
+import { useGetAllCargo } from './hook/useGetAllCargo'
+import { cargoEntity } from '@/api/cargo/type'
+import { Typography,Space  } from 'antd';
+
+const { Title,Text } = Typography;
 
 interface GroupProps {
   group: groupEntity
@@ -20,13 +24,16 @@ interface GroupProps {
 
 //ПЕРЕДЕЛАТЬ ТИП
 export interface cargoCheckBox {
-  cargo: { select?: boolean; name?: string }[]
+  cargo: cargoEntity & { select?: boolean }[]
 }
 
-const arr = [{ name: '1' }, { name: '2' }, { name: '3' }]
-
-const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
+const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const [isHidden, setIsHidden] = useState(false)
+
+  const { data, isLoading } = useGetAllCargo({
+    templates: false,
+    groupId: group.id
+  })
 
   const {
     handleTouchEnd,
@@ -36,7 +43,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
   } = useSwipe(`cont__` + group.id)
 
   const { control, setValue, watch } = useForm<cargoCheckBox>({
-    defaultValues: { cargo: arr.map((el) => ({ ...el, select: false })) }
+    defaultValues: { cargo: data?.map((el) => ({ ...el, select: false })) }
   })
   const { fields } = useFieldArray({
     control,
@@ -48,7 +55,9 @@ const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
       setValue(`cargo.${i}.select`, value)
     }
   }
+  console.log(data?.length)
 
+  if (isLoading) return <></>
   return (
     <motion.div className={s.cont} layout>
       <Header
@@ -61,7 +70,17 @@ const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
       <motion.div
         className={classNames(s.hidden, { [s.hidden_mod]: isHidden })}
       >
-        <Tool selectAll={selectAll} watch={watch} />
+        {data?.length !== 0 ? (
+          <Tool selectAll={selectAll} watch={watch} />
+        ) : (
+          <Space direction='vertical' align='center' style={{width:'100%'}} size={0}>
+            <Title level={5}>Добавьте груз...</Title>
+            <Text type='secondary'>
+              Выполните импорт из файла или укажите размеры вручную или добавьте
+              из готовых шаблонов
+            </Text>
+          </Space>
+        )}
         <div className={s.wrapper}>
           {fields.map((el: any, index: any) => (
             <GroupEl
@@ -78,7 +97,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup,editGroup }) => {
             />
           ))}
         </div>
-        <Footer />
+        <Footer groupId={group.id} />
       </motion.div>
     </motion.div>
   )

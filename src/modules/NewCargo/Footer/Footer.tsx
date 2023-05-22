@@ -3,12 +3,12 @@ import s from './Footer.module.scss'
 import { Button } from 'antd'
 import { useRouter } from 'next/router'
 
-const Footer = () => {
+const Footer = ({isLoading}:{isLoading:boolean}) => {
   const nav=useRouter()
   return (
     <div className={s.cont}>
-        <Button onClick={()=>nav.replace('/cargo')}>Отменить</Button>
-        <Button type='primary' htmlType='submit'>Сохранить</Button>
+        <Button onClick={()=>nav.back()}>Отменить</Button>
+        <Button type='primary' htmlType='submit' loading={isLoading}>Сохранить</Button>
     </div>
   )
 }

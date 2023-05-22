@@ -9,37 +9,45 @@ import {
 import { useRouter } from 'next/router'
 import { SaveSvg } from '@/public/svg/SaveSvg'
 
-const Footer = () => {
+const Footer = ({ groupId }: { groupId: string }) => {
   const [clientWidth, setClientWidth] = useState(0)
-  const nav=useRouter()
+  const nav = useRouter()
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)
   }, [])
 
   return (
-    <div className={s.cont} >
+    <div className={s.cont}>
       {clientWidth > 460 ? (
         <>
           <Button icon={<FileAddOutlined />}>Из файла</Button>
-          <Button type='primary' icon={<PlusSquareOutlined />} onClick={()=>nav.push('cargo/new')}>
+          <Button
+            type='primary'
+            icon={<PlusSquareOutlined />}
+            onClick={() => nav.replace('/cargo/new?groupId=' + groupId)}
+          >
             Добавить груз
           </Button>
           <Button
-            icon={
-              <SaveSvg/>
-            }
+            icon={<SaveSvg />}
             className={s.button}
-            onClick={()=>nav.push('cargo/new/template')}
+            onClick={() => nav.push('cargo/new/template')}
           >
             Из шаблонов
           </Button>
         </>
       ) : (
         <>
-          <FileAddOutlined className={s.img}/>
-          <PlusSquareTwoTone className={s.img} onClick={()=>nav.push('cargo/new')}/>
-          <SaveSvg onClick={()=>nav.push('cargo/new/template')} style={{width:28,height:28}}/>
+          <FileAddOutlined className={s.img} />
+          <PlusSquareTwoTone
+            className={s.img}
+            onClick={() => nav.push('cargo/new')}
+          />
+          <SaveSvg
+            onClick={() => nav.push('cargo/new/template')}
+            style={{ width: 28, height: 28 }}
+          />
         </>
       )}
     </div>
