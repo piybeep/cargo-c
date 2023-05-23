@@ -179,34 +179,44 @@ export default class Arrangement {
     }
 
     if (this.previousCargo !== 0) {
-      // Сколько вмещается грузов в ширину
-      const cargoCount = Math.floor(this.spaceWidth / this.previousCargo.parameters.width);
+      // Сколько вмещается грузов в предыдущей группе в ширину
+      const availableCountPrevious = Math.floor(this.spaceWidth / this.previousCargo.parameters.width);
 
-      // Остаток
-      const residueWidth = this.spaceWidth - cargoCount * this.previousCargo.parameters.width;
-      this.test = this.previousCargo.parameters.count * this.previousCargo.parameters.length;
+      // Остаток свободного места после размещения предыдущей группы
+      this.residueWidth = this.spaceWidth - availableCountPrevious * this.previousCargo.parameters.width;
+
+      // Общая длина предыдущей группы по оси X
+      this.totalLengthPrevious =
+        this.previousCargo.parameters.count * this.previousCargo.parameters.length;
+
+      // Сколько вмещается текущих грузов по оси Z в остатке свободного места
+      this.availableCountCurrent = Math.floor(this.residueWidth / cargo.parameters.width);
+
+      // Сколько вмещается текущих грузов по оси Y
+      this.availableCountCurrentY = this.isTiers(cargo)
+        ? Math.floor(this.spaceMaxY / cargo.parameters.height)
+        : 1;
+
+      // Длина текущих грузов по оси X
+      this.totalLengthCurrent =
+        (cargo.parameters.id / (this.availableCountCurrent * this.availableCountCurrentY)) *
+        cargo.parameters.length;
+
+      // Есть ли пустое место от прошлой группы
       this.isEmptyPlace =
-        cargo.parameters.group !== this.previousGroup && residueWidth > cargo.parameters.width;
-      console.log(this.test);
+        cargo.parameters.group !== this.previousGroup && this.residueWidth > cargo.parameters.width;
     }
 
     // Если есть свободное место по Z, сделать проверку и расставить груз
-    if (this.previousCargo !== 0 && this.test > (cargo.parameters.id / 2) * cargo.parameters.length) {
-      // console.log(Math.floor(this.spaceWidth / this.previousCargo.parameters.width));
-
+    if (this.previousCargo !== 0 && this.totalLengthPrevious > this.totalLengthCurrent) {
       if (
         this.previousGroup !== cargo.parameters.group &&
         cargo.parameters.id === 1 &&
         this.isEmptyPlace
       ) {
         this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
-        cargo.block.material.color.set("yellow");
       }
-      cargo.block.material.color.set("lime");
-
-      // if (this.isEmptyPlace) {
-      //   this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
-      // }
+      cargo.block.material.color.set("yellow");
     }
 
     // Сдвигать по оси Z, если есть еще место
@@ -268,7 +278,7 @@ export default class Arrangement {
             "x"
           );
         }
-      } else if (this.test > (cargo.parameters.id / 2) * cargo.parameters.length) {
+      } else if (this.totalLengthPrevious > this.totalLengthCurrent) {
         this.setPosition(
           cargo,
           this.spaceMinZ +
@@ -278,15 +288,12 @@ export default class Arrangement {
             0.1,
           "z"
         );
-        // this.setPosition(cargo, previous.block.position.x + cargo.parameters.length + 0.1, "x");
       } else {
         this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
-        // this.setPosition(cargo, this.spaceMinX + cargo.parameters.width / 2, "x");
       }
 
       if (this.isTiers(cargo)) {
         this.offset(cargo, "+y");
-        cargo.block.material.color.set("red");
       } else {
         this.offset(cargo, "+x");
       }
@@ -387,7 +394,7 @@ export default class Arrangement {
 
   // Сдвиг с проверкой на коллизию
   offset(cargo, direction) {
-    const step = 0.1;
+    const step = 0.01;
     let buff = 0;
 
     while (this.isCollision(cargo)) {
