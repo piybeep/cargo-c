@@ -1,14 +1,27 @@
-.cont{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.cont {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.select{
-    display: flex;
-    align-items: center;
-    column-gap: 20px;
-    *{
-        cursor: pointer;
+.select {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  * {
+    cursor: pointer;
+  }
+}
+
+.toolEl {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  svg {
+    width: 20px;
+    height: 20px;
+    path {
+      stroke: #1890ff;
     }
+  }
 }

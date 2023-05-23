@@ -10,8 +10,27 @@
 
 .wrapper {
   display: flex;
-  flex-direction: column;
   margin-top: 28px;
+  column-gap: 16px;
+
+  &__cargo {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &__checkBox {
+    padding-top: 23px;
+    flex-direction: column;
+    row-gap: 79px;
+
+    label {
+      margin: 0 !important;
+      width: 16px;
+      height: 19px;
+      overflow: hidden;
+    }
+  }
 }
 
 .hidden {

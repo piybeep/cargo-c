@@ -19,3 +19,8 @@ export interface cargoEntity {
   tilting: boolean
   isTemplate: boolean
 }
+
+export interface cargoEntityRes extends cargoEntity {
+  groupId: string
+  id: string
+}

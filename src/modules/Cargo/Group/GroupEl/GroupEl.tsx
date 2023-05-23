@@ -13,7 +13,7 @@ import arrowYSvg from '../../../../../public/svg/boxEl/arrowY.svg'
 import saveSvg from '../../../../../public/svg/boxEl/save.svg'
 import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
-import { Control, Controller } from 'react-hook-form'
+import { Control, Controller, UseFormHandleSubmit } from 'react-hook-form'
 import { cargoCheckBox } from '../Group'
 import Image from 'next/image'
 import { cargoEntity } from '@/api/cargo/type'
@@ -29,7 +29,7 @@ interface GroupElProps {
   el: cargoEntity
   groupIndex: string
   //ПЕРЕДЕЛАТЬ ТИП
-  control: Control<cargoCheckBox, any>
+  // control: Control<cargoCheckBox, any>
   elId: string
 }
 
@@ -41,8 +41,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleClick,
   el,
   groupIndex,
-  control,
-  elId
+  // control,
+  elId,
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
 
@@ -70,18 +70,19 @@ const GroupEl: React.FC<GroupElProps> = ({
         onTouchEnd={() => handleTouchEnd(elId)}
         id={elId}
       >
-        <Controller
+        {/* <Controller
           control={control}
           name={`cargo.${ind}.select`}
-          render={({ field }) => (
+          render={({ field: { name, value, onChange } }) => (
             <Checkbox
-              key={field.name}
+              key={name}
+              name={name}
               className={s.checkBox}
-              {...field}
-              checked={field.value}
+              onChange={onChange}
+              checked={value}
             />
           )}
-        />
+        /> */}
         <div className={s.wrapper}>
           <div className={s.el}>
             <div className={s.checkBox_mod}>
@@ -120,7 +121,7 @@ const GroupEl: React.FC<GroupElProps> = ({
             </div>
           </div>
           <div className={s.icons}>
-            <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+            <Image src={saveSvg.src} alt='сохранить' width={24} height={24}/>
             <Image
               src={listFrSvg.src}
               alt='клонировать'
