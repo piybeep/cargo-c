@@ -184,23 +184,23 @@ export default class Arrangement {
 
       // Остаток свободного места после размещения предыдущей группы
       this.residueWidth = this.spaceWidth - availableCountPrevious * this.previousCargo.parameters.width;
-
+      console.log(this.residueWidth);
       // Общая длина предыдущей группы по оси X
       this.totalLengthPrevious =
         this.previousCargo.parameters.count * this.previousCargo.parameters.length;
 
       // Сколько вмещается текущих грузов по оси Z в остатке свободного места
-      this.availableCountCurrent = Math.floor(this.residueWidth / cargo.parameters.width);
+      this.availableCountCurrentZ = Math.floor(this.residueWidth / cargo.parameters.width);
 
       // Сколько вмещается текущих грузов по оси Y
       this.availableCountCurrentY = this.isTiers(cargo)
         ? Math.floor(this.spaceMaxY / cargo.parameters.height)
         : 1;
-
       // Длина текущих грузов по оси X
       this.totalLengthCurrent =
-        (cargo.parameters.id / (this.availableCountCurrent * this.availableCountCurrentY)) *
-        cargo.parameters.length;
+        Math.floor(
+          (cargo.parameters.id - 1) / (this.availableCountCurrentZ * this.availableCountCurrentY)
+        ) * cargo.parameters.length;
 
       // Есть ли пустое место от прошлой группы
       this.isEmptyPlace =
@@ -208,15 +208,14 @@ export default class Arrangement {
     }
 
     // Если есть свободное место по Z, сделать проверку и расставить груз
-    if (this.previousCargo !== 0 && this.totalLengthPrevious > this.totalLengthCurrent) {
-      if (
-        this.previousGroup !== cargo.parameters.group &&
-        cargo.parameters.id === 1 &&
-        this.isEmptyPlace
-      ) {
-        this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
-      }
-      cargo.block.material.color.set("yellow");
+    if (
+      this.previousCargo !== 0 &&
+      this.totalLengthPrevious > this.totalLengthCurrent &&
+      this.previousGroup !== cargo.parameters.group &&
+      cargo.parameters.id === 1 &&
+      this.isEmptyPlace
+    ) {
+      this.setPosition(cargo, this.spaceMinX + cargo.parameters.length / 2, "x");
     }
 
     // Сдвигать по оси Z, если есть еще место
@@ -265,6 +264,8 @@ export default class Arrangement {
         return;
       }
 
+      this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
+
       if (isRotate) {
         this.setPosition(cargo, this.spaceMinZ + cargo.parameters.length / 2, "z");
         // Если предыдущий груз перевернут - ставить по x
@@ -278,7 +279,9 @@ export default class Arrangement {
             "x"
           );
         }
-      } else if (this.totalLengthPrevious > this.totalLengthCurrent) {
+      }
+
+      if (this.totalLengthPrevious > this.totalLengthCurrent) {
         this.setPosition(
           cargo,
           this.spaceMinZ +
@@ -288,8 +291,6 @@ export default class Arrangement {
             0.1,
           "z"
         );
-      } else {
-        this.setPosition(cargo, this.spaceMinZ + cargo.parameters.width / 2, "z");
       }
 
       if (this.isTiers(cargo)) {
@@ -416,7 +417,6 @@ export default class Arrangement {
       if (cargo.block.uuid === this.cargos[i].block.uuid) continue;
 
       const otherCargo = new THREE.Box3().setFromObject(this.cargos[i].block);
-
       if (currentCargo.intersectsBox(otherCargo)) return true;
     }
 
