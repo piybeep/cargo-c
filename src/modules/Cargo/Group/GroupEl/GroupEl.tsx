@@ -1,5 +1,4 @@
-import { Checkbox } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import s from './GroupEl.module.scss'
 import boxSVG from '../../../../../public/svg/newBox/box.svg'
 import cartonSVG from '../../../../../public/svg/newBox/carton.svg'
@@ -13,51 +12,58 @@ import arrowYSvg from '../../../../../public/svg/boxEl/arrowY.svg'
 import saveSvg from '../../../../../public/svg/boxEl/save.svg'
 import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
-import { Control, Controller, UseFormHandleSubmit } from 'react-hook-form'
-import { cargoCheckBox } from '../Group'
 import Image from 'next/image'
 import { cargoEntity } from '@/api/cargo/type'
 
 const { Text, Title } = Typography
 
 interface GroupElProps {
-  ind: number
   handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
   handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
   handleTouchEnd: (id: string) => void
   handleClick: () => void
   el: cargoEntity
   groupIndex: string
-  //ПЕРЕДЕЛАТЬ ТИП
-  // control: Control<cargoCheckBox, any>
   elId: string
 }
 
 const GroupEl: React.FC<GroupElProps> = ({
-  ind,
   handleTouchEnd,
   handleTouchMove,
   handleTouchStart,
   handleClick,
   el,
   groupIndex,
-  // control,
-  elId,
+  elId
 }) => {
-  const [clientWidth, setClientWidth] = useState(0)
-
-  useEffect(() => {
-    setClientWidth(document?.documentElement.scrollWidth)
-  }, [])
-
-  const getImgForPackagingType = (name: string) => {
-    if (name === 'Ящик') {
+  const getImgForPackagingType = () => {
+    if (el.type === 'Ящик') {
       return <Image src={boxSVG.src} alt='Ящик' width={20} height={20} />
-    } else if (name === 'Коробка') {
+    } else if (el.type === 'Коробка') {
       return <Image src={cartonSVG.src} alt='Коробка' width={20} height={20} />
     } else {
       return <Image src={palletSVG.src} alt='Паллет' width={20} height={20} />
     }
+  }
+
+  const getInfo = () => {
+    return (
+      el.type +' '+
+      el.length +
+      ' x ' +
+      el.width +
+      ' x ' +
+      el.height +
+      ' ' +
+      el.sizeUnit +
+      ', ' +
+      el.weight +
+      ' ' +
+      el.weightUnit +
+      ', ' +
+      el.count +
+      ' шт.'
+    )
   }
 
   return (
@@ -70,40 +76,20 @@ const GroupEl: React.FC<GroupElProps> = ({
         onTouchEnd={() => handleTouchEnd(elId)}
         id={elId}
       >
-        {/* <Controller
-          control={control}
-          name={`cargo.${ind}.select`}
-          render={({ field: { name, value, onChange } }) => (
-            <Checkbox
-              key={name}
-              name={name}
-              className={s.checkBox}
-              onChange={onChange}
-              checked={value}
-            />
-          )}
-        /> */}
         <div className={s.wrapper}>
           <div className={s.el}>
-            <div className={s.checkBox_mod}>
-              <label htmlFor={`checkBox${ind}`} className={s.ico}>
-                {getImgForPackagingType(el.type)}
-              </label>
-              <Checkbox
-                className={s.checkBox}
-                id={`checkBox${ind}`}
-                disabled={clientWidth > 460}
-              />
+            <div className={s.ico} style={{ background: el.color }}>
+              {getImgForPackagingType()}
             </div>
             <div className={s.info}>
               <Title level={5} className={s.title}>
-                1. Новое место - 1
+                {el.name}
               </Title>
               <Text type='secondary' strong className={s.text}>
-                Ящик 1200 х 500 х 600 мм, 12 кг, 5 шт.
+                {getInfo()}
               </Text>
               <div className={s.info__icons}>
-                <Image width={16} height={16} src={listSvg.src} alt='ярусы' />
+              {getImgForPackagingType()}
                 <PlusOutlined alt='нагрузка' />
                 <Image
                   width={16}
@@ -121,7 +107,7 @@ const GroupEl: React.FC<GroupElProps> = ({
             </div>
           </div>
           <div className={s.icons}>
-            <Image src={saveSvg.src} alt='сохранить' width={24} height={24}/>
+            <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
             <Image
               src={listFrSvg.src}
               alt='клонировать'

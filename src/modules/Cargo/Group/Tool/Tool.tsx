@@ -2,9 +2,6 @@ import React from 'react'
 import s from './Tool.module.scss'
 import { Checkbox, Space } from 'antd'
 import { Typography } from 'antd'
-import { cargoCheckBox } from '../Group'
-import { UseFormWatch } from 'react-hook-form'
-import Image from 'next/image'
 import { SaveSvg } from '@/public/svg/SaveSvg'
 import IconReplace from '@/public/svg/IconReplace'
 import IconTrash from '@/public/svg/IconTrash'
@@ -15,12 +12,14 @@ interface toolProps {
   indeterminate: any
   onCheckAllChange: any
   checkAll: any
+  infoAboutGroup:string
 }
 
 const Tool: React.FC<toolProps> = ({
   indeterminate,
   onCheckAllChange,
-  checkAll
+  checkAll,
+  infoAboutGroup
 }) => {
   return (
     <div className={s.cont}>
@@ -50,7 +49,7 @@ const Tool: React.FC<toolProps> = ({
           <></>
         )}
       </div>
-      <Text>25 шт, 125 кг, 270 м3</Text>
+      <Text>{infoAboutGroup}</Text>
     </div>
   )
 }

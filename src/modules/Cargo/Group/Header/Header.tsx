@@ -19,7 +19,6 @@ import { queryClient } from '@/provider/ReactQueryProvider'
 const { Paragraph, Text } = Typography
 
 interface HeaderProps {
-  isHidden: boolean
   setIsHidden: React.Dispatch<React.SetStateAction<boolean>>
   group: groupEntity
   indGroup: number
@@ -27,16 +26,14 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  isHidden,
   setIsHidden,
   group,
   indGroup,
   editGroup
 }) => {
-  const [isHiddenTitle, setIsHiddenTitle] = useState(false)
   const router = useRouter()
 
-  const changeName = async (name:string) => {
+  const changeName = async (name: string) => {
     if (typeof router.query.projectId === 'string') {
       await editGroup({
         groupId: group.id,
@@ -47,14 +44,23 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
+  const changeHiddenGroup = async () => {
+    if (typeof router.query.projectId === 'string') {
+      await editGroup({
+        groupId: group.id,
+        projectId: router.query.projectId,
+        data: { hide: !group.hide }
+      })
+      queryClient.invalidateQueries('getGroups')
+    }
+  }
+
   return (
     <motion.div className={s.cont} layout='position'>
       <div className={s.info}>
-        <div
-          className={classNames(s.group, { [s.group__hidden]: isHiddenTitle })}
-        >
+        <div className={classNames(s.group, { [s.group__hidden]: group.hide })}>
           <Text>
-            {isHiddenTitle
+            {group.hide
               ? 'Грузовая группа отключена'
               : `Грузовая группа #${indGroup}`}
           </Text>
@@ -75,10 +81,10 @@ const Header: React.FC<HeaderProps> = ({
       </div>
       <Space size={'middle'} className={s.ico}>
         <MinusOutlined onClick={() => setIsHidden((e) => !e)} />
-        {isHiddenTitle ? (
-          <EyeOutlined onClick={() => setIsHiddenTitle((e) => !e)} />
+        {group.hide ? (
+          <EyeOutlined onClick={changeHiddenGroup} />
         ) : (
-          <EyeInvisibleOutlined onClick={() => setIsHiddenTitle((e) => !e)} />
+          <EyeInvisibleOutlined onClick={changeHiddenGroup} />
         )}
         <CloseOutlined />
       </Space>

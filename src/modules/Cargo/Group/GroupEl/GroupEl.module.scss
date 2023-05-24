@@ -36,7 +36,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #87e8de;
   border-radius: 100%;
 }
 
@@ -47,16 +46,6 @@
 
   img {
     cursor: pointer;
-  }
-}
-
-.checkBox {
-  display: inline-flex;
-
-  &_mod {
-    .checkBox {
-      display: none;
-    }
   }
 }
 

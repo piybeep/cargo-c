@@ -4,14 +4,12 @@ import GroupEl from './GroupEl/GroupEl'
 import Header from './Header/Header'
 import Tool from './Tool/Tool'
 import Footer from './Footer/Footer'
-import { useFieldArray, useForm } from 'react-hook-form'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useSwipe } from '@/hook/useSwipe'
 import { editGroupProps, groupEntity } from '@/api/groups/type'
 import { UseMutateAsyncFunction } from 'react-query'
 import { useGetAllCargo } from './hook/useGetAllCargo'
-import { cargoEntity } from '@/api/cargo/type'
 import { Typography, Space, Checkbox } from 'antd'
 import { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
@@ -26,21 +24,39 @@ interface GroupProps {
   editGroup: UseMutateAsyncFunction<any, unknown, editGroupProps, unknown>
 }
 
-interface customCargo extends cargoEntity {
-  select?: boolean
-}
-
-export interface cargoCheckBox {
-  cargo: customCargo[]
-}
-
 const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const [isHidden, setIsHidden] = useState(false)
+  const [infoAboutGroup, setInfoAboutGroup] = useState('')
 
   const { data, isLoading } = useGetAllCargo({
     templates: false,
     groupId: group.id
   })
+
+  useEffect(() => {
+    if (!isLoading && data && data.length > 0) {
+      let count = 0
+      let weight = 0
+      let volume = 0
+      data.forEach((el) => {
+        count += el.count
+        if (el.weightUnit === 'кг') {
+          weight += el.count * el.weight
+        } else {
+          weight += el.count * el.weight * 1000
+        }
+        if (el.sizeUnit === 'м') {
+          volume += el.count * (el.width * el.height * el.length)
+        } else if (el.sizeUnit === 'см') {
+          volume += (el.count * (el.width * el.height * el.length)) / 100
+        } else {
+          volume += (el.count * (el.width * el.height * el.length)) / 1000
+        }
+      })
+      setInfoAboutGroup(count + ' шт, ' + weight + ' кг, ' + volume + ' м3')
+    }
+  }, [isLoading])
+
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>()
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
@@ -69,29 +85,10 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     handleClick
   } = useSwipe(`cont__` + group.id)
 
-  // const { control, setValue, watch, handleSubmit } = useForm<cargoCheckBox>()
-  // const { fields, replace } = useFieldArray({
-  //   control,
-  //   name: 'cargo'
-  // })
-
-  // useEffect(() => {
-  //   if (!isLoading && data) {
-  //     replace(data?.map((el) => ({ ...el, select: false })))
-  //   }
-  // }, [isLoading])
-
-  // const selectAll = (value: boolean) => {
-  //   for (let i = 0; i < fields.length; i++) {
-  //     setValue(`cargo.${i}.select`, value)
-  //   }
-  // }
-
   if (isLoading) return <></>
   return (
     <motion.div className={s.cont} layout>
       <Header
-        isHidden={isHidden}
         setIsHidden={setIsHidden}
         group={group}
         indGroup={indGroup}
@@ -104,6 +101,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
           <Tool
             onCheckAllChange={onCheckAllChange}
             checkAll={checkAll}
+            infoAboutGroup={infoAboutGroup}
             indeterminate={indeterminate}
           />
         ) : (
@@ -130,7 +128,6 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
           <div className={s.wrapper__cargo}>
             {data?.map((el: any, index: any) => (
               <GroupEl
-                ind={index}
                 key={index}
                 el={el}
                 elId={group.name + el.name}
@@ -138,7 +135,6 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleTouchMove={handleTouchMove}
                 handleTouchStart={handleTouchStart}
                 handleClick={handleClick}
-                // control={control}
                 groupIndex={group.id}
               />
             ))}
