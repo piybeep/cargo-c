@@ -3,7 +3,8 @@ import { cargoEntity, cargoEntityRes } from './type'
 
 export const CargoApi = {
   async createCargo({ groupId, ...data }: cargoEntity & { groupId: string }) {
-    await instance.post(`groups/${groupId}/cargos`, data)
+    const res = await instance.post(`groups/${groupId}/cargos`, data)
+    return res.data
   },
   async getAllCargo({
     groupId,

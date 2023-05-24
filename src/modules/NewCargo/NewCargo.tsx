@@ -5,9 +5,10 @@ import Footer from './Footer/Footer'
 import { useForm } from 'react-hook-form'
 import { createCargo } from './Body/type'
 import { useCreateCargo } from './hook/useCreateCargo'
+import { queryClient } from '@/provider/ReactQueryProvider'
 
 export const NewCargo = ({ groupId }: { groupId: string }) => {
-  const { mutateAsync, isLoading } = useCreateCargo()
+  const { mutate, isLoading } = useCreateCargo({ groupId })
   const [color, setColor] = useState('#aabbcc')
   const {
     handleSubmit,
@@ -26,8 +27,8 @@ export const NewCargo = ({ groupId }: { groupId: string }) => {
   const [sizeUnit, setUnitLength] = useState<'мм' | 'м' | 'см'>('мм')
   const [weightUnit, setUnitWeight] = useState<'кг' | 'тн'>('кг')
 
-  const Submit = async (data: createCargo) => {
-    await mutateAsync({
+  const Submit = (data: createCargo) => {
+    mutate({
       ...data,
       weightUnit,
       sizeUnit,
@@ -35,7 +36,6 @@ export const NewCargo = ({ groupId }: { groupId: string }) => {
       isTemplate: false,
       groupId
     })
-    console.log(data)
   }
 
   return (

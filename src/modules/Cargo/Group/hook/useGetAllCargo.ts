@@ -8,7 +8,8 @@ export const useGetAllCargo = ({
   groupId: string
   templates: boolean
 }) => {
-  return useQuery(['getCargo',groupId], () =>
-    CargoApi.getAllCargo({ groupId, templates })
+  return useQuery(
+    ['getCargo', groupId],
+    async () => await CargoApi.getAllCargo({ groupId, templates })
   )
 }

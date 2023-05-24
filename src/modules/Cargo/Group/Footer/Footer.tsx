@@ -25,7 +25,7 @@ const Footer = ({ groupId }: { groupId: string }) => {
           <Button
             type='primary'
             icon={<PlusSquareOutlined />}
-            onClick={() => nav.replace('/cargo/new?groupId=' + groupId)}
+            onClick={() => nav.push('/cargo/new?groupId=' + groupId)}
           >
             Добавить груз
           </Button>
