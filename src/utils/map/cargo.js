@@ -21,7 +21,7 @@ export default class Cargo {
 
     // // Цвет груза
     // this.color = color;
-
+    this.fullLength = 0;
     // Имя груза
     this.name = name;
 
@@ -109,6 +109,7 @@ export default class Cargo {
       groupId: this.groupId,
       tiers: this.tiers,
       row: true,
+      fullLength: this.fullLength,
     };
   }
 
