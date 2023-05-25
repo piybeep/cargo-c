@@ -26,6 +26,7 @@ import { useUpdateProjcet } from './hook/useUpdateProjcet'
 import Menu from './Menu'
 import { useRemoveProject } from './hook/useRemoveProject'
 import { projectEntity } from '@/api/projects/type'
+import { SkeletonProjects } from '../SkeletonProjects'
 
 export function ProjectsList() {
   const router = useRouter()
@@ -40,7 +41,7 @@ export function ProjectsList() {
 
   const userId = useUserStore((state) => state.id)
 
-  const { data: projects } = useGetAllProjects({
+  const { data: projects, isLoading } = useGetAllProjects({
     userId: userId ? userId : '',
     searchString: searchText,
     sortDirection,
@@ -312,51 +313,61 @@ export function ProjectsList() {
       </div>
 
       <div className={s.list}>
-        {projects?.pages.map((el) =>
-          el.data.map((elem) => (
-            <div className={s.list__wrapper} key={elem.id}>
-              <div
-                className={classNames(s.item, {
-                  [s.item_active]: router.query.projectId == elem.id
-                })}
-                onClick={() => handleClickProject(elem)}
-                onTouchStart={(e) =>
-                  windowInnerWidth && handleTouchStart(e, elem.id)
-                }
-                onTouchMove={(e) =>
-                  windowInnerWidth && handleTouchMove(e, elem.id)
-                }
-                onTouchEnd={() => windowInnerWidth && handleTouchEnd(elem.id)}
-                id={elem.id}
-              >
-                <svg
-                  className={s.item__svg}
-                  width='34'
-                  height='28'
-                  viewBox='0 0 34 28'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
+        {!isLoading ? (
+          projects?.pages.map((el) =>
+            el.data.map((elem) => (
+              <div className={s.list__wrapper} key={elem.id}>
+                <div
+                  className={classNames(s.item, {
+                    [s.item_active]: router.query.projectId == elem.id
+                  })}
+                  onClick={() => handleClickProject(elem)}
+                  onTouchStart={(e) =>
+                    windowInnerWidth && handleTouchStart(e, elem.id)
+                  }
+                  onTouchMove={(e) =>
+                    windowInnerWidth && handleTouchMove(e, elem.id)
+                  }
+                  onTouchEnd={() => windowInnerWidth && handleTouchEnd(elem.id)}
+                  id={elem.id}
                 >
-                  <path
+                  <svg
                     className={s.item__svg}
-                    stroke='#1890FF'
-                    d='M4.03709 0.666748H11.4445L17.0001 6.00008H29.963C30.9453 6.00008 31.8874 6.37468 32.5819 7.04148C33.2765 7.70828 33.6667 8.61265 33.6667 9.55564V23.7779C33.6667 24.7209 33.2765 25.6252 32.5819 26.292C31.8874 26.9588 30.9453 27.3334 29.963 27.3334H4.03709C3.05481 27.3334 2.11276 26.9588 1.41818 26.292C0.723598 25.6252 0.333387 24.7209 0.333387 23.7779V4.2223C0.333387 3.27931 0.723598 2.37494 1.41818 1.70815C2.11276 1.04135 3.05481 0.666748 4.03709 0.666748Z'
-                    fill='#1890FF'
-                  />
-                </svg>
-                <div className={s.item__info}>
-                  <Title level={5}>{elem.name}</Title>
-                  <Text className={s.item__text} type='secondary'>
-                    {getDatePretty(elem.createdAt, elem.updatedAt)}
-                  </Text>
+                    width='34'
+                    height='28'
+                    viewBox='0 0 34 28'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      className={s.item__svg}
+                      stroke='#1890FF'
+                      d='M4.03709 0.666748H11.4445L17.0001 6.00008H29.963C30.9453 6.00008 31.8874 6.37468 32.5819 7.04148C33.2765 7.70828 33.6667 8.61265 33.6667 9.55564V23.7779C33.6667 24.7209 33.2765 25.6252 32.5819 26.292C31.8874 26.9588 30.9453 27.3334 29.963 27.3334H4.03709C3.05481 27.3334 2.11276 26.9588 1.41818 26.292C0.723598 25.6252 0.333387 24.7209 0.333387 23.7779V4.2223C0.333387 3.27931 0.723598 2.37494 1.41818 1.70815C2.11276 1.04135 3.05481 0.666748 4.03709 0.666748Z'
+                      fill='#1890FF'
+                    />
+                  </svg>
+                  <div className={s.item__info}>
+                    <Title level={5}>{elem.name}</Title>
+                    <Text className={s.item__text} type='secondary'>
+                      {getDatePretty(elem.createdAt, elem.updatedAt)}
+                    </Text>
+                  </div>
+                  <Button
+                    className={s.item__open}
+                    onClick={(e) => open(elem.id, e)}
+                  >
+                    Открыть
+                  </Button>
+                  <div className={s.item__buttons}>
+                    <Menu
+                      projectEl={elem}
+                      remove={removeProject}
+                      copy={copyProject}
+                      edit={setIsModalOpen}
+                    />
+                  </div>
                 </div>
-                <Button
-                  className={s.item__open}
-                  onClick={(e) => open(elem.id, e)}
-                >
-                  Открыть
-                </Button>
-                <div className={s.item__buttons}>
+                <div className={s.list__menu}>
                   <Menu
                     projectEl={elem}
                     remove={removeProject}
@@ -365,16 +376,10 @@ export function ProjectsList() {
                   />
                 </div>
               </div>
-              <div className={s.list__menu}>
-                <Menu
-                  projectEl={elem}
-                  remove={removeProject}
-                  copy={copyProject}
-                  edit={setIsModalOpen}
-                />
-              </div>
-            </div>
-          ))
+            ))
+          )
+        ) : (
+          <SkeletonProjects />
         )}
       </div>
 
