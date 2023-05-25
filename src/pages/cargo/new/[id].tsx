@@ -1,10 +1,11 @@
 import { Layout } from '@/layouts/BaseLayout'
 import { Header } from '@/modules'
 import { NewCargo } from '@/modules/NewCargo'
+import { GetServerSidePropsContext } from 'next'
 import { ReactNode } from 'react'
 
-export default function CargoEditPage() {
-  return <NewCargo />
+export default function CargoEditPage({groupId}:{groupId:string}) {
+  return <NewCargo groupId={groupId}/>
 }
 
 CargoEditPage.getLayout = (page: ReactNode) => (
@@ -13,3 +14,16 @@ CargoEditPage.getLayout = (page: ReactNode) => (
     <Layout>{page}</Layout>
   </>
 )
+
+export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+  if (!query.groupId) {
+    return {
+      redirect: {
+        destination: '/cargo',
+        permanent: false
+      }
+    }
+  }
+
+  return { props: { groupId: query.groupId } }
+}

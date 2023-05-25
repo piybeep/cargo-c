@@ -12,7 +12,7 @@ interface toolProps {
   indeterminate: any
   onCheckAllChange: any
   checkAll: any
-  infoAboutGroup:string
+  infoAboutGroup: string
 }
 
 const Tool: React.FC<toolProps> = ({
@@ -28,9 +28,10 @@ const Tool: React.FC<toolProps> = ({
           indeterminate={indeterminate}
           onChange={onCheckAllChange}
           checked={checkAll}
-          children={<Text>Выбрать все</Text>}
-        />
-        {indeterminate||checkAll ? (
+        >
+          Выбрать все
+        </Checkbox>
+        {indeterminate || checkAll ? (
           <Space>
             <div className={s.toolEl}>
               <IconReplace />
