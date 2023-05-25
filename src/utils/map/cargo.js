@@ -39,7 +39,7 @@ export default class Cargo {
     this.count = count;
 
     // Номер груза
-    this.numberId = numberId + 1;
+    this.numberId = numberId;
 
     const labelGeometry = new THREE.PlaneGeometry(
       length > width ? width * 0.7 : length * 0.7,
