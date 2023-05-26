@@ -67,16 +67,6 @@ export default class Arrangement {
     this.defaultPosition();
 
     for (let i = 0; i < this.cargos.length; i++) {
-      this.fullLength += this.cargos[i].parameters.length;
-      // Сохраняем длину всех блоков в группе
-      this.cargos[i].parameters.fullLength = this.fullLength;
-
-      // Стартовая позиция
-      if (i === 0) {
-        this.startPosition(this.cargos[i]);
-
-        continue;
-      }
       // Получаем позицию предыдущего блока
       this.previous = this.cargos[i - 1] || this.cargos[i];
 
@@ -85,11 +75,14 @@ export default class Arrangement {
         this.setPosition(this.cargos[i], this.previous.block.position.x, "x");
         this.setPosition(this.cargos[i], this.previous.block.position.y, "y");
         this.setPosition(this.cargos[i], this.previous.block.position.z, "z");
+
+        this.fullLength += this.cargos[i].parameters.length;
+        this.cargos[i].parameters.fullLength = this.fullLength;
       }
 
       // Если следующий груз в другой группе
       if (this.cargos[i].parameters.group !== this.previous.parameters.group) {
-        // Сохраняем всю группу
+        // Сохраняем всю предыдущую группу
         this.previousCargosGroup = this.cargos.filter(
           (cargo) => cargo.parameters.group === this.previous.parameters.group
         );
@@ -114,6 +107,8 @@ export default class Arrangement {
           all: this.previousCargosGroup,
         });
         this.fullLength = 0;
+        this.fullLength += this.cargos[i].parameters.length;
+        this.cargos[i].parameters.fullLength = this.fullLength;
 
         // this.previousFirstCargo.block.material.color.set("springgreen");
         // this.previousLastCargo.block.material.color.set("springgreen");
@@ -155,6 +150,12 @@ export default class Arrangement {
             0.1,
           "x"
         );
+      }
+
+      // Стартовая позиция
+      if (i === 0) {
+        this.startPosition(this.cargos[i]);
+        continue;
       }
 
       this.arrange(this.cargos[i], this.previous);
@@ -390,8 +391,8 @@ export default class Arrangement {
       // Позиция первого груза в предыдущей группе
       const firstCargoPZ = this.previousGroup[cargo.parameters.groupId - 1].first.block.position.z;
       const firstCargoPX = this.previousGroup[cargo.parameters.groupId - 1].first.block.position.x;
-      const previousFirstCargoWidth = this.previousGroup[cargo.parameters.groupId - 1].first.parameters.width;
-      const previousFirstCargoLength = this.previousGroup[cargo.parameters.groupId - 1].first.parameters.length;
+      const previousCargoWidth = this.previousGroup[cargo.parameters.groupId - 1].first.parameters.width;
+      const previousCargoLength = this.previousGroup[cargo.parameters.groupId - 1].first.parameters.length;
 
       // Позиция последнего груза в предыдущей группе
       const lastCargoPX = this.previousGroup[cargo.parameters.groupId - 1].last.block.position.x;
@@ -402,39 +403,35 @@ export default class Arrangement {
       // ***************************************************
       // Конфигурация для бокового пространства
       // -- Расчет вмещаемых грузов по оси Z и свободного пространства
-      const previousAvailableCountZ = Math.floor(this.spaceWidth / previousFirstCargoWidth);
+      const previousAvailableCountZ = Math.floor(this.spaceWidth / previousCargoWidth);
       const previousCount = previousCountCargo;
-
+      //    |
+      // -- Остаток свободного места по ширине
       const freeSpaceWidth =
         this.spaceWidth -
-        (previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ) *
-          previousFirstCargoWidth;
-      // -- Расчет вмещаемых грузов по оси Z и свободного пространства
+        (previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ) * previousCargoWidth;
+      //    |
+      // -- Расчет вмещаемых грузов по оси X и свободного пространства
       const previousFullLength = this.previousGroup[cargo.parameters.groupId - 1].fullLength;
-      // console.log(previousFullLength);
-      // console.log(
-      //   `Свободно места: ${freeSpaceWidth} | Занято: ${previousCount * previousFirstCargoWidth} | Cумма: ${
-      //     freeSpaceWidth + previousCount * previousFirstCargoWidth
-      //   }`
-      // );
-
-      console.log(previousFullLength);
 
       // console.log(this.previousGroup);
       if (!this.isOutwardsMaxZ(cargo) && findDiffGroup && freeSpaceWidth >= cargoWidth) {
         const count = previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ;
         const targetCargo = this.previousGroup[cargo.parameters.groupId - 1].all[count - 1].block.position.z;
-        offsetPX = firstCargoPX - previousFirstCargoLength / 2 + cargoLength / 2;
-        offsetPZ = targetCargo + previousFirstCargoWidth / 2 + cargoWidth / 2;
+        offsetPX = firstCargoPX - previousCargoLength / 2 + cargoLength / 2;
+        offsetPZ = targetCargo + previousCargoWidth / 2 + cargoWidth / 2;
 
         this.setPosition(cargo, offsetPX, "x");
         this.setPosition(cargo, offsetPZ, "z");
         cargo.block.material.color.set("red");
       }
 
+      // Если ширина прошлой группы стала меньше, ширины текущей
       if (previousFullLength < cargo.parameters.id * cargo.parameters.length) {
-        console.log(cargo.parameters.id * cargo.parameters.length);
-        cargo.block.material.color.set("lime");
+        offsetPX = lastCargoPX + previousCargoLength / 2 + cargoLength / 2;
+        offsetPZ = lastCargoPZ - previousCargoWidth / 2 + cargoWidth / 2;
+        this.setPosition(cargo, offsetPX, "x");
+        this.setPosition(cargo, offsetPZ, "z");
       }
 
       if (!this.isOutwardsMaxZ(cargo) && findDiffGroup && freeSpaceWidth < cargoWidth) {
@@ -444,7 +441,12 @@ export default class Arrangement {
         this.setPosition(cargo, offsetPZ, "z");
       }
 
-      if (!this.isOutwardsMaxZ(cargo) && !findDiffGroup) {
+      if (
+        !this.isOutwardsMaxZ(cargo) &&
+        !findDiffGroup &&
+        previousFullLength > cargo.parameters.id * cargo.parameters.length
+      ) {
+        cargo.block.material.color.set("yellow");
         // cargo.block.material.color.set("lime");
         offsetPX = previousCargo.x;
         offsetPZ = previousCargo.z + previousCargo.width / 2 + cargoWidth / 2;
@@ -454,7 +456,7 @@ export default class Arrangement {
 
       if (this.isOutwardsMaxZ(cargo)) {
         offsetPX = previousCargo.x + previousCargo.length / 2 + cargoLength / 2;
-        offsetPZ = firstCargoPZ + previousFirstCargoWidth / 2 + cargoWidth / 2;
+        offsetPZ = firstCargoPZ + previousCargoWidth / 2 + cargoWidth / 2;
         this.setPosition(cargo, offsetPX, "x");
         this.setPosition(cargo, offsetPZ, "z");
         // cargo.block.material.color.set("yellow");
