@@ -106,6 +106,7 @@ export default class Cargo {
       group: this.group,
       count: this.count,
       id: this.numberId,
+      uuid: this.block.uuid,
       groupId: this.groupId,
       tiers: this.tiers,
       row: true,
