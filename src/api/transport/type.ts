@@ -1,8 +1,11 @@
-export interface transportEntity {
+export interface transportEntity extends createTransportProps {
   id: string
+  isTemplate: boolean
+}
+
+export interface createTransportProps {
   name: string
   type: typeOfTransport
-  isTemplate: boolean
   weightUnit: 'тн' | 'кг'
   sizeUnit: 'м' | 'см' | 'мм'
   length: number
@@ -17,10 +20,10 @@ export interface getAllTransportProps {
   tmp?: boolean
 }
 
-export interface getAllTransportRes{
-  data:transportEntity[]
-  count:number
-  page:number
+export interface getAllTransportRes {
+  data: transportEntity[]
+  count: number
+  page: number
 }
 
 export type typeOfTransport =

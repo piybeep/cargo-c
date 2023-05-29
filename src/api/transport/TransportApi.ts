@@ -1,5 +1,9 @@
 import { instance } from '..'
-import { getAllTransportProps, getAllTransportRes } from './type'
+import {
+  createTransportProps,
+  getAllTransportProps,
+  getAllTransportRes
+} from './type'
 
 export const TransportApi = {
   async getAllTransport({
@@ -10,6 +14,10 @@ export const TransportApi = {
     const res = await instance.get<getAllTransportRes>(
       `loadspaces?page=${page}&size=${size}&tmp=${tmp}`
     )
+    return res.data
+  },
+  async createTransport(data: createTransportProps) {
+    const res = await instance.post('loadspaces')
     return res.data
   }
 }
