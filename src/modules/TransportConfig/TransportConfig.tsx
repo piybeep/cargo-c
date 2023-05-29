@@ -17,14 +17,9 @@ import tyagach from '../../../public/img/tyagach.png'
 import furgon from '../../../public/img/furgon.png'
 
 import s from './TransportConfig.module.scss'
-import { useTransport } from '@/store/transport';
 
 export function TransportConfig({ ...props }: TransportConfigProps) {
     const router = useRouter()
-
-    // zustand
-    const { setAddTransport } = useTransport(state => state)
-    // zustand
 
     const [width, setWidth] = useState('мм')
     const [height, setHeight] = useState('кг')
@@ -160,12 +155,13 @@ export function TransportConfig({ ...props }: TransportConfigProps) {
                 }
             }
         }
-        setAddTransport(
-            {
-                title: values.name,
-                text: `${values.type} ${values.length} x ${values.width} x ${values.height} ${values.configWidth}, ${values.tonnage} ${values.configHeight}, "тут подсчёт"`,
-                type: values.type
-            })
+        //create transport
+        // setAddTransport(
+        //     {
+        //         title: values.name,
+        //         text: `${values.type} ${values.length} x ${values.width} x ${values.height} ${values.configWidth}, ${values.tonnage} ${values.configHeight}, "тут подсчёт"`,
+        //         type: values.type
+        //     })
 
             router.push({pathname: '/transport'})
     }

@@ -17,11 +17,9 @@ export const useGetAllProjects = (data: useGetAllProjectsProps) => {
         ...data
       }),
     {
-      getNextPageParam: (page,prevPage) => {
+      getNextPageParam: (page, prevPage) => {
         if (page.data && page.data.length > 0) {
-          // return page.page + 1
-          //переделать
-          return 1
+          return page.page + 1
         }
       },
       keepPreviousData: true
