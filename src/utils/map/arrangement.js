@@ -31,7 +31,7 @@ export default class Arrangement {
     this.fullLength = 0;
     this.uuidForStep = true;
     this.stepBackGroup = 1;
-    this.stopStepBackGroup = false;
+    this.isStepBackGroup = true;
     this.saveStepPointPerZ = 0;
   }
 
@@ -86,6 +86,9 @@ export default class Arrangement {
 
       // Если следующий груз в другой группе
       if (this.cargos[i].parameters.group !== this.previous.parameters.group) {
+        this.stepBackGroup = 1;
+        this.isStepBackGroup = true;
+
         // Сохраняем всю предыдущую группу
         this.previousCargosGroup = this.cargos.filter(
           (cargo) => cargo.parameters.group === this.previous.parameters.group
@@ -455,10 +458,13 @@ export default class Arrangement {
       // Алгоритм расстановки
       if (!this.isOutwardsMaxZ(cargo) && findDiffGroup && freeSpaceWidth >= cargoWidth) {
         const count = previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ;
-        const targetCargo =
+        const targetCargoZ =
           this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].all[count - 1].block.position.z;
-        offsetPX = firstCargoPX - previousCargoLength / 2 + cargoLength / 2;
-        offsetPZ = targetCargo + previousCargoWidth / 2 + cargoWidth / 2;
+        const targetCargoX =
+          this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].all[count - 1].block.position.x;
+
+        offsetPX = targetCargoX - previousCargoLength / 2 + cargoLength / 2;
+        offsetPZ = targetCargoZ + previousCargoWidth / 2 + cargoWidth / 2;
 
         // Сохраняем позицию первого блока по Z откуда он начинается.
         this.saveStepPointPerZ = offsetPZ;
@@ -467,31 +473,7 @@ export default class Arrangement {
         this.setPosition(cargo, offsetPZ, "z");
       }
 
-      // Если предыдущая группа имеет не ровное кол-во грузов по Z
-      if (previousCount % previousCountPerZ !== 0 && this.previousHalfLength !== -1) {
-        this.previousHalfLength = (previousCountPerX - 1) * previousCargoLength;
-      } else {
-        this.previousHalfLength = previousFullLength;
-      }
-
-      // Переносить
-      if (currentFullLength > this.previousHalfLength && this.previousHalfLength !== previousFullLength) {
-        this.previousHalfLength = -1;
-        const test =
-          this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].all[
-            this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].count - 1
-          ];
-        offsetPZ = test.block.position.z + previousCargoWidth / 2 + cargoWidth / 2;
-        offsetPX = lastCargoPX - previousCargoLength / 2 + cargoLength / 2;
-
-        this.setPosition(cargo, offsetPX, "x");
-        this.setPosition(cargo, offsetPZ, "z");
-        console.log("+");
-        return;
-      }
-
-      if (previousFullLength < currentFullLength && !this.stopStepBackGroup) {
-        cargo.block.material.color.set("red");
+      if (previousFullLength < currentFullLength && this.isStepBackGroup) {
         // Если ширина прошлой группы стала меньше, ширины текущей
         // Находим груз предыдущей группы, который ближе всех к spaceMinZ
         const targetCargoPZ = Math.min(
@@ -505,19 +487,22 @@ export default class Arrangement {
             this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].all[
               this.previousGroup[cargo.parameters.groupId - this.stepBackGroup].count - 1
             ];
+
           offsetPZ = test.block.position.z + previousCargoWidth / 2 + cargoWidth / 2;
         } else {
           offsetPZ = targetCargoPZ - previousCargoWidth / 2 + cargoWidth / 2;
         }
 
+        // Сохраняем позицию первого блока по Z откуда он начинается.
+        this.saveStepPointPerZ = offsetPZ;
         offsetPX = lastCargoPX + previousCargoLength / 2 + cargoLength / 2;
+
         if (cargo.parameters.groupId - (this.stepBackGroup + 1) < 0) {
-          this.stopStepBackGroup = true;
+          this.isStepBackGroup = false;
+          console.log("123");
         } else {
           this.stepBackGroup += 1;
         }
-
-        this.stopStepBackGroup = true;
 
         this.setPosition(cargo, offsetPX, "x");
         this.setPosition(cargo, offsetPZ, "z");
