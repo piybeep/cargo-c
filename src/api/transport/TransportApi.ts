@@ -17,7 +17,7 @@ export const TransportApi = {
     return res.data
   },
   async createTransport(data: createTransportProps) {
-    const res = await instance.post('loadspaces')
+    const res = await instance.post('loadspaces', data)
     return res.data
   }
 }

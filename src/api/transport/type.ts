@@ -1,6 +1,14 @@
-export interface transportEntity extends createTransportProps {
+export interface transportEntity {
   id: string
   isTemplate: boolean
+  name: string
+  type: typeOfTransport
+  weightUnit: 'тн' | 'кг'
+  sizeUnit: 'м' | 'см' | 'мм'
+  length: number
+  width: number
+  height: number
+  weight: number
 }
 
 export interface createTransportProps {
@@ -12,6 +20,42 @@ export interface createTransportProps {
   width: number
   height: number
   weight: number
+  transports?:
+    | [
+        {
+          type: 'Фургон грузовой'
+          axesCount: number
+          weight: number
+          length: number
+          length1: number
+          axle1Min: number
+          axle1Max: number
+          axle2Min: number
+          axle2Max: number
+        }
+      ]
+    | [
+        {
+          type: 'Тягач с полуприцепом'
+          axesCount: number
+          weight: number
+          length2: number
+          length3: number
+          axle2Min: number
+          axle2Max: number
+        },
+        {
+          type: 'Тягач с полуприцепом'
+          axesCount: number
+          weight: number
+          length: number
+          length1: number
+          axle1Min: number
+          axle1Max: number
+          axle2Min: number
+          axle2Max: number
+        }
+      ]
 }
 
 export interface getAllTransportProps {
