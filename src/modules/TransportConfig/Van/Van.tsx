@@ -24,8 +24,9 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
       </div>
       <div className={s.list__description}>
         <Controller
-          name='axesCount1'
+          name='van.axesCount'
           control={control}
+          rules={{ value: 2 }}
           render={({ field: { onChange, value } }) => (
             <div className={s.list__control}>
               <Text className={s.list__text} type='secondary'>
@@ -47,11 +48,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='weight1'
+          name='van.weight'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
@@ -73,11 +75,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='length1'
+          name='van.length'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
@@ -104,11 +107,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='length2'
+          name='van.length1'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
@@ -135,9 +139,9 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axleMin1'
+          name='van.axle1Min'
           control={control}
-          rules={{ required: true, min: 1 }}
+          rules={{ required: true, min: 1, value: 1 }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
               <Text className={s.list__text} type='secondary'>
@@ -163,11 +167,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axleMax1'
+          name='van.axle1Max'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
@@ -194,11 +199,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axle2Min1'
+          name='van.axle2Min'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>
@@ -225,11 +231,12 @@ const Van: React.FC<VanProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axle2Max1'
+          name='van.axle2Max'
           control={control}
           rules={{
             required: true,
-            min: 1
+            min: 1,
+            value: 1
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div className={s.list__control}>

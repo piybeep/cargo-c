@@ -56,6 +56,7 @@ export interface createTransportProps {
           axle2Max: number
         }
       ]
+    | [null]
 }
 
 export interface getAllTransportProps {

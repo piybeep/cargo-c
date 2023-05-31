@@ -24,7 +24,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
       </div>
       <div className={s.list__description}>
         <Controller
-          name='axesCount3'
+          name='tractor.axesCount'
           control={control}
           render={({ field: { onChange, value } }) => (
             <div className={s.list__control}>
@@ -47,7 +47,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='weight3'
+          name='tractor.weight'
           control={control}
           rules={{
             required: true,
@@ -73,7 +73,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='length5'
+          name='tractor.length'
           control={control}
           rules={{
             required: true,
@@ -104,7 +104,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='length6'
+          name='tractor.length1'
           control={control}
           rules={{
             required: true,
@@ -135,7 +135,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axleMin3'
+          name='tractor.axle1Min'
           control={control}
           rules={{ required: true, min: 1 }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -163,7 +163,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axleMax3'
+          name='tractor.axle1Max'
           control={control}
           rules={{
             required: true,
@@ -194,7 +194,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axle1Min3'
+          name='tractor.axle2Min'
           control={control}
           rules={{
             required: true,
@@ -225,7 +225,7 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
         />
 
         <Controller
-          name='axle2Max3'
+          name='tractor.axle2Max'
           control={control}
           rules={{
             required: true,
