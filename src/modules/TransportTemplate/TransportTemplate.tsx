@@ -1,4 +1,3 @@
-import { useTransport } from "@/store";
 
 import Link from "next/link";
 
@@ -34,16 +33,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
         }
     }, [])
 
-    // zustand 
-    const {
-        transport,
-        getIcon,
-        setRemoveTransport
-    } = useTransport(state => state)
-    // zustand 
-
     const handleRemove = (id: any) => {
-        setRemoveTransport(id)
         setSaveCurrentIndex(undefined)
     }
 
@@ -68,7 +58,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
     return (
         <div className={s.wrapper}>
             <div className={s.list}>
-                {transport.map((current, index) => (
+                {[].map((current :any, index) => (
                     <div key={current.id} className={s.list__wrapper}>
                         <div className={s.item}
                             onClick={() => handleClick()}
@@ -78,7 +68,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
                             id={''+current.id}
                         >
                             <div className={s.item__wrapper}>
-                                <Icon className={s.item__icon} component={getIcon(current.id)} />
+                                {/* <Icon className={s.item__icon} component={getIcon(current.id)} /> */}
                                 <div className={s.item__info}>
                                     <Title className={s.item__title} level={5}>{current.title}</Title>
                                     <Text className={s.item__text} type="secondary">{current.text}</Text>

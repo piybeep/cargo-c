@@ -19,5 +19,9 @@ export const TransportApi = {
   async createTransport(data: createTransportProps) {
     const res = await instance.post('loadspaces', data)
     return res.data
+  },
+  async removeTransport({id}:{id:string}) {
+    const res = await instance.delete(`loadspaces/${id}`)
+    return res.data
   }
 }

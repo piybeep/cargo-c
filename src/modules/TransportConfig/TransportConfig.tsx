@@ -143,7 +143,7 @@ export function TransportConfig() {
       }
     }
 
-    // router.push({pathname: '/transport'})
+    router.push({pathname: '/transport'})
   }
 
   const changeWidth = (e: RadioChangeEvent) => {

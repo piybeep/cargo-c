@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { Button, Typography } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+import { Button, Modal, Typography } from 'antd'
 
 import { TransportProps } from './Transport.types'
 
@@ -18,6 +20,7 @@ import { transportEntity, typeOfTransport } from '@/api/transport/type'
 import Image from 'next/image'
 import Menu from './Menu'
 import { useGetTransport } from './hook/useGetTransport'
+import { useRemoveTransport } from './hook/useRemoveTransport'
 
 export function Transport({ ...props }: TransportProps) {
   const { Title, Text } = Typography
@@ -27,6 +30,11 @@ export function Transport({ ...props }: TransportProps) {
   const { data: transport, isLoading: isLoadingGet } = useGetTransport({
     tmp: false
   })
+
+  const {
+    mutateAsync: deleteTransport,
+    isLoading: isLoadingRemove
+  } = useRemoveTransport()
 
   const router = useRouter()
 
@@ -47,8 +55,22 @@ export function Transport({ ...props }: TransportProps) {
   // Swipe logic
 
   const handleRemoveTransport = (id: string) => {
-    //remove the transport
-    setSaveCurrentIndex(undefined)
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот транспорт?',
+      icon: <ExclamationCircleOutlined />,
+      onCancel: () => close(),
+      onOk: async () => {
+        await deleteTransport({ id })
+        setSaveCurrentIndex(undefined)
+        close()
+      },
+      maskClosable: true,
+      okText: 'Да',
+      cancelText: 'Отмена',
+      okButtonProps: {
+        loading: isLoadingRemove
+      }
+    })
   }
 
   const handleClickItem = (id: string) => {
@@ -63,15 +85,15 @@ export function Transport({ ...props }: TransportProps) {
   const getIcon = (type: typeOfTransport) => {
     switch (type) {
       case 'Грузовой автомобиль':
-        return './car.svg'
+        return '/svg/transport/car.svg'
       case 'Морской контейнер':
-        return './ship.svg'
+        return '/svg/transport/ship.svg'
       case 'Паллет':
-        return './pallet.svg'
+        return '/svg/transport/pallet.svg'
       case 'Складская площадь':
-        return './stock.svg'
+        return '/svg/transport/stock.svg'
       default:
-        return './car.svg'
+        return '/svg/transport/car.svg'
     }
   }
 
