@@ -86,6 +86,12 @@ export default class Arrangement {
 
       // Если следующий груз в другой группе
       if (this.cargos[i].parameters.group !== this.previous.parameters.group) {
+        if (g === 0) {
+          this.startColumnPosition = true;
+        } else {
+          this.startColumnPosition = false;
+        }
+
         this.stepBackGroup = 1;
         this.isStepBackGroup = true;
 
@@ -108,7 +114,15 @@ export default class Arrangement {
         // ! ! ! Предыдущая группа
         // -- Расчет вмещаемых грузов по оси Z и свободного пространства
         const previousCargoWidth = this.previous.parameters.width;
-        const previousAvailableCountZ = Math.floor(this.spaceWidth / previousCargoWidth);
+
+        // Создаем переменную в которой будем высчитывать занятую площадь по Z предыдущей группы
+        let previousOccupiedAreaZ = 0;
+        if (this.previousGroup[g - 1]) {
+          previousOccupiedAreaZ =
+            this.previousGroup[g - 1].amount.axisZ * this.previousGroup[g - 1].parameters.width;
+        }
+
+        const previousAvailableCountZ = Math.floor((this.spaceWidth - previousOccupiedAreaZ) / previousCargoWidth);
         const previousCount = this.previous.parameters.count;
         // -- Количество грузов в ширину
         const previousCountPerZ =
@@ -135,6 +149,7 @@ export default class Arrangement {
           fullLength: this.fullLength,
           cargos: this.previousCargosGroup,
           freeSpaceWidth: freeSpaceWidth,
+          startColumnPosition: this.startColumnPosition,
           amount: {
             axisZ: previousCountPerZ,
             axisX: previousCountPerX,
@@ -474,16 +489,24 @@ export default class Arrangement {
       const currentCount = cargoNumber;
       // -- Текущее количество грузов по ширине
       const currentCountPerZ = currentAvailableCountZ >= currentCount ? currentCount : currentAvailableCountZ;
+      console.log(currentAvailableCountZ);
       // -- Расчет вмещаемых грузов по оси X и свободного пространства
       // -- Текущее количество грузов по длине
       const currentCountPerX = Math.ceil(currentCount / currentCountPerZ);
       const currentFullLength = currentCountPerX * cargo.parameters.length;
-
+      // console.log(currentFullLength);
       const stepZ = previousCargo.width / 2 + cargoWidth / 2;
       const stepX = previousCargo.length / 2 + cargoLength / 2;
 
       for (let i = 0; i < this.previousGroup.length; i++) {
         const group = this.previousGroup[i];
+
+        if (currentFullLength > group.fullLength) {
+          cargo.block.material.color.set("yellow");
+          console.log("-=-=-=-=-=");
+          break;
+        }
+
         // Если текущий груз относится к другой группе
         const findDiffGroup = cargo.parameters.groupId !== group.parameters.groupId;
 
@@ -500,7 +523,7 @@ export default class Arrangement {
           // Находим последние блоки группы
           const targetCargoZ = group.cargos[group.amount.axisZ - 1].block.position.z;
           const targetCargoX = group.cargos[group.amount.axisZ - 1].block.position.x;
-          console.log(group.amount.axisZ);
+
           offsetPX = targetCargoX - group.parameters.length / 2 + cargoLength / 2;
           offsetPZ = targetCargoZ + group.parameters.width / 2 + cargoWidth / 2;
 
@@ -512,11 +535,11 @@ export default class Arrangement {
           group.freeSpaceWidth -= currentCountPerZ * cargo.parameters.width;
           group.isContain = true;
           cargo.block.material.color.set("red");
-          // cargo.block.material.color.set("red");
-          console.log(
-            `Номер группы: ${group.id}, свободного места: ${group.freeSpaceWidth}, размер груза: ${cargo.parameters.width}`
-          );
-          break;
+
+          // console.log(
+          //   `Номер группы: ${group.id}, свободного места: ${group.freeSpaceWidth}, размер груза: ${cargo.parameters.width}`
+          // );
+          // break;
         } else {
           this.setPosition(cargo, previousCargo.x + stepX, "x");
           this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
