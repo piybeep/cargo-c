@@ -101,7 +101,8 @@ export function TransportConfig() {
         ...data.main,
         weightUnit: height,
         sizeUnit: width,
-        transports: [null]
+        transports: [null],
+        autoDistribution:true
       })
     } else {
       if (transport === 0) {
@@ -123,7 +124,8 @@ export function TransportConfig() {
           transports: [
             { ...data.trailer, type: 'Тягач с полуприцепом' },
             { ...data.tractor, type: 'Тягач с полуприцепом' }
-          ]
+          ],
+          autoDistribution:false
         })
       } else {
         console.log({
@@ -138,7 +140,8 @@ export function TransportConfig() {
           ...data.main,
           weightUnit: height,
           sizeUnit: width,
-          transports: [{ ...data.van, type: 'Фургон грузовой' }]
+          transports: [{ ...data.van, type: 'Фургон грузовой' }],
+          autoDistribution:false
         })
       }
     }

@@ -20,6 +20,7 @@ export interface createTransportProps {
   width: number
   height: number
   weight: number
+  autoDistribution:boolean
   transports?:
     | [
         {
