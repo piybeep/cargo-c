@@ -175,7 +175,7 @@ export function ProjectsList() {
   useEffect(() => {
     const lastSelectedProject = localStorage.getItem('lastSelectedProject')
     const firstProject = projects?.pages.at(0)?.data.at(0)?.id
-    if (window && firstProject) {
+    if (window && firstProject && !lastSelectedProject) {
       window.localStorage.setItem('lastSelectedProject', firstProject)
       router.push({
         pathname: '/projects',
