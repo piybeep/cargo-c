@@ -1,4 +1,4 @@
-export interface cargoEntity {
+export interface createCargoProps {
   name: string
   color: string
   sizeUnit: 'м' | 'см' | 'мм'
@@ -20,7 +20,7 @@ export interface cargoEntity {
   isTemplate: boolean
 }
 
-export interface cargoEntityRes extends cargoEntity {
+export interface cargoEntity extends createCargoProps {
   groupId: string
   id: string
 }

@@ -10,9 +10,11 @@ import { useSwipe } from '@/hook/useSwipe'
 import { editGroupProps, groupEntity } from '@/api/groups/type'
 import { UseMutateAsyncFunction } from 'react-query'
 import { useGetAllCargo } from './hook/useGetAllCargo'
-import { Typography, Space, Checkbox } from 'antd'
+import { Typography, Space, Checkbox, Modal } from 'antd'
 import { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { useRemoveCargo } from './hook/useRemoveCargo'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 const { Title, Text } = Typography
 
@@ -32,6 +34,11 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     templates: false,
     groupId: group.id
   })
+
+  const {
+    mutateAsync: removeCargo,
+    isLoading: isLoadingRemove
+  } = useRemoveCargo({ groupId: group.id })
 
   useEffect(() => {
     if (!isLoading && data && data.length > 0) {
@@ -56,6 +63,24 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
       setInfoAboutGroup(count + ' шт, ' + weight + ' кг, ' + volume + ' м3')
     }
   }, [isLoading])
+
+  const removeProject = ({ id }: { id: string }) => {
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот груз?',
+      icon: <ExclamationCircleOutlined />,
+      onCancel: () => close(),
+      onOk: async () => {
+        await removeCargo({ cargoId: id, groupId: group.id })
+        close()
+      },
+      maskClosable: true,
+      okText: 'Да',
+      cancelText: 'Отмена',
+      okButtonProps: {
+        loading: isLoadingRemove
+      }
+    })
+  }
 
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>()
   const [indeterminate, setIndeterminate] = useState(false)
@@ -136,6 +161,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleTouchStart={handleTouchStart}
                 handleClick={handleClick}
                 groupIndex={group.id}
+                removeProject={removeProject}
               />
             ))}
           </div>

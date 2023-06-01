@@ -6,26 +6,15 @@ import palletSVG from '../../../../../public/svg/newBox/pallet.svg'
 import { Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 //img
-import listSvg from '../../../../../public/svg/boxEl/list.svg'
 import arrowXSvg from '../../../../../public/svg/boxEl/arrowX.svg'
 import arrowYSvg from '../../../../../public/svg/boxEl/arrowY.svg'
 import saveSvg from '../../../../../public/svg/boxEl/save.svg'
 import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 import Image from 'next/image'
-import { cargoEntity } from '@/api/cargo/type'
+import { GroupElProps } from './type'
 
 const { Text, Title } = Typography
-
-interface GroupElProps {
-  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
-  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
-  handleTouchEnd: (id: string) => void
-  handleClick: () => void
-  el: cargoEntity
-  groupIndex: string
-  elId: string
-}
 
 const GroupEl: React.FC<GroupElProps> = ({
   handleTouchEnd,
@@ -34,7 +23,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   handleClick,
   el,
   groupIndex,
-  elId
+  elId,
+  removeProject
 }) => {
   const getImgForPackagingType = () => {
     if (el.type === 'Ящик') {
@@ -48,7 +38,8 @@ const GroupEl: React.FC<GroupElProps> = ({
 
   const getInfo = () => {
     return (
-      el.type +' '+
+      el.type +
+      ' ' +
       el.length +
       ' x ' +
       el.width +
@@ -89,7 +80,7 @@ const GroupEl: React.FC<GroupElProps> = ({
                 {getInfo()}
               </Text>
               <div className={s.info__icons}>
-              {getImgForPackagingType()}
+                {getImgForPackagingType()}
                 <PlusOutlined alt='нагрузка' />
                 <Image
                   width={16}
@@ -114,14 +105,26 @@ const GroupEl: React.FC<GroupElProps> = ({
               width={24}
               height={24}
             />
-            <Image src={trashSvg.src} alt='удалить' width={24} height={24} />
+            <Image
+              src={trashSvg.src}
+              alt='удалить'
+              width={24}
+              height={24}
+              onClick={() => removeProject({ id: el.id })}
+            />
           </div>
         </div>
       </div>
       <div className={s.menu}>
         <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
         <Image src={listFrSvg.src} alt='клонировать' width={24} height={24} />
-        <Image src={trashSvg.src} alt='удалить' width={24} height={24} />
+        <Image
+          src={trashSvg.src}
+          alt='удалить'
+          width={24}
+          height={24}
+          onClick={() => removeProject({ id: el.id })}
+        />
       </div>
     </div>
   )

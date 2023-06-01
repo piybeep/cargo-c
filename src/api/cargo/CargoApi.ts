@@ -1,8 +1,8 @@
 import { instance } from '..'
-import { cargoEntity, cargoEntityRes } from './type'
+import { cargoEntity, createCargoProps } from './type'
 
 export const CargoApi = {
-  async createCargo({ groupId, ...data }: cargoEntity & { groupId: string }) {
+  async createCargo({ groupId, ...data }: createCargoProps & { groupId: string }) {
     const res = await instance.post(`groups/${groupId}/cargos`, data)
     return res.data
   },
@@ -13,9 +13,19 @@ export const CargoApi = {
     groupId: string
     templates: boolean
   }) {
-    const res = await instance.get<cargoEntityRes[]>(
+    const res = await instance.get<cargoEntity[]>(
       `groups/${groupId}/cargos?templates=${templates}`
     )
+    return res.data
+  },
+  async removeCargo({
+    groupId,
+    cargoId
+  }: {
+    groupId: string
+    cargoId: string
+  }) {
+    const res = await instance.delete(`groups/${groupId}/cargos/${cargoId}`)
     return res.data
   }
 }
