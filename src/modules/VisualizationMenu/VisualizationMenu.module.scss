@@ -1,0 +1,17 @@
+.wrapper{
+    border: 1px solid red;
+}
+
+.list{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 20px;
+
+    width: 100%;
+    max-width: 417px;
+
+    &__button{
+        width: fit-content;
+    }
+}
