@@ -6,7 +6,6 @@ export default function Visualization() {
 	return (
 		<main>
             Visualization
-			<VisualizationMenu/>
 		</main>
 	);
 }
