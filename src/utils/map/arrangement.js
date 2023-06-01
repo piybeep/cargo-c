@@ -77,11 +77,12 @@ export default class Arrangement {
 
       // Добавляем новую группу в массив
       if (this.cargos[i].parameters.id === 0) {
-        console.log("Группа создана");
+        console.log(`Группа: ${this.cargos[i].parameters.group} создана`);
 
         // Предыдущая группа
         this.lastIndexGroup = this.groupList.length ? this.groupList.length - 1 : 0;
         const previousGroup = this.groupList[this.lastIndexGroup];
+
         // Сохраняем группу
         const cargoGroup = this.cargos.filter(
           (cargo) => cargo.parameters.group === this.cargos[i].parameters.group
@@ -101,10 +102,17 @@ export default class Arrangement {
         if (previousGroup) {
           previousOccupiedAreaZ = previousGroup.amount.axisZ * previousGroup.parameters.width;
         }
+        const test = this.groupList
+          .map((group) => group.amount.axisZ * group.parameters.width)
+          .reduce((prev, curr) => prev + curr, 0);
+        console.log(test);
 
         // Доступное количество груза по оси Z
-        const availableCountZ = Math.floor((this.spaceWidth - previousOccupiedAreaZ) / cargoWidth);
+        const freeSpace = this.spaceWidth - previousOccupiedAreaZ;
+        const availableCountZ = Math.floor(freeSpace / cargoWidth);
         const amountCargo = this.cargos[i].parameters.count;
+
+        // console.log(`Свободное пространство: ${freeSpace}`);
 
         // -- Количество грузов в ширину
         const currentCountPerZ = availableCountZ >= amountCargo ? amountCargo : availableCountZ;
@@ -124,6 +132,7 @@ export default class Arrangement {
         // Сохраняем группу
         this.groupList.push({
           id: groupId,
+          name: this.cargos[i].parameters.group,
           parameters: this.cargos[i].parameters,
           fullLength: this.fullLength,
           cargos: cargoGroup,
@@ -419,13 +428,14 @@ export default class Arrangement {
     };
     // Предыдущая группа
     const prevGroup = this.groupList[this.lastIndexGroup];
+    const currentGroup = this.groupList[this.lastIndexGroup + 1] || prevGroup;
 
     // Полное количество грузов предыдущей группы
-    const previousCountCargo = prevGroup.cargos[0].parameters.count;
+    // const previousCountCargo = prevGroup.cargos[0].parameters.count;
 
     // Позиция первого груза в предыдущей группе
-    const previousCargoWidth = prevGroup.cargos[0].parameters.width;
-    const previousCargoLength = prevGroup.cargos[0].parameters.length;
+    // const previousCargoWidth = prevGroup.cargos[0].parameters.width;
+    // const previousCargoLength = prevGroup.cargos[0].parameters.length;
 
     const findDiffGroup = this.previous.parameters.group !== cargo.parameters.group;
 
@@ -433,39 +443,38 @@ export default class Arrangement {
     // Конфигурация для бокового пространства
     // ! ! ! Предыдущая группа
     // -- Расчет вмещаемых грузов по оси Z и свободного пространства
-    const previousAvailableCountZ = Math.floor(this.spaceWidth / previousCargoWidth);
-    const previousCount = previousCountCargo;
+    // const previousAvailableCountZ = Math.floor(this.spaceWidth / previousCargoWidth);
+    // const previousCount = previousCountCargo;
     // -- Количество грузов по ширине
-    const previousCountPerZ = previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ;
+    // const previousCountPerZ = previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ;
     //    |
     // -- Остаток свободного места по ширине
     // if (previousCount % previousCountPerZ !== 0) {
     // }
 
     // const freeSpaceWidth = this.spaceWidth - previousCountPerZ * previousCargoWidth;
-    const freeSpaceWidth = prevGroup.freeSpaceWidth;
+    // const freeSpaceWidth = prevGroup.freeSpaceWidth;
 
     //    |
     // -- Расчет вмещаемых грузов по оси X и свободного пространства
     // -- Количество грузов по длине
-    const previousCountPerX = Math.ceil(previousCountCargo / previousCountPerZ);
-    const previousFullLength = previousCountPerX * previousCargoLength;
+    // const previousCountPerX = Math.ceil(previousCountCargo / previousCountPerZ);
+    // const previousFullLength = previousCountPerX * previousCargoLength;
 
     // ***************************************************
     // ! ! ! Текущая группа
     // -- Расчет вмещаемых грузов по оси Z и свободного пространства
-    const currentAvailableCountZ = Math.floor(freeSpaceWidth);
+    // const currentAvailableCountZ = Math.floor(freeSpaceWidth);
 
-    const currentCount = cargoNumber;
-    // -- Текущее количество грузов по ширине
-    const currentCountPerZ = currentAvailableCountZ >= currentCount ? currentCount : currentAvailableCountZ;
+    // const currentCount = cargoNumber;
+    // // -- Текущее количество грузов по ширине
+    // const currentCountPerZ = currentAvailableCountZ >= currentCount ? currentCount : currentAvailableCountZ;
 
     // console.log(`${cargo.parameters.group} | кол-во вмещаемых по Z: ${currentCountPerZ}`);
     // -- Расчет вмещаемых грузов по оси X и свободного пространства
     // -- Текущее количество грузов по длине
-    const currentCountPerX = Math.ceil(currentCount / currentCountPerZ);
-    const currentFullLength = currentCountPerX * cargo.parameters.length;
-    console.log(cargo.parameters.group);
+    // const currentCountPerX = Math.ceil(currentCount / currentCountPerZ);
+    // const currentFullLength = currentCountPerX * cargo.parameters.length;
 
     for (let i = 0; i < this.groupList.length; i++) {
       const group = this.groupList[i];
@@ -495,11 +504,9 @@ export default class Arrangement {
 
         this.setPosition(cargo, offsetPX, "x");
         this.setPosition(cargo, offsetPZ, "z");
-        group.freeSpaceWidth -= cargo.parameters.width * currentCountPerZ;
+        group.freeSpaceWidth -= cargo.parameters.width * currentGroup.amount.axisZ;
 
         group.isContain = true;
-        cargo.block.material.color.set("red");
-
         // console.log(
         //   `Номер группы: ${group.id}, свободного места: ${group.freeSpaceWidth}, размер груза: ${cargo.parameters.width}`
         // );
