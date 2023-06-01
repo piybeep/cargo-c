@@ -15,6 +15,8 @@ import { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useRemoveCargo } from './hook/useRemoveCargo'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useCreateCargo } from '@/modules/NewCargo/hook/useCreateCargo'
+import { cargoEntity } from '@/api/cargo/type'
 
 const { Title, Text } = Typography
 
@@ -39,6 +41,20 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     mutateAsync: removeCargo,
     isLoading: isLoadingRemove
   } = useRemoveCargo({ groupId: group.id })
+
+  const { mutateAsync: dublicateCargo } = useCreateCargo({ groupId: group.id })
+
+  const createCargo = async (data: cargoEntity) => {
+    const { length, width, weight, height, load, ...newData } = data
+    await dublicateCargo({
+      ...newData,
+      height: Number(height),
+      length: Number(length),
+      width: Number(width),
+      weight: Number(weight),
+      load: Number(load)
+    })
+  }
 
   useEffect(() => {
     if (!isLoading && data && data.length > 0) {
@@ -162,6 +178,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleClick={handleClick}
                 groupIndex={group.id}
                 removeProject={removeProject}
+                createCargo={createCargo}
               />
             ))}
           </div>

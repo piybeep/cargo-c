@@ -24,7 +24,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   el,
   groupIndex,
   elId,
-  removeProject
+  removeProject,
+  createCargo
 }) => {
   const getImgForPackagingType = () => {
     if (el.type === 'Ящик') {
@@ -104,6 +105,7 @@ const GroupEl: React.FC<GroupElProps> = ({
               alt='клонировать'
               width={24}
               height={24}
+              onClick={() => createCargo(el)}
             />
             <Image
               src={trashSvg.src}
@@ -117,7 +119,13 @@ const GroupEl: React.FC<GroupElProps> = ({
       </div>
       <div className={s.menu}>
         <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
-        <Image src={listFrSvg.src} alt='клонировать' width={24} height={24} />
+        <Image
+          src={listFrSvg.src}
+          alt='клонировать'
+          width={24}
+          height={24}
+          onClick={() => createCargo(el)}
+        />
         <Image
           src={trashSvg.src}
           alt='удалить'

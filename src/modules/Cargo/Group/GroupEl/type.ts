@@ -1,4 +1,4 @@
-import { cargoEntity } from "@/api/cargo/type"
+import { cargoEntity } from '@/api/cargo/type'
 
 export interface GroupElProps {
   handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
@@ -9,4 +9,5 @@ export interface GroupElProps {
   groupIndex: string
   elId: string
   removeProject: ({ id }: { id: string }) => void
+  createCargo: (data: cargoEntity) => void
 }
