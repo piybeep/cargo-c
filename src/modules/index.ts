@@ -10,4 +10,5 @@ export * from './TransportConfig'
 export * from './TransportTemplate'
 export * from './Transport'
 export * from './GetPassword'
+export * from './VisualizationMenu';
 export * from "./Field";
