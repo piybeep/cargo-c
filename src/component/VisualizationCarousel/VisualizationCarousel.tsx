@@ -11,7 +11,7 @@ export function VisualizationCarousel({ data, color = false }: VisualizationCaro
 
     const { Title, Text } = Typography;
 
-    const carouselRef = useRef()
+    const carouselRef = useRef<any>()
 
     const nextSlide = () => {
         // Оно работает, но почему-то выдаёт предупреждение
