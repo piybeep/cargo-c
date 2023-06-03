@@ -156,7 +156,7 @@ export function ProjectsList({ ...props }: PorjectsProps) {
     useEffect(() => {
         if (window) {
             router.push({
-                pathname: '/projects',
+                // pathname: '/projects',
                 query: { currentId: window.localStorage.getItem('lastSelectedProject') ?? 0 }
             })
         }
