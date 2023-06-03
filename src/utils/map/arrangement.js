@@ -93,36 +93,34 @@ export default class Arrangement {
 
         // ***************************************************
         // Конфигурация для бокового пространства
-        // ! ! ! Предыдущая группа
+
+        //    |
         // -- Расчет вмещаемых грузов по оси Z и свободного пространства
         const cargoWidth = this.cargos[i].parameters.width;
+
         //    |
         // -- Создаем переменную в которой будем высчитывать занятую площадь по Z
-        let previousOccupiedAreaZ = 0;
-        if (previousGroup) {
-          previousOccupiedAreaZ = previousGroup.amount.axisZ * previousGroup.parameters.width;
-        }
-        const test = this.groupList
+        let occupiedAreaZ = this.groupList
           .map((group) => group.amount.axisZ * group.parameters.width)
           .reduce((prev, curr) => prev + curr, 0);
-        console.log(test);
 
+        //    |
         // Доступное количество груза по оси Z
-        const freeSpace = this.spaceWidth - previousOccupiedAreaZ;
+        const freeSpace = this.spaceWidth - occupiedAreaZ;
         const availableCountZ = Math.floor(freeSpace / cargoWidth);
         const amountCargo = this.cargos[i].parameters.count;
 
-        // console.log(`Свободное пространство: ${freeSpace}`);
-
+        //    |
         // -- Количество грузов в ширину
         const currentCountPerZ = availableCountZ >= amountCargo ? amountCargo : availableCountZ;
+
         //    |
         // -- Остаток свободного места по ширине
         let freeSpaceWidth;
-        if (g === 0 || this.cargos[i].parameters.width + previousGroup.freeSpaceWidth < 0) {
+        if (g === 0 || this.cargos[i].parameters.width + previousGroup.freeSpace.width < 0) {
           freeSpaceWidth = this.spaceWidth - currentCountPerZ * cargoWidth;
         } else {
-          freeSpaceWidth = previousGroup.freeSpaceWidth;
+          freeSpaceWidth = previousGroup.freeSpace.width;
         }
         //    |
         // -- Расчет вмещаемых грузов по оси X и свободного пространства
@@ -136,7 +134,9 @@ export default class Arrangement {
           parameters: this.cargos[i].parameters,
           fullLength: this.fullLength,
           cargos: cargoGroup,
-          freeSpaceWidth: freeSpaceWidth,
+          freeSpace: {
+            width: freeSpaceWidth,
+          },
           startColumnPosition: this.startColumnPosition,
           amount: {
             axisZ: currentCountPerZ,
@@ -430,51 +430,7 @@ export default class Arrangement {
     const prevGroup = this.groupList[this.lastIndexGroup];
     const currentGroup = this.groupList[this.lastIndexGroup + 1] || prevGroup;
 
-    // Полное количество грузов предыдущей группы
-    // const previousCountCargo = prevGroup.cargos[0].parameters.count;
-
-    // Позиция первого груза в предыдущей группе
-    // const previousCargoWidth = prevGroup.cargos[0].parameters.width;
-    // const previousCargoLength = prevGroup.cargos[0].parameters.length;
-
     const findDiffGroup = this.previous.parameters.group !== cargo.parameters.group;
-
-    // ***************************************************
-    // Конфигурация для бокового пространства
-    // ! ! ! Предыдущая группа
-    // -- Расчет вмещаемых грузов по оси Z и свободного пространства
-    // const previousAvailableCountZ = Math.floor(this.spaceWidth / previousCargoWidth);
-    // const previousCount = previousCountCargo;
-    // -- Количество грузов по ширине
-    // const previousCountPerZ = previousAvailableCountZ >= previousCount ? previousCount : previousAvailableCountZ;
-    //    |
-    // -- Остаток свободного места по ширине
-    // if (previousCount % previousCountPerZ !== 0) {
-    // }
-
-    // const freeSpaceWidth = this.spaceWidth - previousCountPerZ * previousCargoWidth;
-    // const freeSpaceWidth = prevGroup.freeSpaceWidth;
-
-    //    |
-    // -- Расчет вмещаемых грузов по оси X и свободного пространства
-    // -- Количество грузов по длине
-    // const previousCountPerX = Math.ceil(previousCountCargo / previousCountPerZ);
-    // const previousFullLength = previousCountPerX * previousCargoLength;
-
-    // ***************************************************
-    // ! ! ! Текущая группа
-    // -- Расчет вмещаемых грузов по оси Z и свободного пространства
-    // const currentAvailableCountZ = Math.floor(freeSpaceWidth);
-
-    // const currentCount = cargoNumber;
-    // // -- Текущее количество грузов по ширине
-    // const currentCountPerZ = currentAvailableCountZ >= currentCount ? currentCount : currentAvailableCountZ;
-
-    // console.log(`${cargo.parameters.group} | кол-во вмещаемых по Z: ${currentCountPerZ}`);
-    // -- Расчет вмещаемых грузов по оси X и свободного пространства
-    // -- Текущее количество грузов по длине
-    // const currentCountPerX = Math.ceil(currentCount / currentCountPerZ);
-    // const currentFullLength = currentCountPerX * cargo.parameters.length;
 
     for (let i = 0; i < this.groupList.length; i++) {
       const group = this.groupList[i];
@@ -483,7 +439,7 @@ export default class Arrangement {
       const findDiffGroup = cargo.parameters.groupId !== group.parameters.groupId;
 
       // Если текущий груз меньше пустого пространства по Z
-      const freeSpace = group.freeSpaceWidth >= cargo.parameters.width;
+      const freeSpace = group.freeSpace.width >= cargo.parameters.width;
 
       // Если на текущей группе уже расположены другие блоки
       const isContain = group.isContain;
@@ -504,7 +460,7 @@ export default class Arrangement {
 
         this.setPosition(cargo, offsetPX, "x");
         this.setPosition(cargo, offsetPZ, "z");
-        group.freeSpaceWidth -= cargo.parameters.width * currentGroup.amount.axisZ;
+        group.freeSpace.width -= cargo.parameters.width * currentGroup.amount.axisZ;
 
         group.isContain = true;
         // console.log(
