@@ -1,4 +1,5 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
+import { VisualizationMenu } from "@/modules";
 import { ReactNode } from "react";
 
 export default function Visualization() {
