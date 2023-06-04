@@ -45,7 +45,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const { mutateAsync: dublicateCargo } = useCreateCargo({ groupId: group.id })
 
   const createCargo = async (data: cargoEntity) => {
-    const { length, width, weight, height, load, ...newData } = data
+    const { length, width, weight, height, load,id, ...newData } = data
     await dublicateCargo({
       ...newData,
       height: Number(height),

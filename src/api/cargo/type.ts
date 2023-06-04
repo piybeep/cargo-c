@@ -24,3 +24,15 @@ export interface cargoEntity extends createCargoProps {
   groupId: string
   id: string
 }
+
+export interface cargoEntityById extends cargoEntity {
+  group: {
+    createdAt: string
+    hide: boolean
+    id: string
+    name: string
+    position: number
+    projectId: number
+    updatedAt: string
+  }
+}

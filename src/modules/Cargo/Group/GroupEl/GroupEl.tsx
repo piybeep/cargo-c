@@ -13,6 +13,7 @@ import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 import Image from 'next/image'
 import { GroupElProps } from './type'
+import { useRouter } from 'next/router'
 
 const { Text, Title } = Typography
 
@@ -27,6 +28,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   removeProject,
   createCargo
 }) => {
+  const router = useRouter()
+
   const getImgForPackagingType = () => {
     if (el.type === 'Ящик') {
       return <Image src={boxSVG.src} alt='Ящик' width={20} height={20} />
@@ -59,7 +62,12 @@ const GroupEl: React.FC<GroupElProps> = ({
   }
 
   return (
-    <div className={s.wrapperCont}>
+    <div
+      className={s.wrapperCont}
+      onClick={() =>
+        router.push(`/cargo/new/${el.id}?groupId=${groupIndex}`)
+      }
+    >
       <div
         className={s.cont + ' ' + `cont__` + groupIndex}
         onClick={() => handleClick()}
@@ -105,14 +113,20 @@ const GroupEl: React.FC<GroupElProps> = ({
               alt='клонировать'
               width={24}
               height={24}
-              onClick={() => createCargo(el)}
+              onClick={(e) => {
+                e.stopPropagation()
+                createCargo(el)
+              }}
             />
             <Image
               src={trashSvg.src}
               alt='удалить'
               width={24}
               height={24}
-              onClick={() => removeProject({ id: el.id })}
+              onClick={(e) => {
+                e.stopPropagation()
+                removeProject({ id: el.id })
+              }}
             />
           </div>
         </div>
@@ -124,14 +138,20 @@ const GroupEl: React.FC<GroupElProps> = ({
           alt='клонировать'
           width={24}
           height={24}
-          onClick={() => createCargo(el)}
+          onClick={(e) => {
+            e.stopPropagation()
+            createCargo(el)
+          }}
         />
         <Image
           src={trashSvg.src}
           alt='удалить'
           width={24}
           height={24}
-          onClick={() => removeProject({ id: el.id })}
+          onClick={(e) => {
+            e.stopPropagation()
+            removeProject({ id: el.id })
+          }}
         />
       </div>
     </div>

@@ -66,7 +66,7 @@ export function Transport({ ...props }: TransportProps) {
     const transport = await TransportApi.getTransportById(data.id)
     if (transport) {
       const autoDistribution = transport?.transports?.length
-      const { height, length, weight, width, ...newData } = transport
+      const { height, length, weight, width,id, ...newData } = transport
       await dublicateTransport({
         ...newData,
         height: Number(height),
