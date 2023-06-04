@@ -96,7 +96,6 @@ export function TransportConfig() {
 
   const onSubmit = async (data: createTrasportInput) => {
     if (isSwitch) {
-      console.log(data.main)
       await mutateAsync({
         ...data.main,
         weightUnit: height,

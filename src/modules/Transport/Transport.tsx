@@ -16,11 +16,17 @@ import { useSwipe } from '../../hook/useSwipe'
 
 import IconAdd from '@/public/svg/IconAdd'
 import IconShablon from '@/public/svg/IconShablon'
-import { transportEntity, typeOfTransport } from '@/api/transport/type'
+import {
+  createTransportProps,
+  transportEntity,
+  typeOfTransport
+} from '@/api/transport/type'
 import Image from 'next/image'
 import Menu from './Menu'
 import { useGetTransport } from './hook/useGetTransport'
 import { useRemoveTransport } from './hook/useRemoveTransport'
+import { useCreateTransport } from '../TransportConfig/hook/useCreateTransport'
+import { TransportApi } from '@/api/transport/TransportApi'
 
 export function Transport({ ...props }: TransportProps) {
   const { Title, Text } = Typography
@@ -35,6 +41,8 @@ export function Transport({ ...props }: TransportProps) {
     mutateAsync: deleteTransport,
     isLoading: isLoadingRemove
   } = useRemoveTransport()
+
+  const { mutateAsync: dublicateTransport } = useCreateTransport()
 
   const router = useRouter()
 
@@ -53,6 +61,23 @@ export function Transport({ ...props }: TransportProps) {
     handleClick
   } = useSwipe(s.item)
   // Swipe logic
+
+  const dublicate = async (data: transportEntity) => {
+    const transport = await TransportApi.getTransportById(data.id)
+    if (transport) {
+      const autoDistribution = transport?.transports?.length
+      const { height, length, weight, width, ...newData } = transport
+      await dublicateTransport({
+        ...newData,
+        height: Number(height),
+        length: Number(length),
+        weight: Number(weight),
+        width: Number(width),
+        autoDistribution:
+          autoDistribution && autoDistribution > 0 ? false : true
+      })
+    }
+  }
 
   const handleRemoveTransport = (id: string) => {
     Modal.confirm({
@@ -165,15 +190,17 @@ export function Transport({ ...props }: TransportProps) {
                 </div>
                 <div className={s.item__menu}>
                   <Menu
-                    id={elem.id}
+                    transport={elem}
                     handleRemoveTransport={handleRemoveTransport}
+                    dublicate={dublicate}
                   />
                 </div>
               </div>
               <div className={s.list__menu}>
                 <Menu
-                  id={elem.id}
+                  transport={elem}
                   handleRemoveTransport={handleRemoveTransport}
+                  dublicate={dublicate}
                 />
               </div>
             </div>

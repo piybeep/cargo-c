@@ -2,7 +2,8 @@ import { instance } from '..'
 import {
   createTransportProps,
   getAllTransportProps,
-  getAllTransportRes
+  getAllTransportRes,
+  transportEntity
 } from './type'
 
 export const TransportApi = {
@@ -20,8 +21,12 @@ export const TransportApi = {
     const res = await instance.post('loadspaces', data)
     return res.data
   },
-  async removeTransport({id}:{id:string}) {
+  async removeTransport({ id }: { id: string }) {
     const res = await instance.delete(`loadspaces/${id}`)
+    return res.data
+  },
+  async getTransportById(id: string) {
+    const res = await instance.get<transportEntity>(`loadspaces/${id}`)
     return res.data
   }
 }
