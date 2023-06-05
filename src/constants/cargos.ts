@@ -56,7 +56,7 @@ export const CARGOS: CargosTypes = [
     name: "name2",
     groupId: "group2",
     loadSpaceId: "loadSpace0",
-    count: 6,
+    count: 20,
     color: "rgb(148, 169, 209);",
     width: 3,
     height: 3,

@@ -28,6 +28,7 @@ export default class Arrangement {
     this.groupList = [];
     this.groupColumn = [];
     this.lastIndexGroup = 0;
+    this.cargosBuff = [];
   }
 
   nextSpace() {
@@ -66,6 +67,7 @@ export default class Arrangement {
     this.defaultPosition();
 
     for (let i = 0, g = 0; i < this.cargos.length; i++) {
+      this.cargosBuff.push(this.cargos[i]);
       // Получаем позицию предыдущего блока
       this.previous = this.cargos[i - 1] || this.cargos[i];
 
@@ -435,9 +437,33 @@ export default class Arrangement {
     const prevGroup = this.groupList[this.lastIndexGroup];
     const currentGroup = this.groupList[this.lastIndexGroup + 1] || prevGroup;
 
+    // Высчитываем свободную зону по Z
+    // this.occupiedAreaZTest = this.groupList
+    //   .map((group) => group.amount.axisZ * group.parameters.width)
+    //   .reduce((prev, curr) => prev + curr, 0);
+
     // Доступное количество груза по оси Z
-    const freeSpace = this.spaceWidth - this.occupiedAreaZ;
-    const currentFreeSpace = freeSpace - (cargo.parameters.id + 1) * cargo.parameters.width;
+
+    this.occupiedAreaZTest = this.cargosBuff
+      .map((cargo) => cargo.parameters.width)
+      .reduce((prev, curr) => prev + curr);
+
+    let freeSpace = this.spaceWidth - this.occupiedAreaZTest;
+    let currentFreeSpace = freeSpace;
+
+    if (currentFreeSpace < 0) {
+      const saveArr = this.cargosBuff.slice(0, this.cargosBuff.length - 1);
+      const saveFirstElemNewGroup = this.cargosBuff[this.cargosBuff.length - 1];
+      this.cargosBuff = [saveFirstElemNewGroup];
+
+      this.groupColumn.push(saveArr);
+
+      freeSpace = this.spaceWidth - cargo.parameters.width;
+      currentFreeSpace = freeSpace;
+
+      // currentGroup.save.z = 0;
+      this.test = true;
+    }
 
     console.log(
       `Свободное пространство: \x1b[91m${currentFreeSpace}\x1b[0m м. | груз: \x1b[91m${
@@ -445,10 +471,7 @@ export default class Arrangement {
       }\x1b[0m`
     );
 
-    if (currentFreeSpace < 0) {
-      cargo.block.material.color.set("red");
-      this.groupColumn.push();
-    }
+    // console.log(this.occupiedAreaZTest);
 
     const availableCountZ = Math.floor(freeSpace / cargoWidth);
     // Узнаем текущее количество грузов
@@ -467,7 +490,7 @@ export default class Arrangement {
 
     const findDiffGroup = this.previous.parameters.group !== cargo.parameters.group;
 
-    for (let i = 0; i < this.groupList.length - 1; i++) {
+    for (let i = 0; i < this.groupList.length - 1 && !this.test; i++) {
       const group = this.groupList[i];
 
       // Если грузы
@@ -549,7 +572,7 @@ export default class Arrangement {
         // );
         break;
       } else {
-        this.setPosition(cargo, previousCargo.x + 20, "x");
+        this.setPosition(cargo, previousCargo.x, "x");
         this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
       }
     }
@@ -564,6 +587,19 @@ export default class Arrangement {
     // Если груз вышел за приделы контейнера
     if (this.isOutwardsMaxZ(cargo)) {
       this.setPosition(cargo, previousCargo.x + cargo.parameters.length, "x");
+
+      // Если закончилось свободное пространство по Z, ставим в начало контейнера по Z
+      if (this.test) {
+        const targetCargo = this.groupColumn[0][0];
+        this.setPosition(
+          cargo,
+          targetCargo.block.position.x + targetCargo.parameters.length / 2 + cargo.parameters.length / 2,
+          "x"
+        );
+        this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
+        this.test = false;
+        return;
+      }
 
       if (currentGroup.save.z && !currentGroup.save.x) {
         this.setPosition(cargo, currentGroup.save.z, "z");
