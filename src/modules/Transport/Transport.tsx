@@ -100,7 +100,7 @@ export function Transport({ ...props }: TransportProps) {
 
   const handleClickItem = (id: string) => {
     handleClick()
-    router.push('/transport/config')
+    router.push(`/transport/config/${id}`)
   }
 
   const addNewTransport = () => {

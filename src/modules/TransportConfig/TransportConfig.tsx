@@ -23,11 +23,22 @@ import Van from './Van/Van'
 import TractorTrailer from './TractorTrailer/TractorTrailer'
 import Header from './Header/Header'
 import { useCreateTransport } from './hook/useCreateTransport'
+import { transportEntity } from '@/api/transport/type'
+import { useEditTransport } from './hook/useEditTransport'
 
-export function TransportConfig() {
+export function TransportConfig({
+  editTransport
+}: {
+  editTransport?: transportEntity
+}) {
   const router = useRouter()
 
   const { mutateAsync, isLoading } = useCreateTransport()
+
+  const {
+    mutateAsync: changeTransport,
+    isLoading: isLoadingEdit
+  } = useEditTransport()
 
   const [width, setWidth] = useState<'м' | 'см' | 'мм'>('мм')
   const [height, setHeight] = useState<'тн' | 'кг'>('кг')
@@ -57,11 +68,8 @@ export function TransportConfig() {
   const {
     control,
     handleSubmit,
-    register,
     reset,
     watch,
-    trigger,
-    getValues,
     clearErrors,
     formState: { errors, isValid }
   } = useForm<createTrasportInput>({
@@ -84,11 +92,75 @@ export function TransportConfig() {
     }
   })
 
-  const watchTypeTransport = watch('main.type')
-
   useEffect(() => {
-    watchTypeTransport != 'Грузовой автомобиль' && setIsSwitch(true)
-  }, [watchTypeTransport])
+    if (editTransport) {
+      console.log(editTransport)
+      const {
+        id,
+        isTemplate,
+        sizeUnit,
+        weightUnit,
+        transports,
+        ...newData
+      } = editTransport
+      setWidth(sizeUnit)
+      setHeight(weightUnit)
+      reset({
+        main: {
+          ...newData,
+          height: Number(newData.height),
+          length: Number(newData.length),
+          weight: Number(newData.weight),
+          width: Number(newData.width)
+        }
+      })
+      if (
+        transports?.length === 1 &&
+        transports[0]?.type == 'Фургон грузовой'
+      ) {
+        reset({
+          van: {
+            ...transports[0],
+            length: Number(transports[0].length),
+            weight: Number(transports[0].weight),
+            length1: Number(transports[0].length1),
+            axle1Max: Number(transports[0].axle1Max),
+            axle1Min: Number(transports[0].axle1Min),
+            axle2Max: Number(transports[0].axle2Max),
+            axle2Min: Number(transports[0].axle2Min)
+          }
+        })
+        setIsSwitch(false)
+        setTransport(1)
+      } else if (transports?.length === 2) {
+        reset((e) => ({
+          ...e,
+          tractor: {
+            ...transports[1],
+            length: Number(transports[1].length),
+            weight: Number(transports[1].weight),
+            length1: Number(transports[1].length1),
+            axle1Max: Number(transports[1].axle1Max),
+            axle1Min: Number(transports[1].axle1Min),
+            axle2Max: Number(transports[1].axle2Max),
+            axle2Min: Number(transports[1].axle2Min)
+          },
+          trailer: {
+            ...transports[0],
+            axle2Max: Number(transports[0].axle2Max),
+            axle2Min: Number(transports[0].axle2Min),
+            length2: Number(transports[0].length2),
+            length3: Number(transports[0].length3),
+            weight: Number(transports[0].weight)
+          }
+        }))
+        setIsSwitch(false)
+        setTransport(0)
+      }
+    }
+  }, [editTransport])
+
+  const watchTypeTransport = watch('main.type')
 
   useEffect(() => {
     clearErrors()
@@ -96,13 +168,24 @@ export function TransportConfig() {
 
   const onSubmit = async (data: createTrasportInput) => {
     if (isSwitch) {
-      await mutateAsync({
-        ...data.main,
-        weightUnit: height,
-        sizeUnit: width,
-        transports: [null],
-        autoDistribution:true
-      })
+      if (editTransport) {
+        await changeTransport({
+          ...data.main,
+          weightUnit: height,
+          sizeUnit: width,
+          transports: [null],
+          autoDistribution: true,
+          id: editTransport.id
+        })
+      } else {
+        await mutateAsync({
+          ...data.main,
+          weightUnit: height,
+          sizeUnit: width,
+          transports: [null],
+          autoDistribution: true
+        })
+      }
     } else {
       if (transport === 0) {
         console.log({
@@ -124,7 +207,7 @@ export function TransportConfig() {
             { ...data.trailer, type: 'Тягач с полуприцепом' },
             { ...data.tractor, type: 'Тягач с полуприцепом' }
           ],
-          autoDistribution:false
+          autoDistribution: false
         })
       } else {
         console.log({
@@ -140,12 +223,12 @@ export function TransportConfig() {
           weightUnit: height,
           sizeUnit: width,
           transports: [{ ...data.van, type: 'Фургон грузовой' }],
-          autoDistribution:false
+          autoDistribution: false
         })
       }
     }
 
-    router.push({pathname: '/transport'})
+    router.push({ pathname: '/transport' })
   }
 
   const changeWidth = (e: RadioChangeEvent) => {
@@ -227,7 +310,12 @@ export function TransportConfig() {
                     defaultValue='Грузовой автомобиль'
                     value={value}
                     style={{ width: '100%' }}
-                    onChange={onChange}
+                    onChange={(e) => {
+                      if (e !== 'Грузовой автомобиль') {
+                        setIsSwitch(true)
+                      }
+                      onChange(e)
+                    }}
                     options={[
                       {
                         value: 'Грузовой автомобиль',
@@ -410,7 +498,11 @@ export function TransportConfig() {
           <Link href='/transport'>
             <Button>Отменить</Button>
           </Link>
-          <Button type='primary' htmlType='submit' loading={isLoading}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={isLoading || isLoadingEdit}
+          >
             Сохранить
           </Button>
         </div>

@@ -28,5 +28,12 @@ export const TransportApi = {
   async getTransportById(id: string) {
     const res = await instance.get<transportEntity>(`loadspaces/${id}`)
     return res.data
+  },
+  async editTransport({
+    id,
+    ...newData
+  }: createTransportProps & { id: string }) {
+    const res = await instance.put(`loadspaces/${id}`, newData)
+    return res.data
   }
 }
