@@ -5,8 +5,8 @@ import { NewCargo } from '@/modules/NewCargo'
 import { GetServerSidePropsContext } from 'next'
 import { ReactNode } from 'react'
 
-export default function CargoNewPage({ groupId }: { groupId: string }) {
-  return <NewCargo groupId={groupId} />
+export default function CargoNewPage({ groupId,projectId }: { groupId: string,projectId:string }) {
+  return <NewCargo groupId={groupId} projectId={projectId}/>
 }
 
 CargoNewPage.getLayout = (page: ReactNode) => (
@@ -34,7 +34,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
         projectId: query.projectId
       })
       if (group) {
-        return { props: { groupId: query.groupId } }
+        return { props: { groupId: query.groupId,projectId: query.projectId } }
       } else {
         return {
           redirect: {
@@ -52,6 +52,4 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
       }
     }
   }
-
-  return { props: { groupId: query.groupId } }
 }

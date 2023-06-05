@@ -9,12 +9,14 @@ import { ReactNode } from 'react'
 
 export default function CargoEditPage({
   groupId,
-  cargo
+  cargo,
+  projectId
 }: {
   groupId: string
   cargo: cargoEntityById
+  projectId:string
 }) {
-  return <NewCargo groupId={groupId} cargo={cargo} />
+  return <NewCargo groupId={groupId} cargo={cargo} projectId={projectId}/>
 }
 
 CargoEditPage.getLayout = (page: ReactNode) => (
@@ -47,7 +49,9 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
         projectId: query.projectId
       })
       if (cargo && group) {
-        return { props: { groupId: query.groupId, cargo } }
+        return {
+          props: { groupId: query.groupId, cargo, projectId: query.projectId }
+        }
       } else {
         return {
           redirect: {

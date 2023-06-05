@@ -7,15 +7,19 @@ import { createCargo } from './Body/type'
 import { useCreateCargo } from './hook/useCreateCargo'
 import { useEditCargo } from './hook/useEditCargo'
 import { cargoEntityById } from '@/api/cargo/type'
+import { useRouter } from 'next/router'
 
 export const NewCargo = ({
   groupId,
-  cargo
+  cargo,
+  projectId
 }: {
   groupId: string
   cargo?: cargoEntityById
+  projectId: string
 }) => {
   const { mutateAsync: createCargo, isLoading } = useCreateCargo({ groupId })
+  const router = useRouter()
   const [color, setColor] = useState('#aabbcc')
   const { mutateAsync: editCargo, isLoading: isLoadingEdit } = useEditCargo({
     groupId
@@ -74,6 +78,7 @@ export const NewCargo = ({
         groupId,
         id: cargo.id
       })
+      router.push(`/cargo?projectId=${projectId}`)
     } else {
       await createCargo({
         ...data,
@@ -83,6 +88,7 @@ export const NewCargo = ({
         isTemplate: false,
         groupId
       })
+      router.push(`/cargo?projectId=${projectId}`)
     }
   }
 
