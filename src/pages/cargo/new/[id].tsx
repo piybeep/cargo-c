@@ -1,5 +1,6 @@
 import { CargoApi } from '@/api/cargo/CargoApi'
 import { cargoEntityById } from '@/api/cargo/type'
+import { groupsApi } from '@/api/groups/groupsApi'
 import { Layout } from '@/layouts/BaseLayout'
 import { Header } from '@/modules'
 import { NewCargo } from '@/modules/NewCargo'
@@ -23,10 +24,8 @@ CargoEditPage.getLayout = (page: ReactNode) => (
   </>
 )
 
-//сделать проверку на группы и тоже самое сделать в ./index.tsx
-
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  if (!query.groupId || !query.id) {
+  if (!query.groupId || !query.id || !query.projectId) {
     return {
       redirect: {
         destination: '/cargo',
@@ -35,14 +34,19 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
     }
   } else if (
     typeof query.groupId === 'string' &&
-    typeof query.id === 'string'
+    typeof query.id === 'string' &&
+    typeof query.projectId === 'string'
   ) {
     try {
       const cargo = await CargoApi.getCargoById({
         cargoId: query.id,
         groupId: query.groupId
       })
-      if (cargo) {
+      const group = await groupsApi.getGroupById({
+        groupId: query.groupId,
+        projectId: query.projectId
+      })
+      if (cargo && group) {
         return { props: { groupId: query.groupId, cargo } }
       } else {
         return {

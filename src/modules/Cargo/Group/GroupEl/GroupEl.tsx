@@ -26,7 +26,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   groupIndex,
   elId,
   removeProject,
-  createCargo
+  createCargo,
+  projectId
 }) => {
   const router = useRouter()
 
@@ -65,7 +66,7 @@ const GroupEl: React.FC<GroupElProps> = ({
     <div
       className={s.wrapperCont}
       onClick={() =>
-        router.push(`/cargo/new/${el.id}?groupId=${groupIndex}`)
+        router.push(`/cargo/new/${el.id}?groupId=${groupIndex}&projectId=${projectId}`)
       }
     >
       <div

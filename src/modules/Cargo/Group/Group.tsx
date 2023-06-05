@@ -45,7 +45,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const { mutateAsync: dublicateCargo } = useCreateCargo({ groupId: group.id })
 
   const createCargo = async (data: cargoEntity) => {
-    const { length, width, weight, height, load,id, ...newData } = data
+    const { length, width, weight, height, load, id, ...newData } = data
     await dublicateCargo({
       ...newData,
       height: Number(height),
@@ -76,7 +76,14 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
           volume += (el.count * (el.width * el.height * el.length)) / 1000
         }
       })
-      setInfoAboutGroup(count + ' шт, ' + weight.toFixed(2) + ' кг, ' + volume.toFixed(2) + ' м3')
+      setInfoAboutGroup(
+        count +
+          ' шт, ' +
+          weight.toFixed(2) +
+          ' кг, ' +
+          volume.toFixed(2) +
+          ' м3'
+      )
     }
   }, [isLoading])
 
@@ -177,13 +184,14 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleTouchStart={handleTouchStart}
                 handleClick={handleClick}
                 groupIndex={group.id}
+                projectId={group.projectId}
                 removeProject={removeProject}
                 createCargo={createCargo}
               />
             ))}
           </div>
         </div>
-        <Footer groupId={group.id} />
+        <Footer groupId={group.id} projectId={group.projectId} />
       </motion.div>
     </motion.div>
   )

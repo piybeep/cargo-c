@@ -23,5 +23,17 @@ export const groupsApi = {
       data
     )
     return res.data
+  },
+  async getGroupById({
+    groupId,
+    projectId
+  }: {
+    projectId: string
+    groupId: string
+  }) {
+    const res = await instance.get<groupEntity>(
+      `projects/${projectId}/groups/${groupId}`
+    )
+    return res.data
   }
 }
