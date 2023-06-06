@@ -471,22 +471,22 @@ export default class Arrangement {
       }\x1b[0m`
     );
 
-    // console.log(this.occupiedAreaZTest);
-
     const availableCountZ = Math.floor(freeSpace / cargoWidth);
     // Узнаем текущее количество грузов
     const amountCargo = cargo.parameters.id + 1;
 
     //    |
     // -- Количество грузов в ширину
-    const currentCountPerZ = availableCountZ >= amountCargo ? amountCargo : availableCountZ;
+    // const currentCountPerZ = availableCountZ >= amountCargo ? amountCargo : availableCountZ;
 
     //    |
     // -- Расчет вмещаемых грузов по оси X и свободного пространства
     // -- Количество грузов в длину
-    const currentCountPerX = Math.ceil(amountCargo / currentCountPerZ);
+    // const currentCountPerX = Math.ceil(amountCargo / currentCountPerZ);
+    const currentCountPerX = Math.ceil(amountCargo / availableCountZ);
 
     let currentFullLength = currentCountPerX * cargoLength;
+    console.log(availableCountZ);
 
     const findDiffGroup = this.previous.parameters.group !== cargo.parameters.group;
 
