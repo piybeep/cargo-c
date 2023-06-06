@@ -114,11 +114,9 @@ export function TransportConfig({
           width: Number(newData.width)
         }
       })
-      if (
-        transports?.length === 1 &&
-        transports[0]?.type == 'Фургон грузовой'
-      ) {
-        reset({
+      if (transports?.length === 1 && transports[0] !== null) {
+        reset((e) => ({
+          ...e,
           van: {
             ...transports[0],
             length: Number(transports[0].length),
@@ -129,7 +127,7 @@ export function TransportConfig({
             axle2Max: Number(transports[0].axle2Max),
             axle2Min: Number(transports[0].axle2Min)
           }
-        })
+        }))
         setIsSwitch(false)
         setTransport(1)
       } else if (transports?.length === 2) {
@@ -188,43 +186,49 @@ export function TransportConfig({
       }
     } else {
       if (transport === 0) {
-        console.log({
-          main: {
-            ...data.main
-          },
-          tractor: {
-            ...data.tractor
-          },
-          trailer: {
-            ...data.trailer
-          }
-        })
-        await mutateAsync({
-          ...data.main,
-          weightUnit: height,
-          sizeUnit: width,
-          transports: [
-            { ...data.trailer, type: 'Тягач с полуприцепом' },
-            { ...data.tractor, type: 'Тягач с полуприцепом' }
-          ],
-          autoDistribution: false
-        })
+        if (editTransport) {
+          await changeTransport({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            autoDistribution: false,
+            id: editTransport.id,
+            transports: [
+              { ...data.trailer, type: 'Тягач с полуприцепом' },
+              { ...data.tractor, type: 'Тягач с полуприцепом' }
+            ]
+          })
+        } else {
+          await mutateAsync({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            transports: [
+              { ...data.trailer, type: 'Тягач с полуприцепом' },
+              { ...data.tractor, type: 'Тягач с полуприцепом' }
+            ],
+            autoDistribution: false
+          })
+        }
       } else {
-        console.log({
-          main: {
-            ...data.main
-          },
-          van: {
-            ...data.van
-          }
-        })
-        await mutateAsync({
-          ...data.main,
-          weightUnit: height,
-          sizeUnit: width,
-          transports: [{ ...data.van, type: 'Фургон грузовой' }],
-          autoDistribution: false
-        })
+        if (editTransport) {
+          await changeTransport({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            autoDistribution: false,
+            id: editTransport.id,
+            transports: [{ ...data.van, type: 'Фургон грузовой' }]
+          })
+        } else {
+          await mutateAsync({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            transports: [{ ...data.van, type: 'Фургон грузовой' }],
+            autoDistribution: false
+          })
+        }
       }
     }
 
