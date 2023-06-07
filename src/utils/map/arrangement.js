@@ -29,6 +29,7 @@ export default class Arrangement {
     this.groupColumn = [];
     this.lastIndexGroup = 0;
     this.cargosBuff = [];
+    this.cargosBuffPerX = [];
   }
 
   nextSpace() {
@@ -61,10 +62,20 @@ export default class Arrangement {
   //   }
   // }
 
+  compare(a, b) {
+    if (a.parameters.length > b.parameters.length) {
+      return -1;
+    }
+    if (a.parameters.length < b.parameters.length) {
+      return 1;
+    }
+    return 0;
+  }
   // Расстановки блоков
   start() {
     // Ставим все блоки за карту, чтобы не мешала расстановке
     this.defaultPosition();
+    this.cargos.sort(this.compare);
 
     for (let i = 0, g = 0; i < this.cargos.length; i++) {
       this.cargosBuff.push(this.cargos[i]);
@@ -431,6 +442,7 @@ export default class Arrangement {
       width: this.previous.parameters.width,
       length: this.previous.parameters.length,
       height: this.previous.parameters.height,
+      axiosPerZ: this.previous.parameters.axiosPerZ,
     };
 
     // Предыдущая группа
@@ -442,16 +454,77 @@ export default class Arrangement {
     //   .map((group) => group.amount.axisZ * group.parameters.width)
     //   .reduce((prev, curr) => prev + curr, 0);
 
+    const index = this.groupColumn.length - 1;
+
+    // if (this.groupColumn.length) {
+    //   this.groupColumn[index]
+    //     .slice()
+    //     .reverse()
+    //     .forEach((item) => {
+    //       console.log(item);
+
+    //       if (item.parameters.length === cargo.parameters.length) {
+    //         cargo.block.material.color.set("red");
+    //       }
+    //     });
+    // }
+
+    // this.cargosBuff
+    //   .slice()
+    //   .reverse()
+    //   .forEach((item, id) => {
+    //     if (
+    //       cargo.parameters.length > item.parameters.length &&
+    //       cargo.parameters.groupId !== item.parameters.groupId
+    //     ) {
+    //       const swapPositionX1 = item.block.position.x - item.parameters.length / 2 + cargo.parameters.length / 2;
+    //       const swapPositionZ1 = item.block.position.z - item.parameters.width / 2 + cargo.parameters.width / 2;
+
+    //       // const swapPositionX2 = cargo.block.position.x - item.parameters.length / 2 + cargo.parameters.length /
+    //       const swapPositionZ2 = swapPositionZ1 + item.parameters.width / 2 + cargo.parameters.width / 2;
+
+    //       this.setPosition(cargo, swapPositionX1, "x");
+    //       this.setPosition(cargo, swapPositionZ1, "z");
+    //       // this.setPosition(item, swapPositionX2, "x");
+    //       this.setPosition(item, swapPositionZ2, "z");
+    //       cargo.block.material.color.set("red");
+    //       return;
+    //     }
+    //   });
+
     // Доступное количество груза по оси Z
 
     this.occupiedAreaZTest = this.cargosBuff
-      .map((cargo) => cargo.parameters.width)
+      .map((cargo) => {
+        return cargo.parameters.width;
+      })
       .reduce((prev, curr) => prev + curr);
 
     let freeSpace = this.spaceWidth - this.occupiedAreaZTest;
-    let currentFreeSpace = freeSpace;
 
-    if (currentFreeSpace < 0) {
+    // console.log(freeSpace);
+
+    if (freeSpace < 0) {
+      this.t1 = this.cargosBuff
+        .map((item) => {
+          return item.parameters.groupId !== cargo.parameters.groupId && item.parameters.width;
+        })
+        .filter((item) => item !== false)
+        .reduce((prev, curr) => prev + curr);
+
+      freeSpace = this.spaceWidth - this.t1;
+
+      this.t1 = Math.floor((this.spaceWidth - this.t1) / cargo.parameters.width);
+
+      if (!this.cargosBuffPerX.length) {
+        this.cargosBuffPerX.push(this.t1);
+      }
+      console.log("=");
+    }
+    console.log(freeSpace);
+
+    if (freeSpace < 0 && false) {
+      console.log(`\x1b[95m[+] Новая колонка создана!`);
       const saveArr = this.cargosBuff.slice(0, this.cargosBuff.length - 1);
       const saveFirstElemNewGroup = this.cargosBuff[this.cargosBuff.length - 1];
       this.cargosBuff = [saveFirstElemNewGroup];
@@ -459,17 +532,10 @@ export default class Arrangement {
       this.groupColumn.push(saveArr);
 
       freeSpace = this.spaceWidth - cargo.parameters.width;
-      currentFreeSpace = freeSpace;
 
       // currentGroup.save.z = 0;
       this.test = true;
     }
-
-    console.log(
-      `Свободное пространство: \x1b[91m${currentFreeSpace}\x1b[0m м. | груз: \x1b[91m${
-        cargo.parameters.id + 1
-      }\x1b[0m`
-    );
 
     const availableCountZ = Math.floor(freeSpace / cargoWidth);
     // Узнаем текущее количество грузов
@@ -483,11 +549,25 @@ export default class Arrangement {
     // -- Расчет вмещаемых грузов по оси X и свободного пространства
     // -- Количество грузов в длину
     // const currentCountPerX = Math.ceil(amountCargo / currentCountPerZ);
-    const currentCountPerX = Math.ceil(amountCargo / availableCountZ);
 
-    let currentFullLength = currentCountPerX * cargoLength;
-    console.log(availableCountZ);
+    let currentFullLength = 0;
+    // Если по оси Z не вмещается груз, увеличивать длину
+    // if (availableCountZ < 0 && !this.test) {
+    //   cargo.parameters.axiosPerX += 1;
+    // }
 
+    // console.log(freeSpace);
+    // const a = this.cargosBuff.find((item) => {
+    //   if (item.parameters.groupId !== cargo.parameters.groupId && ) {
+    //     return true;
+    //   }
+    // });
+
+    // console.log(
+    //   `Свободное пространство: \x1b[91m${freeSpace}\x1b[0m м.\t |\t груз: \x1b[91m${
+    //     cargo.parameters.id + 1
+    //   }\x1b[0m\t |\t ширина: \x1b[91m${currentFullLength}\x1b[0m`
+    // );
     const findDiffGroup = this.previous.parameters.group !== cargo.parameters.group;
 
     for (let i = 0; i < this.groupList.length - 1 && !this.test; i++) {
@@ -529,7 +609,6 @@ export default class Arrangement {
         currentGroup.tools.forget.push(group.name);
         return;
       } else if (currentFullLength > groupFullLength && !equal && !this.forgottenGroups) {
-        cargo.block.material.color.set("red");
         const targetCargoX = group.cargos[group.cargos.length - 1].block.position.x;
         const targetCargoZ = group.cargos[group.cargos.length - 1].block.position.z;
 
@@ -545,6 +624,7 @@ export default class Arrangement {
         currentGroup.save.x = offsetPX;
         currentGroup.save.z = offsetPZ;
         currentGroup.tools.forget.push(group.name);
+
         return;
       }
 
@@ -590,7 +670,26 @@ export default class Arrangement {
 
       // Если закончилось свободное пространство по Z, ставим в начало контейнера по Z
       if (this.test) {
-        const targetCargo = this.groupColumn[0][0];
+        const index = this.groupColumn.length - 1;
+        const targetCargo = this.groupColumn[index][0];
+
+        // if (this.groupColumn) {
+        //   this.groupColumn[index]
+        //     .slice()
+        //     .reverse()
+        //     .forEach((item, id, arr) => {
+        //       if (item.parameters.length >= cargo.parameters.length * 2) {
+        //         this.setPosition(cargo, arr[id - 1].block.position.x + cargo.parameters.length, "x");
+        //         this.setPosition(
+        //           cargo,
+        //           item.block.position.z + item.parameters.width / 2 + cargo.parameters.width / 2,
+        //           "z"
+        //         );
+        //       }
+        //     });
+        //   this.test = false;
+        //   return;
+        // }
         this.setPosition(
           cargo,
           targetCargo.block.position.x + targetCargo.parameters.length / 2 + cargo.parameters.length / 2,
@@ -603,12 +702,14 @@ export default class Arrangement {
 
       if (currentGroup.save.z && !currentGroup.save.x) {
         this.setPosition(cargo, currentGroup.save.z, "z");
+
         return;
       }
 
       if (currentGroup.save.z && currentGroup.save.x) {
         this.setPosition(cargo, currentGroup.save.x, "x");
         this.setPosition(cargo, currentGroup.save.z, "z");
+
         return;
       }
 

@@ -111,6 +111,8 @@ export default class Cargo {
       tiers: this.tiers,
       row: true,
       fullLength: this.fullLength,
+      axiosPerX: 1,
+      axiosPerZ: 1,
     };
   }
 
