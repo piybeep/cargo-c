@@ -81,13 +81,32 @@ export function TransportConfig({
         width: 10
       },
       tractor: {
-        axesCount: 2
+        axesCount: 2,
+        axle1Max: 1,
+        axle1Min: 1,
+        axle2Max: 1,
+        axle2Min: 1,
+        length: 1,
+        length1: 1,
+        weight: 1
       },
       trailer: {
-        axesCount: 2
+        axesCount: 2,
+        axle2Max: 1,
+        axle2Min: 1,
+        length2: 1,
+        length3: 1,
+        weight: 1
       },
       van: {
-        axesCount: 2
+        axesCount: 2,
+        axle1Max: 1,
+        axle1Min: 1,
+        axle2Max: 1,
+        axle2Min: 1,
+        length: 1,
+        length1: 1,
+        weight: 1
       }
     }
   })
@@ -105,7 +124,8 @@ export function TransportConfig({
       } = editTransport
       setWidth(sizeUnit)
       setHeight(weightUnit)
-      reset({
+      reset((e) => ({
+        ...e,
         main: {
           ...newData,
           height: Number(newData.height),
@@ -113,7 +133,7 @@ export function TransportConfig({
           weight: Number(newData.weight),
           width: Number(newData.width)
         }
-      })
+      }))
       if (transports?.length === 1 && transports[0] !== null) {
         reset((e) => ({
           ...e,
