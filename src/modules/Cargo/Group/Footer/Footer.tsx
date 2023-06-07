@@ -42,7 +42,7 @@ const Footer = ({
           <Button
             icon={<SaveSvg />}
             className={s.button}
-            onClick={() => nav.push('cargo/new/template')}
+            onClick={() => nav.push(`cargo/new/template/${groupId}?projectId=${projectId}`)}
           >
             Из шаблонов
           </Button>
@@ -55,7 +55,7 @@ const Footer = ({
             onClick={() => nav.push('cargo/new')}
           />
           <SaveSvg
-            onClick={() => nav.push('cargo/new/template')}
+            onClick={() => nav.push(`cargo/new/template/${groupId}?projectId=${projectId}`)}
             style={{ width: 28, height: 28 }}
           />
         </>

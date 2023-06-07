@@ -3,11 +3,23 @@ import s from './Templates.module.scss'
 import TemplateEl from './TemplateEl/TemplateEl'
 import style from './TemplateEl/TemplateEl.module.scss'
 import { useSwipe } from '@/hook/useSwipe'
+import { useGetAllCargo } from '@/modules/Cargo/Group/hook/useGetAllCargo'
 
-const arr = [{name:'card1'},{name:'card2'},{name:'card3'},{name:'card4'}]
+const arr = [
+  { name: 'card1' },
+  { name: 'card2' },
+  { name: 'card3' },
+  { name: 'card4' }
+]
 
-const Templates = () => {
-  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(style.cont)
+const Templates = ({ groupId }: { groupId: string }) => {
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(
+    style.cont
+  )
+
+  const { data } = useGetAllCargo({ groupId, templates: true })
+
+  console.log(data)
 
   return (
     <div className={s.cont}>

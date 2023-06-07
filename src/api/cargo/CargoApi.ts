@@ -1,5 +1,5 @@
 import { instance } from '..'
-import { cargoEntity, cargoEntityById, createCargoProps } from './type'
+import { cargoEntity, cargoEntityById, createCargoProps, editCargoProps } from './type'
 
 export const CargoApi = {
   async createCargo({
@@ -43,7 +43,7 @@ export const CargoApi = {
     )
     return res.data
   },
-  async editCargo(data: cargoEntity) {
+  async editCargo(data: editCargoProps) {
     const res = await instance.put<cargoEntityById>(
       `groups/${data.groupId}/cargos/${data.id}`,
       data

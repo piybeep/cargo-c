@@ -5,7 +5,6 @@ import { useMutation } from 'react-query'
 export const useEditCargo = ({ groupId }: { groupId: string }) => {
   return useMutation('editCargo', CargoApi.editCargo, {
     onSuccess(data) {
-      console.log(data)
       queryClient.invalidateQueries({
         queryKey: ['getCargo', groupId],
         refetchInactive: true

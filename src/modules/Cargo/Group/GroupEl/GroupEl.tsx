@@ -27,7 +27,9 @@ const GroupEl: React.FC<GroupElProps> = ({
   elId,
   removeProject,
   createCargo,
-  projectId
+  projectId,
+  isLoadingTemplate,
+  saveTemplate
 }) => {
   const router = useRouter()
 
@@ -66,7 +68,9 @@ const GroupEl: React.FC<GroupElProps> = ({
     <div
       className={s.wrapperCont}
       onClick={() =>
-        router.push(`/cargo/new/${el.id}?groupId=${groupIndex}&projectId=${projectId}`)
+        router.push(
+          `/cargo/new/${el.id}?groupId=${groupIndex}&projectId=${projectId}`
+        )
       }
     >
       <div
@@ -108,7 +112,16 @@ const GroupEl: React.FC<GroupElProps> = ({
             </div>
           </div>
           <div className={s.icons}>
-            <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+            <Image
+              src={saveSvg.src}
+              alt='сохранить'
+              width={24}
+              height={24}
+              onClick={(e) => {
+                e.stopPropagation()
+                !isLoadingTemplate && saveTemplate({ id: el.id })
+              }}
+            />
             <Image
               src={listFrSvg.src}
               alt='клонировать'
@@ -133,7 +146,16 @@ const GroupEl: React.FC<GroupElProps> = ({
         </div>
       </div>
       <div className={s.menu}>
-        <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+        <Image
+          src={saveSvg.src}
+          alt='сохранить'
+          width={24}
+          height={24}
+          onClick={(e) => {
+            e.stopPropagation()
+            !isLoadingTemplate && saveTemplate({ id: el.id })
+          }}
+        />
         <Image
           src={listFrSvg.src}
           alt='клонировать'

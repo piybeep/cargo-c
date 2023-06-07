@@ -2,10 +2,10 @@ import React from 'react'
 import Templates from './Templates/Templates'
 import Navigation from './Pagination/Pagination'
 
-export const NewCargoTemplate = () => {
+export const NewCargoTemplate = ({groupId}:{groupId:string}) => {
   return (
     <>
-      <Templates />
+      <Templates groupId={groupId}/>
       <Navigation/>
     </>
   )
