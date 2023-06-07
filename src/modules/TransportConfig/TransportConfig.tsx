@@ -71,7 +71,7 @@ export function TransportConfig({
     reset,
     watch,
     clearErrors,
-    formState: { errors, isValid }
+    formState: { errors, dirtyFields }
   } = useForm<createTrasportInput>({
     defaultValues: {
       main: {
@@ -111,9 +111,10 @@ export function TransportConfig({
     }
   })
 
+  console.log(dirtyFields)
+
   useEffect(() => {
     if (editTransport) {
-      console.log(editTransport)
       const {
         id,
         isTemplate,
@@ -361,7 +362,9 @@ export function TransportConfig({
               name='main.length'
               control={control}
               rules={{
-                required: true
+                required: true,
+                min: minValue,
+                max: maxValue
               }}
               render={({ field: { onChange, value } }) => (
                 <div className={s.item}>
@@ -377,17 +380,23 @@ export function TransportConfig({
                     max={maxValue}
                     defaultValue={minValue}
                     onChange={onChange}
+                    status={errors?.main?.length && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${minValue} / ${maxValue}`}</Text>
+                  >{`${value} / ${maxValue}`}</Text>
                 </div>
               )}
             />
             <Controller
               name='main.width'
               control={control}
+              rules={{
+                min: minValue,
+                max: maxValue / 10,
+                required: true
+              }}
               render={({ field: { onChange, value } }) => (
                 <div className={s.item}>
                   <Text className={s.item__text} type='secondary'>
@@ -402,11 +411,12 @@ export function TransportConfig({
                     max={maxValue / 10}
                     defaultValue={minValue}
                     onChange={onChange}
+                    status={errors?.main?.width && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${minValue} / ${maxValue / 10}`}</Text>
+                  >{`${value} / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />
@@ -414,7 +424,9 @@ export function TransportConfig({
               name='main.height'
               control={control}
               rules={{
-                required: true
+                required: true,
+                min: minValue,
+                max: maxValue / 10
               }}
               render={({ field: { onChange, value } }) => (
                 <div className={s.item}>
@@ -430,11 +442,12 @@ export function TransportConfig({
                     max={maxValue / 10}
                     defaultValue={minValue}
                     onChange={onChange}
+                    status={errors?.main?.height && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${minValue} / ${maxValue / 10}`}</Text>
+                  >{`${value} / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />
