@@ -11,6 +11,6 @@ export interface GroupElProps {
   projectId: string
   removeProject: ({ id }: { id: string }) => void
   createCargo: (data: cargoEntity) => void
-  isLoadingTemplate: boolean
-  saveTemplate: ({ id }: { id: string }) => void
+  isLoadingDublicate:boolean
+  saveTemplate: (data: cargoEntity) => void
 }

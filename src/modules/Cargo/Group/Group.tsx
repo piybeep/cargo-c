@@ -17,7 +17,6 @@ import { useRemoveCargo } from './hook/useRemoveCargo'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useCreateCargo } from '@/modules/NewCargo/hook/useCreateCargo'
 import { cargoEntity } from '@/api/cargo/type'
-import { useEditCargo } from '@/modules/NewCargo/hook/useEditCargo'
 
 const { Title, Text } = Typography
 
@@ -43,14 +42,13 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     isLoading: isLoadingRemove
   } = useRemoveCargo({ groupId: group.id })
 
-  const { mutateAsync: dublicateCargo } = useCreateCargo({ groupId: group.id })
+  const {
+    mutateAsync: dublicateCargo,
+    isLoading: isLoadingDublicate
+  } = useCreateCargo({ groupId: group.id })
 
-  const { mutate, isLoading: isLoadingTemplate } = useEditCargo({
-    groupId: group.id
-  })
-
-  const saveTemplate = ({ id }: { id: string }) => {
-    mutate({ groupId: group.id, id, isTemplate: true })
+  const saveTemplate = ({ id, ...props }: cargoEntity) => {
+    dublicateCargo({ ...props, groupId: group.id, isTemplate: true })
   }
 
   const createCargo = async (data: cargoEntity) => {
@@ -196,8 +194,8 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 projectId={group.projectId}
                 removeProject={removeProject}
                 createCargo={createCargo}
-                isLoadingTemplate={isLoadingTemplate}
                 saveTemplate={saveTemplate}
+                isLoadingDublicate={isLoadingDublicate}
               />
             ))}
           </div>

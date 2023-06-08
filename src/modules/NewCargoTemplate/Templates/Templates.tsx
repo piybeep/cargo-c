@@ -19,8 +19,6 @@ const Templates = ({ groupId }: { groupId: string }) => {
 
   const { data } = useGetAllCargo({ groupId, templates: true })
 
-  console.log(data)
-
   return (
     <div className={s.cont}>
       {arr.map((el, ind) => (

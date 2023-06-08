@@ -28,8 +28,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   removeProject,
   createCargo,
   projectId,
-  isLoadingTemplate,
-  saveTemplate
+  saveTemplate,
+  isLoadingDublicate
 }) => {
   const router = useRouter()
 
@@ -119,7 +119,7 @@ const GroupEl: React.FC<GroupElProps> = ({
               height={24}
               onClick={(e) => {
                 e.stopPropagation()
-                !isLoadingTemplate && saveTemplate({ id: el.id })
+                !isLoadingDublicate && saveTemplate(el)
               }}
             />
             <Image
@@ -153,7 +153,7 @@ const GroupEl: React.FC<GroupElProps> = ({
           height={24}
           onClick={(e) => {
             e.stopPropagation()
-            !isLoadingTemplate && saveTemplate({ id: el.id })
+            !isLoadingDublicate && saveTemplate(el)
           }}
         />
         <Image
