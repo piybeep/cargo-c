@@ -8,6 +8,7 @@ import { Space, Typography } from 'antd'
 import Image from 'next/image'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 import { TemplateElProps } from './type'
+import { useRouter } from 'next/router'
 
 const { Text, Title } = Typography
 
@@ -16,9 +17,13 @@ const TemplateEl: React.FC<TemplateElProps> = ({
   handleTouchMove,
   handleTouchStart,
   el,
-  deleteCargo
+  deleteCargo,
+  groupId,
+  projectId
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
+
+  const roter = useRouter()
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)
@@ -67,6 +72,11 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         onTouchMove={(e) => handleTouchMove(e, el.name)}
         onTouchEnd={() => handleTouchEnd(el.name)}
         id={el.name}
+        onClick={() =>
+          roter.push(
+            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}`
+          )
+        }
       >
         <div className={s.wrapper}>
           {getImgForPackagingType()}
@@ -83,7 +93,10 @@ const TemplateEl: React.FC<TemplateElProps> = ({
               height={28}
               className={s.img}
               src={trashSvg.src}
-              onClick={() => deleteCargo(el.id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                deleteCargo(el.id)
+              }}
             />
           ) : (
             <></>
@@ -98,7 +111,10 @@ const TemplateEl: React.FC<TemplateElProps> = ({
           height={24}
           className={s.img}
           src={trashSvg.src}
-          onClick={() => deleteCargo(el.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteCargo(el.id)
+          }}
         />
       </div>
     </div>

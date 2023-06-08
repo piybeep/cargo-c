@@ -8,7 +8,7 @@ import { useRemoveCargo } from '@/modules/Cargo/Group/hook/useRemoveCargo'
 import { Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
-const Templates = ({ groupId }: { groupId: string }) => {
+const Templates = ({ groupId,projectId }: { groupId: string,projectId:string }) => {
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(
     style.cont
   )
@@ -47,6 +47,8 @@ const Templates = ({ groupId }: { groupId: string }) => {
             key={ind}
             el={el}
             deleteCargo={deleteCargo}
+            groupId={groupId}
+            projectId={projectId}
           />
         ))}
     </div>

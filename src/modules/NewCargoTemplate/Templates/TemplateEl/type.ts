@@ -6,4 +6,6 @@ export interface TemplateElProps {
   handleTouchEnd: (id: string) => void
   el: cargoEntity
   deleteCargo: (cargoId: string) => void
+  groupId:string
+  projectId:string
 }
