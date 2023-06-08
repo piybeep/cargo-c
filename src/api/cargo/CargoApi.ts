@@ -1,5 +1,10 @@
 import { instance } from '..'
-import { cargoEntity, cargoEntityById, createCargoProps, editCargoProps } from './type'
+import {
+  cargoEntity,
+  cargoEntityById,
+  createCargoProps,
+  editCargoProps
+} from './type'
 
 export const CargoApi = {
   async createCargo({
@@ -16,9 +21,9 @@ export const CargoApi = {
     groupId: string
     templates: boolean
   }) {
-    const res = await instance.get<cargoEntity[]>(
-      `groups/${groupId}/cargos?templates=${templates}`
-    )
+    const res = await instance.get<
+      cargoEntity[] | { data: cargoEntity[]; page: number }
+    >(`groups/${groupId}/cargos?templates=${templates}`)
     return res.data
   },
   async removeCargo({
