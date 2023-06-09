@@ -30,6 +30,12 @@ export default class Arrangement {
     this.lastIndexGroup = 0;
     this.cargosBuff = [];
     this.cargosBuffPerX = [];
+    this.buff = {
+      perX: 0,
+      perZ: 0,
+      group: 0,
+      startPos: 0,
+    };
   }
 
   nextSpace() {
@@ -495,33 +501,41 @@ export default class Arrangement {
     // Доступное количество груза по оси Z
 
     this.occupiedAreaZTest = this.cargosBuff
-      .map((cargo) => {
-        return cargo.parameters.width;
+      .map((item, id, arr) => {
+        const prev = arr[id ? id - 1 : id];
+        const diffGroup = prev.parameters.group !== cargo.parameters.group;
+        let free = 0;
+
+        if (diffGroup) {
+          free = this.spaceWidth - prev.parameters.count * prev.parameters.width;
+          this.buff.startPos = free;
+          this.buff.perZ = Math.floor(this.buff.startPos / item.parameters.width);
+          this.buff.group = item.parameters.group;
+        }
+
+        return item.parameters.width;
       })
       .reduce((prev, curr) => prev + curr);
 
     let freeSpace = this.spaceWidth - this.occupiedAreaZTest;
+    // if (freeSpace < 0) {
+    //   this.t1 = this.cargosBuff
+    //     .map((item) => {
+    //       return item.parameters.groupId !== cargo.parameters.groupId && item.parameters.width;
+    //     })
+    //     .filter((item) => item !== false)
+    //     .reduce((prev, curr) => prev + curr);
 
-    // console.log(freeSpace);
+    //   freeSpace = this.spaceWidth - this.t1;
 
-    if (freeSpace < 0) {
-      this.t1 = this.cargosBuff
-        .map((item) => {
-          return item.parameters.groupId !== cargo.parameters.groupId && item.parameters.width;
-        })
-        .filter((item) => item !== false)
-        .reduce((prev, curr) => prev + curr);
+    //   this.t1 = Math.floor((this.spaceWidth - this.t1) / cargo.parameters.width);
 
-      freeSpace = this.spaceWidth - this.t1;
-
-      this.t1 = Math.floor((this.spaceWidth - this.t1) / cargo.parameters.width);
-
-      if (!this.cargosBuffPerX.length) {
-        this.cargosBuffPerX.push(this.t1);
-      }
-      console.log("=");
-    }
-    console.log(freeSpace);
+    //   if (!this.cargosBuffPerX.length) {
+    //     this.cargosBuffPerX.push(this.t1);
+    //   }
+    //   console.log("=");
+    // }
+    // console.log(this.t1);
 
     if (freeSpace < 0 && false) {
       console.log(`\x1b[95m[+] Новая колонка создана!`);
