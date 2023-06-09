@@ -3,12 +3,12 @@ import s from './Templates.module.scss'
 import TemplateEl from './TemplateEl/TemplateEl'
 import style from './TemplateEl/TemplateEl.module.scss'
 import { useSwipe } from '@/hook/useSwipe'
-import { useGetAllCargo } from '@/modules/Cargo/Group/hook/useGetAllCargo'
 import { useRemoveCargo } from '@/modules/Cargo/Group/hook/useRemoveCargo'
 import { Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { TemplateProps } from './type'
 
-const Templates = ({ groupId,projectId }: { groupId: string,projectId:string }) => {
+const Templates: React.FC<TemplateProps> = ({ groupId, projectId, data }) => {
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(
     style.cont
   )
@@ -33,24 +33,20 @@ const Templates = ({ groupId,projectId }: { groupId: string,projectId:string }) 
     })
   }
 
-  const { data } = useGetAllCargo({ groupId, templates: true })
-
   return (
     <div className={s.cont}>
-      {data &&
-        'data' in data &&
-        data?.data?.map((el, ind) => (
-          <TemplateEl
-            handleTouchEnd={handleTouchEnd}
-            handleTouchMove={handleTouchMove}
-            handleTouchStart={handleTouchStart}
-            key={ind}
-            el={el}
-            deleteCargo={deleteCargo}
-            groupId={groupId}
-            projectId={projectId}
-          />
-        ))}
+      {data?.map((el, ind) => (
+        <TemplateEl
+          handleTouchEnd={handleTouchEnd}
+          handleTouchMove={handleTouchMove}
+          handleTouchStart={handleTouchStart}
+          key={ind}
+          el={el}
+          deleteCargo={deleteCargo}
+          groupId={groupId}
+          projectId={projectId}
+        />
+      ))}
     </div>
   )
 }

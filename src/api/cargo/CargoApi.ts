@@ -14,17 +14,29 @@ export const CargoApi = {
     const res = await instance.post(`groups/${groupId}/cargos`, data)
     return res.data
   },
-  async getAllCargo({
+  async getAllCargo<T>({
     groupId,
-    templates
+    templates,
+    page
   }: {
     groupId: string
     templates: boolean
+    page?: number
   }) {
     const res = await instance.get<
-      cargoEntity[] | { data: cargoEntity[]; page: number }
-    >(`groups/${groupId}/cargos?templates=${templates}`)
-    return res.data
+      | cargoEntity[]
+      | {
+          data: cargoEntity[]
+          page: number
+          itemCount: number
+          pageCount: number
+        }
+    >(
+      `groups/${groupId}/cargos?templates=${templates}&size=10${
+        page != undefined && page >= 0 ? '&page=' + page : ''
+      }`
+    )
+    return res.data as T
   },
   async removeCargo({
     groupId,
