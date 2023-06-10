@@ -74,7 +74,7 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         id={el.name}
         onClick={() =>
           roter.push(
-            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}`
+            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}&template=true`
           )
         }
       >

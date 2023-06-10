@@ -6,13 +6,15 @@ import { TransportApi } from '@/api/transport/TransportApi'
 import { transportEntity } from '@/api/transport/type'
 
 export default function TransportConfigEditPage({
-  transport
+  transport,
+  template
 }: {
   transport: transportEntity
+  template: boolean
 }) {
   return (
     <main>
-      <TransportConfig editTransport={transport}/>
+      <TransportConfig editTransport={transport} template={template}/>
     </main>
   )
 }
@@ -37,7 +39,10 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
       const transport = await TransportApi.getTransportById(query.id)
       if (transport) {
         return {
-          props: { transport }
+          props: {
+            transport,
+            template: query.template ? query.template : false
+          }
         }
       } else {
         return {

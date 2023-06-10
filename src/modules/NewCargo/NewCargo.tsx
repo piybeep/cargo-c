@@ -12,11 +12,13 @@ import { useRouter } from 'next/router'
 export const NewCargo = ({
   groupId,
   cargo,
-  projectId
+  projectId,
+  template
 }: {
   groupId: string
   cargo?: cargoEntityById
   projectId: string
+  template: boolean
 }) => {
   const { mutateAsync: createCargo, isLoading } = useCreateCargo({ groupId })
   const router = useRouter()
@@ -64,20 +66,36 @@ export const NewCargo = ({
   const Submit = async (data: createCargo) => {
     if (cargo) {
       const { length, height, weight, width, load, ...newData } = data
-      await editCargo({
-        ...newData,
-        length: Number(length),
-        height: Number(height),
-        weight: Number(weight),
-        width: Number(width),
-        load: Number(load),
-        weightUnit,
-        sizeUnit,
-        color,
-        isTemplate: false,
-        groupId,
-        id: cargo.id
-      })
+      if (template) {
+        await createCargo({
+          ...newData,
+          length: Number(length),
+          height: Number(height),
+          weight: Number(weight),
+          width: Number(width),
+          load: Number(load),
+          weightUnit,
+          sizeUnit,
+          color,
+          isTemplate: false,
+          groupId
+        })
+      } else {
+        await editCargo({
+          ...newData,
+          length: Number(length),
+          height: Number(height),
+          weight: Number(weight),
+          width: Number(width),
+          load: Number(load),
+          weightUnit,
+          sizeUnit,
+          color,
+          isTemplate: false,
+          groupId,
+          id: cargo.id
+        })
+      }
       router.push(`/cargo?projectId=${projectId}`)
     } else {
       await createCargo({

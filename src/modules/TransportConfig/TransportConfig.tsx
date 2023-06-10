@@ -27,9 +27,11 @@ import { transportEntity } from '@/api/transport/type'
 import { useEditTransport } from './hook/useEditTransport'
 
 export function TransportConfig({
-  editTransport
+  editTransport,
+  template
 }: {
   editTransport?: transportEntity
+  template: boolean
 }) {
   const router = useRouter()
 
@@ -111,8 +113,6 @@ export function TransportConfig({
     }
   })
 
-  console.log(dirtyFields)
-
   useEffect(() => {
     if (editTransport) {
       const {
@@ -188,42 +188,71 @@ export function TransportConfig({
   const onSubmit = async (data: createTrasportInput) => {
     if (isSwitch) {
       if (editTransport) {
-        await changeTransport({
-          ...data.main,
-          weightUnit: height,
-          sizeUnit: width,
-          transports: [null],
-          autoDistribution: true,
-          id: editTransport.id
-        })
+        if (template) {
+          await mutateAsync({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            transports: [null],
+            autoDistribution: true,
+            isTemplate: false
+          })
+        } else {
+          await changeTransport({
+            ...data.main,
+            weightUnit: height,
+            sizeUnit: width,
+            transports: [null],
+            autoDistribution: true,
+            id: editTransport.id,
+            isTemplate: false
+          })
+        }
       } else {
         await mutateAsync({
           ...data.main,
           weightUnit: height,
           sizeUnit: width,
           transports: [null],
-          autoDistribution: true
+          autoDistribution: true,
+          isTemplate: false
         })
       }
     } else {
       if (transport === 0) {
         if (editTransport) {
-          await changeTransport({
-            ...data.main,
-            weightUnit: height,
-            sizeUnit: width,
-            autoDistribution: false,
-            id: editTransport.id,
-            transports: [
-              { ...data.trailer, type: 'Тягач с полуприцепом' },
-              { ...data.tractor, type: 'Тягач с полуприцепом' }
-            ]
-          })
+          if (template) {
+            await mutateAsync({
+              ...data.main,
+              weightUnit: height,
+              sizeUnit: width,
+              autoDistribution: false,
+              isTemplate: false,
+              transports: [
+                { ...data.trailer, type: 'Тягач с полуприцепом' },
+                { ...data.tractor, type: 'Тягач с полуприцепом' }
+              ]
+            })
+          } else {
+            await changeTransport({
+              ...data.main,
+              weightUnit: height,
+              sizeUnit: width,
+              autoDistribution: false,
+              id: editTransport.id,
+              isTemplate: false,
+              transports: [
+                { ...data.trailer, type: 'Тягач с полуприцепом' },
+                { ...data.tractor, type: 'Тягач с полуприцепом' }
+              ]
+            })
+          }
         } else {
           await mutateAsync({
             ...data.main,
             weightUnit: height,
             sizeUnit: width,
+            isTemplate: false,
             transports: [
               { ...data.trailer, type: 'Тягач с полуприцепом' },
               { ...data.tractor, type: 'Тягач с полуприцепом' }
@@ -233,19 +262,32 @@ export function TransportConfig({
         }
       } else {
         if (editTransport) {
-          await changeTransport({
-            ...data.main,
-            weightUnit: height,
-            sizeUnit: width,
-            autoDistribution: false,
-            id: editTransport.id,
-            transports: [{ ...data.van, type: 'Фургон грузовой' }]
-          })
+          if (template) {
+            await mutateAsync({
+              ...data.main,
+              weightUnit: height,
+              sizeUnit: width,
+              autoDistribution: false,
+              isTemplate: false,
+              transports: [{ ...data.van, type: 'Фургон грузовой' }]
+            })
+          } else {
+            await changeTransport({
+              ...data.main,
+              weightUnit: height,
+              sizeUnit: width,
+              autoDistribution: false,
+              id: editTransport.id,
+              isTemplate: false,
+              transports: [{ ...data.van, type: 'Фургон грузовой' }]
+            })
+          }
         } else {
           await mutateAsync({
             ...data.main,
             weightUnit: height,
             sizeUnit: width,
+            isTemplate: false,
             transports: [{ ...data.van, type: 'Фургон грузовой' }],
             autoDistribution: false
           })

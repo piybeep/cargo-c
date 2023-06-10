@@ -11,9 +11,12 @@ import { useEffect, useState } from 'react'
 import s from './TransportTemplate.module.scss'
 import { useGetTransportTemplate } from './hook/useGetTransportTemplate'
 import { transportEntity } from '@/api/transport/type'
+import { useRouter } from 'next/router'
 
 export function TransportTemplate({ ...props }: TransportTemplateProps) {
   const { Title, Text } = Typography
+
+  const rouer = useRouter()
 
   const [windowWidth, setWindowWidth] = useState(false)
   const [windowSwipe, setWindowSwipe] = useState(false)
@@ -166,7 +169,13 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
                 </div>
               </div>
               <div className={s.item__menu}>
-                <span title='Добавить шаблон' className={s.item__svg}>
+                <span
+                  title='Добавить шаблон'
+                  className={s.item__svg}
+                  onClick={() =>
+                    rouer.push(`/transport/config/${current.id}?template=true`)
+                  }
+                >
                   <svg
                     className={s.item__svg}
                     width='28'
@@ -214,7 +223,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
           showSizeChanger={false}
           showQuickJumper
           showTotal={(total) => `Total ${total} items`}
-          current={currentPage ? currentPage+1 : 1}
+          current={currentPage ? currentPage + 1 : 1}
           onChange={changePage}
         />
       </div>

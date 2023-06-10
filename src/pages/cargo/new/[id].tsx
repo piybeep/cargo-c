@@ -10,13 +10,22 @@ import { ReactNode } from 'react'
 export default function CargoEditPage({
   groupId,
   cargo,
-  projectId
+  projectId,
+  template
 }: {
   groupId: string
   cargo: cargoEntityById
-  projectId:string
+  projectId: string
+  template: boolean
 }) {
-  return <NewCargo groupId={groupId} cargo={cargo} projectId={projectId}/>
+  return (
+    <NewCargo
+      groupId={groupId}
+      cargo={cargo}
+      projectId={projectId}
+      template={template}
+    />
+  )
 }
 
 CargoEditPage.getLayout = (page: ReactNode) => (
@@ -50,7 +59,12 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
       })
       if (cargo && group) {
         return {
-          props: { groupId: query.groupId, cargo, projectId: query.projectId }
+          props: {
+            groupId: query.groupId,
+            cargo,
+            projectId: query.projectId,
+            template: query.template ? query.template : false
+          }
         }
       } else {
         return {
