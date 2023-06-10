@@ -18,7 +18,7 @@ export const NewCargo = ({
   groupId: string
   cargo?: cargoEntityById
   projectId: string
-  template: boolean
+  template?: boolean
 }) => {
   const { mutateAsync: createCargo, isLoading } = useCreateCargo({ groupId })
   const router = useRouter()

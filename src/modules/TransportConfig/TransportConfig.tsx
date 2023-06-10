@@ -31,7 +31,7 @@ export function TransportConfig({
   template
 }: {
   editTransport?: transportEntity
-  template: boolean
+  template?: boolean
 }) {
   const router = useRouter()
 
