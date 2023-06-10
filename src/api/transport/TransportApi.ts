@@ -7,13 +7,11 @@ import {
 } from './type'
 
 export const TransportApi = {
-  async getAllTransport({
-    page = 0,
-    size = 10,
-    tmp = false
-  }: getAllTransportProps) {
+  async getAllTransport({ page, size, tmp = false }: getAllTransportProps) {
     const res = await instance.get<getAllTransportRes>(
-      `loadspaces?page=${page}&size=${size}&tmp=${tmp}`
+      `loadspaces?tmp=${tmp}${
+        size !== undefined && size >= 0 ? '&size=' + size : ''
+      }${page !== undefined && page >= 0 ? '&page=' + page : ''}`
     )
     return res.data
   },

@@ -66,7 +66,7 @@ export function Transport({ ...props }: TransportProps) {
     const transport = await TransportApi.getTransportById(data.id)
     if (transport) {
       const autoDistribution = transport?.transports?.length
-      const { height, length, weight, width,id, ...newData } = transport
+      const { height, length, weight, width, id, ...newData } = transport
       await dublicateTransport({
         ...newData,
         height: Number(height),
@@ -75,6 +75,20 @@ export function Transport({ ...props }: TransportProps) {
         width: Number(width),
         autoDistribution:
           autoDistribution && autoDistribution > 0 ? false : true
+      })
+    }
+  }
+
+  const saveTemplate = async (data: transportEntity) => {
+    const transport = await TransportApi.getTransportById(data.id)
+    const { id, ...newData } = transport
+    if (transport) {
+      const autoDistribution = transport?.transports?.length
+      dublicateTransport({
+        ...newData,
+        autoDistribution:
+          autoDistribution && autoDistribution > 0 ? false : true,
+        isTemplate: true
       })
     }
   }
@@ -162,50 +176,48 @@ export function Transport({ ...props }: TransportProps) {
       </div>
 
       <div className={s.list}>
-        {transport?.pages.map((el) =>
-          el?.data?.map((elem) => (
-            <div key={elem.id} className={s.item__wrapper}>
-              <div
-                className={s.item}
-                onClick={() => handleClickItem(elem.id)}
-                onTouchStart={(e) =>
-                  windowWidth && handleTouchStart(e, elem.id)
-                }
-                onTouchMove={(e) =>
-                  windowWidth && handleTouchMove(e, '' + elem.id)
-                }
-                onTouchEnd={() => windowWidth && handleTouchEnd('' + elem.id)}
-                id={'' + elem.id}
-              >
-                <Image
-                  className={s.item__icon}
-                  src={getIcon(elem.type)}
-                  width={40}
-                  height={40}
-                  alt={elem.type}
-                />
-                <div className={s.item__info}>
-                  <Title level={5}>{elem.name}</Title>
-                  <Text>{getInfo(elem)}</Text>
-                </div>
-                <div className={s.item__menu}>
-                  <Menu
-                    transport={elem}
-                    handleRemoveTransport={handleRemoveTransport}
-                    dublicate={dublicate}
-                  />
-                </div>
+        {transport?.data.map((elem) => (
+          <div key={elem.id} className={s.item__wrapper}>
+            <div
+              className={s.item}
+              onClick={() => handleClickItem(elem.id)}
+              onTouchStart={(e) => windowWidth && handleTouchStart(e, elem.id)}
+              onTouchMove={(e) =>
+                windowWidth && handleTouchMove(e, '' + elem.id)
+              }
+              onTouchEnd={() => windowWidth && handleTouchEnd('' + elem.id)}
+              id={'' + elem.id}
+            >
+              <Image
+                className={s.item__icon}
+                src={getIcon(elem.type)}
+                width={40}
+                height={40}
+                alt={elem.type}
+              />
+              <div className={s.item__info}>
+                <Title level={5}>{elem.name}</Title>
+                <Text>{getInfo(elem)}</Text>
               </div>
-              <div className={s.list__menu}>
+              <div className={s.item__menu}>
                 <Menu
                   transport={elem}
                   handleRemoveTransport={handleRemoveTransport}
                   dublicate={dublicate}
+                  saveTemplate={saveTemplate}
                 />
               </div>
             </div>
-          ))
-        )}
+            <div className={s.list__menu}>
+              <Menu
+                transport={elem}
+                handleRemoveTransport={handleRemoveTransport}
+                dublicate={dublicate}
+                saveTemplate={saveTemplate}
+              />
+            </div>
+          </div>
+        ))}
       </div>
       <div className={s.buttons}>
         <Button

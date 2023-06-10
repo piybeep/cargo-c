@@ -6,16 +6,22 @@ interface MenuProps {
   handleRemoveTransport: (id: string) => void
   transport: transportEntity
   dublicate: (data: transportEntity) => void
+  saveTemplate: (data: transportEntity) => Promise<void>
 }
 
 const Menu: React.FC<MenuProps> = ({
   dublicate,
   handleRemoveTransport,
-  transport
+  transport,
+  saveTemplate
 }) => {
   return (
     <div className={s.menu} onClick={(e) => e.stopPropagation()}>
-      <span title='Добавить в шаблон' className={s.item__svg}>
+      <span
+        title='Добавить в шаблон'
+        className={s.item__svg}
+        onClick={() => saveTemplate(transport)}
+      >
         <svg
           className={s.item__svg}
           width='24'

@@ -57,6 +57,7 @@ export interface createTransportProps {
   width: number
   height: number
   weight: number
+  isTemplate: boolean
   autoDistribution: boolean
   transports?:
     | [
@@ -107,6 +108,7 @@ export interface getAllTransportRes {
   data: transportEntity[]
   count: number
   page: number
+  itemCount:number
 }
 
 export type typeOfTransport =
