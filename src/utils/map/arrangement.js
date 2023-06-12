@@ -503,7 +503,7 @@ export default class Arrangement {
     this.occupiedAreaZTest = this.cargosBuff
       .map((item, id, arr) => {
         const prev = arr[id ? id - 1 : id];
-        const diffGroup = prev.parameters.group !== cargo.parameters.group;
+        const diffGroup = prev.parameters.group !== item.parameters.group;
         let free = 0;
 
         if (diffGroup) {
@@ -513,11 +513,30 @@ export default class Arrangement {
           this.buff.group = item.parameters.group;
         }
 
-        return item.parameters.width;
+        const currItemN = item.parameters.id + 1;
+        const remainder = currItemN % this.buff.perZ === 0;
+        const sameGroup = this.buff.group === item.parameters.group;
+        const condition = sameGroup && remainder;
+
+        if (condition) {
+          // console.log(this.buff.perZ);
+        }
+
+        const perX = Math.ceil(item.parameters.count / this.buff.perZ);
+        if (sameGroup && currItemN > this.buff.perZ * (perX - 1)) {
+          item.block.material.color.set("red");
+          return item.parameters.width;
+        }
+
+        if (item.parameters.count < this.buff.perZ) {
+          return item.parameters.width;
+        } else {
+          return 0;
+        }
       })
       .reduce((prev, curr) => prev + curr);
-
     let freeSpace = this.spaceWidth - this.occupiedAreaZTest;
+    console.log(freeSpace);
     // if (freeSpace < 0) {
     //   this.t1 = this.cargosBuff
     //     .map((item) => {
