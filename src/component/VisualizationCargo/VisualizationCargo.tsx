@@ -3,6 +3,10 @@ import { Typography } from 'antd';
 
 import testCargo from '../../../public/img/testCargo.png'
 
+import box from '../../../public/svg/cargo/box.svg'
+import carton from '../../../public/svg/cargo/carton.svg'
+import pallet from '../../../public/svg/cargo/pallet.svg'
+
 import { VisualizationCargoProps } from './VisualizationCargo.types';
 import s from './VisualizationCargo.module.scss'
 
@@ -11,7 +15,9 @@ export function VisualizationCargo({ dataCargo, dataCargoRemove }: Visualization
 
     const Cargo = (data: any) => (
         <div className={s.cargo}>
-            <Image src={testCargo} alt={'Иконка'} />
+            <div className={s.cargo__img} style={{backgroundColor: data.data.color}}>
+                <Image className={s.cargo__icon} src={data.data.type === 'Ящик' ? box : data.data.type === 'Коробка' ? carton : pallet} alt={'Иконка'}/>
+            </div>
             <div className={s.cargo__list}>
                 <Text>{data.data.name}</Text>
                 <Text type="secondary">{data.data.size}</Text>
@@ -38,7 +44,9 @@ export function VisualizationCargo({ dataCargo, dataCargoRemove }: Visualization
 
     const CargoRemove = (data: any) => (
         <div className={s.cargo}>
-            <Image src={testCargo} alt={'Иконка'} />
+            <div className={s.cargo__img} style={{backgroundColor: data.data.color}}>
+                <Image className={s.cargo__icon} src={data.data.type === 'Ящик' ? box : data.data.type === 'Коробка' ? carton : pallet} alt={'Иконка'}/>
+            </div>
             <div className={s.cargo__list}>
                 <Text>{data.data.name}</Text>
                 <Text type="secondary">{data.data.size}</Text>

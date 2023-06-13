@@ -52,6 +52,21 @@
             opacity: 1;
         }
     }
+    &__img{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 50%;
+    }
+
+    &__icon{
+        width: 19px;
+        height: auto;
+    }
 }
 
 @media screen and (max-width: 430px){

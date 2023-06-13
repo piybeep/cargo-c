@@ -1,10 +1,11 @@
 import { BaseLayout } from "@/layouts/BaseLayout";
+import { ProjectsList } from "@/modules";
 import { ReactNode } from "react";
 
 export default function Home() {
 	return (
 		<main>
-			in dev
+			<ProjectsList/>
 		</main>
 	);
 }

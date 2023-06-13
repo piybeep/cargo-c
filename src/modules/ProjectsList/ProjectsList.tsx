@@ -94,17 +94,21 @@ export function ProjectsList() {
   const { control, handleSubmit, setValue } = useForm<{ name: string }>()
 
   // Открывает конкретный проект
-  const open = (id: string, e: any) => {
+  const open = (current: projectEntity, e: any) => {
     e.stopPropagation()
-    window.localStorage.setItem('lastSelectedProject', id)
-    router.replace(`/cargo?projectId=${id}`, undefined, { shallow: true })
+    handleClick()
+    setSelectProject(current)
+    window.localStorage.setItem('lastSelectedProject', current.id)
+    router.replace(`/cargo?projectId=${current.id}`, undefined, {
+      shallow: true
+    })
   }
 
   const copyProject = async ({ name }: { name: string }) => {
     if (userId) {
       const newProject = await mutateAsync({ name, userId })
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: newProject.id
         }
@@ -133,7 +137,7 @@ export function ProjectsList() {
       setSelectProject(newProject)
       window.localStorage.setItem('lastSelectedProject', newProject.id)
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: newProject.id
         }
@@ -155,7 +159,7 @@ export function ProjectsList() {
           setSelectProject(firstProject)
           window.localStorage.setItem('lastSelectedProject', firstProject.id)
           router.push({
-            pathname: '/projects',
+            pathname: '/',
             query: {
               projectId: firstProject.id
             }
@@ -178,14 +182,14 @@ export function ProjectsList() {
     if (window && firstProject && !lastSelectedProject) {
       window.localStorage.setItem('lastSelectedProject', firstProject)
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: firstProject
         }
       })
     } else if (window && lastSelectedProject) {
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: lastSelectedProject
         }
@@ -198,7 +202,7 @@ export function ProjectsList() {
     window.localStorage.setItem('lastSelectedProject', current.id)
     setSelectProject(current)
     router.push({
-      pathname: '/projects',
+      pathname: '/',
       query: { projectId: current.id }
     })
   }
@@ -354,7 +358,7 @@ export function ProjectsList() {
                   </div>
                   <Button
                     className={s.item__open}
-                    onClick={(e) => open(elem.id, e)}
+                    onClick={(e) => open(elem, e)}
                   >
                     Открыть
                   </Button>

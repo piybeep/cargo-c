@@ -16,7 +16,7 @@ export const LINKS: LinkTypes = [
     id: 1,
     text: 'Выбор проекта',
     textSmall: 'Проекты',
-    link: '/projects',
+    link: '/',
     icon: IconProjects
   },
   {

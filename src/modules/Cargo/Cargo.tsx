@@ -30,7 +30,7 @@ export const Cargo = () => {
           }
         })
       }else{
-        router.replace('/projects')
+        router.replace('/')
       }
     }
   }, [router.query])
