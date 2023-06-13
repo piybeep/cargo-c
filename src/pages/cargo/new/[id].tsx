@@ -1,11 +1,31 @@
+import { CargoApi } from '@/api/cargo/CargoApi'
+import { cargoEntityById } from '@/api/cargo/type'
+import { groupsApi } from '@/api/groups/groupsApi'
 import { Layout } from '@/layouts/BaseLayout'
 import { Header } from '@/modules'
 import { NewCargo } from '@/modules/NewCargo'
 import { GetServerSidePropsContext } from 'next'
 import { ReactNode } from 'react'
 
-export default function CargoEditPage({groupId}:{groupId:string}) {
-  return <NewCargo groupId={groupId}/>
+export default function CargoEditPage({
+  groupId,
+  cargo,
+  projectId,
+  template
+}: {
+  groupId: string
+  cargo: cargoEntityById
+  projectId: string
+  template: boolean
+}) {
+  return (
+    <NewCargo
+      groupId={groupId}
+      cargo={cargo}
+      projectId={projectId}
+      template={template}
+    />
+  )
 }
 
 CargoEditPage.getLayout = (page: ReactNode) => (
@@ -16,14 +36,51 @@ CargoEditPage.getLayout = (page: ReactNode) => (
 )
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  if (!query.groupId) {
+  if (!query.groupId || !query.id || !query.projectId) {
     return {
       redirect: {
         destination: '/cargo',
         permanent: false
       }
     }
+  } else if (
+    typeof query.groupId === 'string' &&
+    typeof query.id === 'string' &&
+    typeof query.projectId === 'string'
+  ) {
+    try {
+      const cargo = await CargoApi.getCargoById({
+        cargoId: query.id,
+        groupId: query.groupId
+      })
+      const group = await groupsApi.getGroupById({
+        groupId: query.groupId,
+        projectId: query.projectId
+      })
+      if (cargo && group) {
+        return {
+          props: {
+            groupId: query.groupId,
+            cargo,
+            projectId: query.projectId,
+            template: query.template ? query.template : false
+          }
+        }
+      } else {
+        return {
+          redirect: {
+            destination: '/cargo',
+            permanent: false
+          }
+        }
+      }
+    } catch (e) {
+      return {
+        redirect: {
+          destination: '/cargo',
+          permanent: false
+        }
+      }
+    }
   }
-
-  return { props: { groupId: query.groupId } }
 }

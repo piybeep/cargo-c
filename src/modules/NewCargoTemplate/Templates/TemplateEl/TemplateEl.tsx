@@ -1,33 +1,69 @@
 import React, { useEffect, useState } from 'react'
 import s from './TemplateEl.module.scss'
 import { RightCircleTwoTone } from '@ant-design/icons'
-import boxSvg from '@/public/svg/box/box1blue.svg'
+import BoxSvg from '../.././../.././../public/svg/IconBox'
+import CartonSvg from '../.././../.././../public/svg/IconCarton'
+import PalletSvg from '../.././../.././../public/svg/IconPallet'
 import { Space, Typography } from 'antd'
 import Image from 'next/image'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
+import { TemplateElProps } from './type'
+import { useRouter } from 'next/router'
 
 const { Text, Title } = Typography
-
-interface TemplateElProps {
-  ind: number
-  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
-  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
-  handleTouchEnd: (id: string) => void
-  el: any
-}
 
 const TemplateEl: React.FC<TemplateElProps> = ({
   handleTouchEnd,
   handleTouchMove,
   handleTouchStart,
-  ind,
-  el
+  el,
+  deleteCargo,
+  groupId,
+  projectId
 }) => {
   const [clientWidth, setClientWidth] = useState(0)
+
+  const roter = useRouter()
 
   useEffect(() => {
     setClientWidth(document?.documentElement.scrollWidth)
   }, [])
+
+  const getInfo = () => {
+    return (
+      el.type +
+      ' ' +
+      el.length +
+      ' x ' +
+      el.width +
+      ' x ' +
+      el.height +
+      ' ' +
+      el.sizeUnit +
+      ', ' +
+      el.weight +
+      ' ' +
+      el.weightUnit +
+      ', ' +
+      el.count +
+      ' шт.'
+    )
+  }
+
+  const getImgForPackagingType = () => {
+    if (el.type === 'Ящик') {
+      return <BoxSvg style={{ width: 45, height: 40 }} className={s.iconType} />
+    } else if (el.type === 'Коробка') {
+      return (
+        <CartonSvg style={{ width: 45, height: 40 }} className={s.iconType} />
+      )
+    } else {
+      return (
+        <PalletSvg style={{ width: 45, height: 40 }} className={s.iconType} />
+      )
+    }
+  }
+
   return (
     <div className={s.wrapperCont}>
       <div
@@ -36,14 +72,17 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         onTouchMove={(e) => handleTouchMove(e, el.name)}
         onTouchEnd={() => handleTouchEnd(el.name)}
         id={el.name}
+        onClick={() =>
+          roter.push(
+            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}&template=true`
+          )
+        }
       >
         <div className={s.wrapper}>
-          <Image alt='Ящик' width={26} height={30} src={boxSvg.src} />
+          {getImgForPackagingType()}
           <div className={s.text}>
-            <Title level={5}>Ящик 40м2</Title>
-            <Text type='secondary'>
-              Ящик 12039 х 2330 х 2693 мм, 26840 кг, 5 шт.
-            </Text>
+            <Title level={5}>{el.name}</Title>
+            <Text type='secondary'>{getInfo()}</Text>
           </div>
         </div>
         <Space align='center'>
@@ -54,6 +93,10 @@ const TemplateEl: React.FC<TemplateElProps> = ({
               height={28}
               className={s.img}
               src={trashSvg.src}
+              onClick={(e) => {
+                e.stopPropagation()
+                deleteCargo(el.id)
+              }}
             />
           ) : (
             <></>
@@ -68,6 +111,10 @@ const TemplateEl: React.FC<TemplateElProps> = ({
           height={24}
           className={s.img}
           src={trashSvg.src}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteCargo(el.id)
+          }}
         />
       </div>
     </div>

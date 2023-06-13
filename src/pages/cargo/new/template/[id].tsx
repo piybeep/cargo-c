@@ -1,15 +1,15 @@
 import { groupsApi } from '@/api/groups/groupsApi'
 import { Layout } from '@/layouts/BaseLayout'
 import { Header } from '@/modules'
-import { NewCargo } from '@/modules/NewCargo'
+import { NewCargoTemplate } from '@/modules/NewCargoTemplate'
 import { GetServerSidePropsContext } from 'next'
 import { ReactNode } from 'react'
 
-export default function CargoNewPage({ groupId,projectId }: { groupId: string,projectId:string }) {
-  return <NewCargo groupId={groupId} projectId={projectId}/>
+export default function CargoNewTemplatePage({ groupId,projectId }: { groupId: string,projectId:string }) {
+  return <NewCargoTemplate groupId={groupId} projectId={projectId}/>
 }
 
-CargoNewPage.getLayout = (page: ReactNode) => (
+CargoNewTemplatePage.getLayout = (page: ReactNode) => (
   <>
     <Header />
     <Layout>{page}</Layout>
@@ -17,7 +17,7 @@ CargoNewPage.getLayout = (page: ReactNode) => (
 )
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  if (!query.groupId) {
+  if (!query.id || !query.projectId) {
     return {
       redirect: {
         destination: '/cargo',
@@ -25,16 +25,16 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
       }
     }
   } else if (
-    typeof query.groupId === 'string' &&
+    typeof query.id === 'string' &&
     typeof query.projectId === 'string'
   ) {
     try {
       const group = await groupsApi.getGroupById({
-        groupId: query.groupId,
+        groupId: query.id,
         projectId: query.projectId
       })
       if (group) {
-        return { props: { groupId: query.groupId,projectId: query.projectId } }
+        return { props: { groupId: group.id,projectId:query.projectId } }
       } else {
         return {
           redirect: {

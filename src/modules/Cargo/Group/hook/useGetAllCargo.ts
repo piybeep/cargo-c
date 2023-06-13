@@ -1,4 +1,5 @@
 import { CargoApi } from '@/api/cargo/CargoApi'
+import { cargoEntity } from '@/api/cargo/type'
 import { useQuery } from 'react-query'
 
 export const useGetAllCargo = ({
@@ -9,7 +10,7 @@ export const useGetAllCargo = ({
   templates: boolean
 }) => {
   return useQuery(
-    ['getCargo', groupId],
-    async () => await CargoApi.getAllCargo({ groupId, templates })
+    ['getCargo', groupId,templates],
+    async () => await CargoApi.getAllCargo<cargoEntity[]>({ groupId, templates })
   )
 }

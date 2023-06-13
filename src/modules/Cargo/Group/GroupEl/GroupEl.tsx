@@ -13,6 +13,7 @@ import listFrSvg from '../../../../../public/svg/boxEl/listFront.svg'
 import trashSvg from '../../../../../public/svg/boxEl/trash.svg'
 import Image from 'next/image'
 import { GroupElProps } from './type'
+import { useRouter } from 'next/router'
 
 const { Text, Title } = Typography
 
@@ -25,8 +26,13 @@ const GroupEl: React.FC<GroupElProps> = ({
   groupIndex,
   elId,
   removeProject,
-  createCargo
+  createCargo,
+  projectId,
+  saveTemplate,
+  isLoadingDublicate
 }) => {
+  const router = useRouter()
+
   const getImgForPackagingType = () => {
     if (el.type === 'Ящик') {
       return <Image src={boxSVG.src} alt='Ящик' width={20} height={20} />
@@ -59,7 +65,14 @@ const GroupEl: React.FC<GroupElProps> = ({
   }
 
   return (
-    <div className={s.wrapperCont}>
+    <div
+      className={s.wrapperCont}
+      onClick={() =>
+        router.push(
+          `/cargo/new/${el.id}?groupId=${groupIndex}&projectId=${projectId}`
+        )
+      }
+    >
       <div
         className={s.cont + ' ' + `cont__` + groupIndex}
         onClick={() => handleClick()}
@@ -99,39 +112,69 @@ const GroupEl: React.FC<GroupElProps> = ({
             </div>
           </div>
           <div className={s.icons}>
-            <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+            <Image
+              src={saveSvg.src}
+              alt='сохранить'
+              width={24}
+              height={24}
+              onClick={(e) => {
+                e.stopPropagation()
+                !isLoadingDublicate && saveTemplate(el)
+              }}
+            />
             <Image
               src={listFrSvg.src}
               alt='клонировать'
               width={24}
               height={24}
-              onClick={() => createCargo(el)}
+              onClick={(e) => {
+                e.stopPropagation()
+                createCargo(el)
+              }}
             />
             <Image
               src={trashSvg.src}
               alt='удалить'
               width={24}
               height={24}
-              onClick={() => removeProject({ id: el.id })}
+              onClick={(e) => {
+                e.stopPropagation()
+                removeProject({ id: el.id })
+              }}
             />
           </div>
         </div>
       </div>
       <div className={s.menu}>
-        <Image src={saveSvg.src} alt='сохранить' width={24} height={24} />
+        <Image
+          src={saveSvg.src}
+          alt='сохранить'
+          width={24}
+          height={24}
+          onClick={(e) => {
+            e.stopPropagation()
+            !isLoadingDublicate && saveTemplate(el)
+          }}
+        />
         <Image
           src={listFrSvg.src}
           alt='клонировать'
           width={24}
           height={24}
-          onClick={() => createCargo(el)}
+          onClick={(e) => {
+            e.stopPropagation()
+            createCargo(el)
+          }}
         />
         <Image
           src={trashSvg.src}
           alt='удалить'
           width={24}
           height={24}
-          onClick={() => removeProject({ id: el.id })}
+          onClick={(e) => {
+            e.stopPropagation()
+            removeProject({ id: el.id })
+          }}
         />
       </div>
     </div>

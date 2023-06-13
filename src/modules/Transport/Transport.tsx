@@ -16,11 +16,17 @@ import { useSwipe } from '../../hook/useSwipe'
 
 import IconAdd from '@/public/svg/IconAdd'
 import IconShablon from '@/public/svg/IconShablon'
-import { transportEntity, typeOfTransport } from '@/api/transport/type'
+import {
+  createTransportProps,
+  transportEntity,
+  typeOfTransport
+} from '@/api/transport/type'
 import Image from 'next/image'
 import Menu from './Menu'
 import { useGetTransport } from './hook/useGetTransport'
 import { useRemoveTransport } from './hook/useRemoveTransport'
+import { useCreateTransport } from '../TransportConfig/hook/useCreateTransport'
+import { TransportApi } from '@/api/transport/TransportApi'
 
 export function Transport({ ...props }: TransportProps) {
   const { Title, Text } = Typography
@@ -35,6 +41,8 @@ export function Transport({ ...props }: TransportProps) {
     mutateAsync: deleteTransport,
     isLoading: isLoadingRemove
   } = useRemoveTransport()
+
+  const { mutateAsync: dublicateTransport } = useCreateTransport()
 
   const router = useRouter()
 
@@ -53,6 +61,37 @@ export function Transport({ ...props }: TransportProps) {
     handleClick
   } = useSwipe(s.item)
   // Swipe logic
+
+  const dublicate = async (data: transportEntity) => {
+    const transport = await TransportApi.getTransportById(data.id)
+    if (transport) {
+      const autoDistribution = transport?.transports?.length
+      const { height, length, weight, width, id, ...newData } = transport
+      await dublicateTransport({
+        ...newData,
+        height: Number(height),
+        length: Number(length),
+        weight: Number(weight),
+        width: Number(width),
+        autoDistribution:
+          autoDistribution && autoDistribution > 0 ? false : true
+      })
+    }
+  }
+
+  const saveTemplate = async (data: transportEntity) => {
+    const transport = await TransportApi.getTransportById(data.id)
+    const { id, ...newData } = transport
+    if (transport) {
+      const autoDistribution = transport?.transports?.length
+      dublicateTransport({
+        ...newData,
+        autoDistribution:
+          autoDistribution && autoDistribution > 0 ? false : true,
+        isTemplate: true
+      })
+    }
+  }
 
   const handleRemoveTransport = (id: string) => {
     Modal.confirm({
@@ -75,7 +114,7 @@ export function Transport({ ...props }: TransportProps) {
 
   const handleClickItem = (id: string) => {
     handleClick()
-    router.push('/transport/config')
+    router.push(`/transport/config/${id}`)
   }
 
   const addNewTransport = () => {
@@ -137,48 +176,48 @@ export function Transport({ ...props }: TransportProps) {
       </div>
 
       <div className={s.list}>
-        {transport?.pages.map((el) =>
-          el?.data?.map((elem) => (
-            <div key={elem.id} className={s.item__wrapper}>
-              <div
-                className={s.item}
-                onClick={() => handleClickItem(elem.id)}
-                onTouchStart={(e) =>
-                  windowWidth && handleTouchStart(e, elem.id)
-                }
-                onTouchMove={(e) =>
-                  windowWidth && handleTouchMove(e, '' + elem.id)
-                }
-                onTouchEnd={() => windowWidth && handleTouchEnd('' + elem.id)}
-                id={'' + elem.id}
-              >
-                <Image
-                  className={s.item__icon}
-                  src={getIcon(elem.type)}
-                  width={40}
-                  height={40}
-                  alt={elem.type}
-                />
-                <div className={s.item__info}>
-                  <Title level={5}>{elem.name}</Title>
-                  <Text>{getInfo(elem)}</Text>
-                </div>
-                <div className={s.item__menu}>
-                  <Menu
-                    id={elem.id}
-                    handleRemoveTransport={handleRemoveTransport}
-                  />
-                </div>
+        {transport?.data.map((elem) => (
+          <div key={elem.id} className={s.item__wrapper}>
+            <div
+              className={s.item}
+              onClick={() => handleClickItem(elem.id)}
+              onTouchStart={(e) => windowWidth && handleTouchStart(e, elem.id)}
+              onTouchMove={(e) =>
+                windowWidth && handleTouchMove(e, '' + elem.id)
+              }
+              onTouchEnd={() => windowWidth && handleTouchEnd('' + elem.id)}
+              id={'' + elem.id}
+            >
+              <Image
+                className={s.item__icon}
+                src={getIcon(elem.type)}
+                width={40}
+                height={40}
+                alt={elem.type}
+              />
+              <div className={s.item__info}>
+                <Title level={5}>{elem.name}</Title>
+                <Text>{getInfo(elem)}</Text>
               </div>
-              <div className={s.list__menu}>
+              <div className={s.item__menu}>
                 <Menu
-                  id={elem.id}
+                  transport={elem}
                   handleRemoveTransport={handleRemoveTransport}
+                  dublicate={dublicate}
+                  saveTemplate={saveTemplate}
                 />
               </div>
             </div>
-          ))
-        )}
+            <div className={s.list__menu}>
+              <Menu
+                transport={elem}
+                handleRemoveTransport={handleRemoveTransport}
+                dublicate={dublicate}
+                saveTemplate={saveTemplate}
+              />
+            </div>
+          </div>
+        ))}
       </div>
       <div className={s.buttons}>
         <Button

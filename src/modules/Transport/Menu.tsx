@@ -1,15 +1,27 @@
 import React from 'react'
 import s from './Transport.module.scss'
+import { transportEntity } from '@/api/transport/type'
 
 interface MenuProps {
   handleRemoveTransport: (id: string) => void
-  id: string
+  transport: transportEntity
+  dublicate: (data: transportEntity) => void
+  saveTemplate: (data: transportEntity) => Promise<void>
 }
 
-const Menu: React.FC<MenuProps> = ({ id, handleRemoveTransport }) => {
+const Menu: React.FC<MenuProps> = ({
+  dublicate,
+  handleRemoveTransport,
+  transport,
+  saveTemplate
+}) => {
   return (
     <div className={s.menu} onClick={(e) => e.stopPropagation()}>
-      <span title='Добавить в шаблон' className={s.item__svg}>
+      <span
+        title='Добавить в шаблон'
+        className={s.item__svg}
+        onClick={() => saveTemplate(transport)}
+      >
         <svg
           className={s.item__svg}
           width='24'
@@ -43,7 +55,11 @@ const Menu: React.FC<MenuProps> = ({ id, handleRemoveTransport }) => {
           </g>
         </svg>
       </span>
-      <span title='Дублировать' className={s.item__svg}>
+      <span
+        title='Дублировать'
+        className={s.item__svg}
+        onClick={() => dublicate(transport)}
+      >
         <svg
           className={s.item__svg}
           width='24'
@@ -73,7 +89,7 @@ const Menu: React.FC<MenuProps> = ({ id, handleRemoveTransport }) => {
       <span title='Удалить' className={s.item__svg}>
         <svg
           className={s.item__svg}
-          onClick={() => handleRemoveTransport(id)}
+          onClick={() => handleRemoveTransport(transport.id)}
           width='24'
           height='24'
           viewBox='0 0 24 24'

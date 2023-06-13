@@ -1,15 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Param from './Param/Param'
 import Body from './Body/Body'
 import Footer from './Footer/Footer'
 import { useForm } from 'react-hook-form'
 import { createCargo } from './Body/type'
 import { useCreateCargo } from './hook/useCreateCargo'
-import { queryClient } from '@/provider/ReactQueryProvider'
+import { useEditCargo } from './hook/useEditCargo'
+import { cargoEntityById } from '@/api/cargo/type'
+import { useRouter } from 'next/router'
 
-export const NewCargo = ({ groupId }: { groupId: string }) => {
-  const { mutate, isLoading } = useCreateCargo({ groupId })
+export const NewCargo = ({
+  groupId,
+  cargo,
+  projectId,
+  template
+}: {
+  groupId: string
+  cargo?: cargoEntityById
+  projectId: string
+  template?: boolean
+}) => {
+  const { mutateAsync: createCargo, isLoading } = useCreateCargo({ groupId })
+  const router = useRouter()
   const [color, setColor] = useState('#aabbcc')
+  const { mutateAsync: editCargo, isLoading: isLoadingEdit } = useEditCargo({
+    groupId
+  })
   const {
     handleSubmit,
     control,
@@ -24,18 +40,74 @@ export const NewCargo = ({ groupId }: { groupId: string }) => {
       tilting: true
     }
   })
+
+  useEffect(() => {
+    if (cargo) {
+      const {
+        color,
+        groupId,
+        id,
+        group,
+        isTemplate,
+        sizeUnit,
+        weightUnit,
+        ...newData
+      } = cargo
+      setUnitLength(sizeUnit)
+      setUnitWeight(weightUnit)
+      setColor(color)
+      reset(newData)
+    }
+  }, [])
+
   const [sizeUnit, setUnitLength] = useState<'мм' | 'м' | 'см'>('мм')
   const [weightUnit, setUnitWeight] = useState<'кг' | 'тн'>('кг')
 
-  const Submit = (data: createCargo) => {
-    mutate({
-      ...data,
-      weightUnit,
-      sizeUnit,
-      color,
-      isTemplate: false,
-      groupId
-    })
+  const Submit = async (data: createCargo) => {
+    if (cargo) {
+      const { length, height, weight, width, load, ...newData } = data
+      if (template) {
+        await createCargo({
+          ...newData,
+          length: Number(length),
+          height: Number(height),
+          weight: Number(weight),
+          width: Number(width),
+          load: Number(load),
+          weightUnit,
+          sizeUnit,
+          color,
+          isTemplate: false,
+          groupId
+        })
+      } else {
+        await editCargo({
+          ...newData,
+          length: Number(length),
+          height: Number(height),
+          weight: Number(weight),
+          width: Number(width),
+          load: Number(load),
+          weightUnit,
+          sizeUnit,
+          color,
+          isTemplate: false,
+          groupId,
+          id: cargo.id
+        })
+      }
+      router.push(`/cargo?projectId=${projectId}`)
+    } else {
+      await createCargo({
+        ...data,
+        weightUnit,
+        sizeUnit,
+        color,
+        isTemplate: false,
+        groupId
+      })
+      router.push(`/cargo?projectId=${projectId}`)
+    }
   }
 
   return (
@@ -55,7 +127,7 @@ export const NewCargo = ({ groupId }: { groupId: string }) => {
         setUnitWeight={setUnitWeight}
         watch={watch}
       />
-      <Footer isLoading={isLoading} />
+      <Footer isLoading={isLoading} isLoadingEdit={isLoadingEdit} />
     </form>
   )
 }
