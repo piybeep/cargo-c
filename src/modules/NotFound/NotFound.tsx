@@ -15,7 +15,7 @@ export function NotFound({ }: NotFoundProps) {
                     <ExclamationCircleOutlined className={s.wrapper__icon} />
                     <Title className={s.wrapper__title} level={5}>Ошибка 404. Такой страницы нет...</Title>
                 </div>
-                <Link href='/projects'>
+                <Link href='/'>
                     <Text underline>Перейти к проектам</Text>
                 </Link>
             </div>

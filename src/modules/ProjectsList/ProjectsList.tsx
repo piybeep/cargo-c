@@ -104,7 +104,7 @@ export function ProjectsList() {
     if (userId) {
       const newProject = await mutateAsync({ name, userId })
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: newProject.id
         }
@@ -133,7 +133,7 @@ export function ProjectsList() {
       setSelectProject(newProject)
       window.localStorage.setItem('lastSelectedProject', newProject.id)
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: newProject.id
         }
@@ -155,7 +155,7 @@ export function ProjectsList() {
           setSelectProject(firstProject)
           window.localStorage.setItem('lastSelectedProject', firstProject.id)
           router.push({
-            pathname: '/projects',
+            pathname: '/',
             query: {
               projectId: firstProject.id
             }
@@ -178,14 +178,14 @@ export function ProjectsList() {
     if (window && firstProject) {
       window.localStorage.setItem('lastSelectedProject', firstProject)
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: firstProject
         }
       })
     } else if (window && lastSelectedProject) {
       router.push({
-        pathname: '/projects',
+        pathname: '/',
         query: {
           projectId: lastSelectedProject
         }
@@ -198,7 +198,7 @@ export function ProjectsList() {
     window.localStorage.setItem('lastSelectedProject', current.id)
     setSelectProject(current)
     router.push({
-      pathname: '/projects',
+      pathname: '/',
       query: { projectId: current.id }
     })
   }

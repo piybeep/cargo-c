@@ -31,7 +31,7 @@ export const Header=({ ...props }: HeaderProps)=>{
           {selectProject ? (
             <div className={s.logo__title}>
               <Text className={s.logo__text}>Текущий проект: </Text>
-              <Link className={s.logo__text} href='/projects'>
+              <Link className={s.logo__text} href='/'>
                 {selectProject.name}
               </Link>
             </div>
