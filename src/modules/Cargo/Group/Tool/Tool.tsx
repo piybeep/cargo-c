@@ -13,13 +13,17 @@ interface toolProps {
   onCheckAllChange: any
   checkAll: any
   infoAboutGroup: string
+  saveTemplateArray: () => Promise<void>
+  removeArray: () => void
 }
 
 const Tool: React.FC<toolProps> = ({
   indeterminate,
   onCheckAllChange,
   checkAll,
-  infoAboutGroup
+  infoAboutGroup,
+  saveTemplateArray,
+  removeArray
 }) => {
   return (
     <div className={s.cont}>
@@ -37,11 +41,11 @@ const Tool: React.FC<toolProps> = ({
               <IconReplace />
               <Text style={{ color: '#1890FF' }}>Переместить</Text>
             </div>
-            <div className={s.toolEl}>
+            <div className={s.toolEl} onClick={saveTemplateArray}>
               <SaveSvg />
               <Text style={{ color: '#1890FF' }}>Сохранить в шаблоны</Text>
             </div>
-            <div className={s.toolEl}>
+            <div className={s.toolEl} onClick={removeArray}>
               <IconTrash />
               <Text style={{ color: '#1890FF' }}>Удалить</Text>
             </div>

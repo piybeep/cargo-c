@@ -13,7 +13,10 @@ const Templates: React.FC<TemplateProps> = ({ groupId, projectId, data }) => {
     style.cont
   )
 
-  const { mutateAsync, isLoading } = useRemoveCargo({ groupId })
+  const { mutateAsync, isLoading } = useRemoveCargo({
+    groupId,
+    template: true
+  })
 
   const deleteCargo = (cargoId: string) => {
     Modal.confirm({

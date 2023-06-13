@@ -40,7 +40,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const {
     mutateAsync: removeCargo,
     isLoading: isLoadingRemove
-  } = useRemoveCargo({ groupId: group.id })
+  } = useRemoveCargo({ groupId: group.id,template:false })
 
   const {
     mutateAsync: dublicateCargo,
@@ -116,6 +116,40 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
 
+  console.log(checkedList)
+
+  const saveTemplateArray = async () => {
+    if (checkedList && data) {
+      data.forEach(async (el) => {
+        const existEl = checkedList.find((elem) => elem == el.id)
+        if (existEl) {
+          const { id, ...newEl } = el
+          await dublicateCargo({
+            ...newEl,
+            groupId: group.id,
+            isTemplate: true
+          })
+        }
+      })
+    }
+    setCheckAll(false)
+    setIndeterminate(false)
+    setCheckedList([])
+  }
+
+  const removeArray = () => {
+    if (checkedList && data) {
+      checkedList.forEach(async (el) => {
+        if(typeof el==='string'){
+          await removeCargo({ cargoId: el, groupId: group.id })
+        }
+      })
+    }
+    setCheckAll(false)
+    setIndeterminate(false)
+    setCheckedList([])
+  }
+
   const onChange = (list: CheckboxValueType[]) => {
     if (data) {
       console.log(list)
@@ -158,6 +192,8 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
             checkAll={checkAll}
             infoAboutGroup={infoAboutGroup}
             indeterminate={indeterminate}
+            saveTemplateArray={saveTemplateArray}
+            removeArray={removeArray}
           />
         ) : (
           <Space
@@ -176,7 +212,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
         <div className={s.wrapper}>
           <CheckboxGroup
             className={s.wrapper__checkBox}
-            options={data?.map((el, ind) => el.id)}
+            options={data?.map((el) => el.id)}
             value={checkedList}
             onChange={onChange}
           />

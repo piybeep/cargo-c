@@ -94,10 +94,14 @@ export function ProjectsList() {
   const { control, handleSubmit, setValue } = useForm<{ name: string }>()
 
   // Открывает конкретный проект
-  const open = (id: string, e: any) => {
+  const open = (current: projectEntity, e: any) => {
     e.stopPropagation()
-    window.localStorage.setItem('lastSelectedProject', id)
-    router.replace(`/cargo?projectId=${id}`, undefined, { shallow: true })
+    handleClick()
+    setSelectProject(current)
+    window.localStorage.setItem('lastSelectedProject', current.id)
+    router.replace(`/cargo?projectId=${current.id}`, undefined, {
+      shallow: true
+    })
   }
 
   const copyProject = async ({ name }: { name: string }) => {
@@ -354,7 +358,7 @@ export function ProjectsList() {
                   </div>
                   <Button
                     className={s.item__open}
-                    onClick={(e) => open(elem.id, e)}
+                    onClick={(e) => open(elem, e)}
                   >
                     Открыть
                   </Button>
