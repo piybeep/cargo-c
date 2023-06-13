@@ -522,9 +522,10 @@ export default class Arrangement {
           // console.log(this.buff.perZ);
         }
 
-        const perX = Math.ceil(item.parameters.count / this.buff.perZ);
+        const perX = Math.ceil((item.parameters.id + 1) / this.buff.perZ);
+        this.buff.perX = perX;
         if (sameGroup && currItemN > this.buff.perZ * (perX - 1)) {
-          item.block.material.color.set("red");
+          // item.block.material.color.set("red");
           return item.parameters.width;
         }
 
@@ -535,26 +536,23 @@ export default class Arrangement {
         }
       })
       .reduce((prev, curr) => prev + curr);
+
     let freeSpace = this.spaceWidth - this.occupiedAreaZTest;
-    console.log(freeSpace);
-    // if (freeSpace < 0) {
-    //   this.t1 = this.cargosBuff
-    //     .map((item) => {
-    //       return item.parameters.groupId !== cargo.parameters.groupId && item.parameters.width;
-    //     })
-    //     .filter((item) => item !== false)
-    //     .reduce((prev, curr) => prev + curr);
+    const allLength = this.buff.perX * cargo.parameters.length;
+    const prevCargo = this.groupList[this.groupList.length - 2].parameters.length;
 
-    //   freeSpace = this.spaceWidth - this.t1;
+    if (allLength > prevCargo) {
+      console.log(allLength);
 
-    //   this.t1 = Math.floor((this.spaceWidth - this.t1) / cargo.parameters.width);
+      console.log(`\x1b[95m[+] Новая колонка создана!`);
+      cargo.block.material.color.set("red");
+      const saveArr = this.cargosBuff.slice(0, this.cargosBuff.length - 1);
+      const saveFirstElemNewGroup = this.cargosBuff[this.cargosBuff.length - 1];
+      this.cargosBuff = [saveFirstElemNewGroup];
 
-    //   if (!this.cargosBuffPerX.length) {
-    //     this.cargosBuffPerX.push(this.t1);
-    //   }
-    //   console.log("=");
-    // }
-    // console.log(this.t1);
+      this.groupColumn.push(saveArr);
+      this.test = true;
+    }
 
     if (freeSpace < 0 && false) {
       console.log(`\x1b[95m[+] Новая колонка создана!`);
