@@ -1,0 +1,17 @@
+.wrapper {
+    background-color: #fff;
+
+    width: 100%;
+    max-width: 417px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+
+    &__item {
+        display: flex;
+        justify-content: space-between;
+    }
+}
