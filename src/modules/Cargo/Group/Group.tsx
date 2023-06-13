@@ -10,9 +10,13 @@ import { useSwipe } from '@/hook/useSwipe'
 import { editGroupProps, groupEntity } from '@/api/groups/type'
 import { UseMutateAsyncFunction } from 'react-query'
 import { useGetAllCargo } from './hook/useGetAllCargo'
-import { Typography, Space, Checkbox } from 'antd'
+import { Typography, Space, Checkbox, Modal } from 'antd'
 import { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { useRemoveCargo } from './hook/useRemoveCargo'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useCreateCargo } from '@/modules/NewCargo/hook/useCreateCargo'
+import { cargoEntity } from '@/api/cargo/type'
 
 const { Title, Text } = Typography
 
@@ -32,6 +36,32 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     templates: false,
     groupId: group.id
   })
+
+  const {
+    mutateAsync: removeCargo,
+    isLoading: isLoadingRemove
+  } = useRemoveCargo({ groupId: group.id,template:false })
+
+  const {
+    mutateAsync: dublicateCargo,
+    isLoading: isLoadingDublicate
+  } = useCreateCargo({ groupId: group.id })
+
+  const saveTemplate = ({ id, ...props }: cargoEntity) => {
+    dublicateCargo({ ...props, groupId: group.id, isTemplate: true })
+  }
+
+  const createCargo = async (data: cargoEntity) => {
+    const { length, width, weight, height, load, id, ...newData } = data
+    await dublicateCargo({
+      ...newData,
+      height: Number(height),
+      length: Number(length),
+      width: Number(width),
+      weight: Number(weight),
+      load: Number(load)
+    })
+  }
 
   useEffect(() => {
     if (!isLoading && data && data.length > 0) {
@@ -53,13 +83,72 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
           volume += (el.count * (el.width * el.height * el.length)) / 1000
         }
       })
-      setInfoAboutGroup(count + ' шт, ' + weight + ' кг, ' + volume + ' м3')
+      setInfoAboutGroup(
+        count +
+          ' шт, ' +
+          weight.toFixed(2) +
+          ' кг, ' +
+          volume.toFixed(2) +
+          ' м3'
+      )
     }
   }, [isLoading])
+
+  const removeProject = ({ id }: { id: string }) => {
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот груз?',
+      icon: <ExclamationCircleOutlined />,
+      onCancel: () => close(),
+      onOk: async () => {
+        await removeCargo({ cargoId: id, groupId: group.id })
+        close()
+      },
+      maskClosable: true,
+      okText: 'Да',
+      cancelText: 'Отмена',
+      okButtonProps: {
+        loading: isLoadingRemove
+      }
+    })
+  }
 
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>()
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
+
+  console.log(checkedList)
+
+  const saveTemplateArray = async () => {
+    if (checkedList && data) {
+      data.forEach(async (el) => {
+        const existEl = checkedList.find((elem) => elem == el.id)
+        if (existEl) {
+          const { id, ...newEl } = el
+          await dublicateCargo({
+            ...newEl,
+            groupId: group.id,
+            isTemplate: true
+          })
+        }
+      })
+    }
+    setCheckAll(false)
+    setIndeterminate(false)
+    setCheckedList([])
+  }
+
+  const removeArray = () => {
+    if (checkedList && data) {
+      checkedList.forEach(async (el) => {
+        if(typeof el==='string'){
+          await removeCargo({ cargoId: el, groupId: group.id })
+        }
+      })
+    }
+    setCheckAll(false)
+    setIndeterminate(false)
+    setCheckedList([])
+  }
 
   const onChange = (list: CheckboxValueType[]) => {
     if (data) {
@@ -103,6 +192,8 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
             checkAll={checkAll}
             infoAboutGroup={infoAboutGroup}
             indeterminate={indeterminate}
+            saveTemplateArray={saveTemplateArray}
+            removeArray={removeArray}
           />
         ) : (
           <Space
@@ -121,7 +212,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
         <div className={s.wrapper}>
           <CheckboxGroup
             className={s.wrapper__checkBox}
-            options={data?.map((el, ind) => el.id)}
+            options={data?.map((el) => el.id)}
             value={checkedList}
             onChange={onChange}
           />
@@ -136,11 +227,16 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleTouchStart={handleTouchStart}
                 handleClick={handleClick}
                 groupIndex={group.id}
+                projectId={group.projectId}
+                removeProject={removeProject}
+                createCargo={createCargo}
+                saveTemplate={saveTemplate}
+                isLoadingDublicate={isLoadingDublicate}
               />
             ))}
           </div>
         </div>
-        <Footer groupId={group.id} />
+        <Footer groupId={group.id} projectId={group.projectId} />
       </motion.div>
     </motion.div>
   )

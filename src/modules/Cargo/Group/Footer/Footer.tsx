@@ -9,7 +9,13 @@ import {
 import { useRouter } from 'next/router'
 import { SaveSvg } from '@/public/svg/SaveSvg'
 
-const Footer = ({ groupId }: { groupId: string }) => {
+const Footer = ({
+  groupId,
+  projectId
+}: {
+  groupId: string
+  projectId: string
+}) => {
   const [clientWidth, setClientWidth] = useState(0)
   const nav = useRouter()
 
@@ -25,14 +31,18 @@ const Footer = ({ groupId }: { groupId: string }) => {
           <Button
             type='primary'
             icon={<PlusSquareOutlined />}
-            onClick={() => nav.push('/cargo/new?groupId=' + groupId)}
+            onClick={() =>
+              nav.push(
+                '/cargo/new?groupId=' + groupId + '&projectId=' + projectId
+              )
+            }
           >
             Добавить груз
           </Button>
           <Button
             icon={<SaveSvg />}
             className={s.button}
-            onClick={() => nav.push('cargo/new/template')}
+            onClick={() => nav.push(`cargo/new/template/${groupId}?projectId=${projectId}`)}
           >
             Из шаблонов
           </Button>
@@ -45,7 +55,7 @@ const Footer = ({ groupId }: { groupId: string }) => {
             onClick={() => nav.push('cargo/new')}
           />
           <SaveSvg
-            onClick={() => nav.push('cargo/new/template')}
+            onClick={() => nav.push(`cargo/new/template/${groupId}?projectId=${projectId}`)}
             style={{ width: 28, height: 28 }}
           />
         </>

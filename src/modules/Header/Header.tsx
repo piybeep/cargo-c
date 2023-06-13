@@ -15,7 +15,7 @@ export const Header=({ ...props }: HeaderProps)=>{
 
   useEffect(()=>{
     setInit(true)
-  })
+  },[])
   const selectProject = useProjectStore((state) => state.selectProject)
   if(!init) return <></>
   return (

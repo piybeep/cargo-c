@@ -1,0 +1,16 @@
+import { cargoEntity } from '@/api/cargo/type'
+
+export interface GroupElProps {
+  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>, id: string) => void
+  handleTouchEnd: (id: string) => void
+  handleClick: () => void
+  el: cargoEntity
+  groupIndex: string
+  elId: string
+  projectId: string
+  removeProject: ({ id }: { id: string }) => void
+  createCargo: (data: cargoEntity) => void
+  isLoadingDublicate:boolean
+  saveTemplate: (data: cargoEntity) => void
+}

@@ -12,20 +12,20 @@ const IconReplace = (
       xmlns='http://www.w3.org/2000/svg'
       {...props}
     >
-      <g clip-path='url(#clip0_146_16946)'>
+      <g clipPath='url(#clip0_146_16946)'>
         <path
           d='M3.33331 10V7.5C3.33331 6.83696 3.59671 6.20107 4.06555 5.73223C4.53439 5.26339 5.17027 5 5.83331 5H16.6666M16.6666 5L14.1666 2.5M16.6666 5L14.1666 7.5'
           stroke='#8C8C8C'
-          stroke-width='1.5625'
-          stroke-linecap='round'
-          stroke-linejoin='round'
+          strokeWidth='1.5625'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         />
         <path
           d='M16.6666 10V12.5C16.6666 13.163 16.4033 13.7989 15.9344 14.2678C15.4656 14.7366 14.8297 15 14.1666 15H3.33331M3.33331 15L5.83331 17.5M3.33331 15L5.83331 12.5'
           stroke='#8C8C8C'
-          stroke-width='1.5625'
-          stroke-linecap='round'
-          stroke-linejoin='round'
+          strokeWidth='1.5625'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         />
       </g>
       <defs>
