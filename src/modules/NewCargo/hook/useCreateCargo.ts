@@ -6,7 +6,11 @@ export const useCreateCargo = ({ groupId }: { groupId: string }) => {
   return useMutation('createCargo', CargoApi.createCargo, {
     onSuccess(data) {
       queryClient.invalidateQueries({
-        queryKey: ['getCargo', groupId],
+        queryKey: ['getCargoTemplate', groupId, true],
+        refetchInactive: true
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['getCargo', groupId, false],
         refetchInactive: true
       })
     }

@@ -67,7 +67,7 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
             cargo,
             projectId: query.projectId,
             template: query.template ? query.template : false,
-            edit: query.projectId ? query.projectId : false
+            edit: query.edit ? true : false
           }
         }
       } else {

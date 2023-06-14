@@ -23,6 +23,8 @@ export interface createCargoProps {
 export interface cargoEntity extends createCargoProps {
   groupId: string
   id: string
+  createdAt:string
+  updatedAt:string
 }
 
 export interface cargoEntityById extends cargoEntity {

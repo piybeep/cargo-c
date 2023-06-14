@@ -19,6 +19,10 @@ interface ParamProps {
   defaultValues: Readonly<any> | undefined
   color: string
   setColor: React.Dispatch<React.SetStateAction<string>>
+  existCargo: boolean
+  saveTemplate: () => Promise<void>
+  isLoading: boolean
+  removeCargoModal: () => void
 }
 
 const Param: React.FC<ParamProps> = ({
@@ -26,15 +30,32 @@ const Param: React.FC<ParamProps> = ({
   dirtyFields,
   defaultValues,
   color,
-  setColor
+  setColor,
+  existCargo,
+  saveTemplate,
+  isLoading,
+  removeCargoModal
 }) => {
   const [isSelectColor, setIsSelectColor] = useState(false)
   const clearForm = () => {
     const resFields: any = {}
-    Object.keys(dirtyFields).forEach((el: any) => {
-      resFields[el] = ''
-    })
-    reset({ ...resFields, ...defaultValues })
+    if (existCargo && defaultValues) {
+      Object.keys(defaultValues).forEach((el: any) => {
+        resFields[el] = ''
+      })
+      reset({
+        ...resFields,
+        tiers: 'Да - максимально',
+        type: 'Коробка',
+        turn: true,
+        tilting: true
+      })
+    } else {
+      Object.keys(dirtyFields).forEach((el: any) => {
+        resFields[el] = ''
+      })
+      reset({ ...resFields, ...defaultValues })
+    }
   }
 
   const changeColor = useThrottle(setColor, 250)
@@ -57,9 +78,35 @@ const Param: React.FC<ParamProps> = ({
             onFocus={() => setIsSelectColor(true)}
           />
         </div>
-        <Image width={24} height={24} src={saveSvg.src} alt='Сохранить' />
-        <Image width={24} height={24} src={reverseSvg.src} alt='Очистить' onClick={clearForm} />
-        <Image width={24} height={24} src={trashSvg.src} alt='Удалить' />
+        {existCargo ? (
+          <Image
+            width={24}
+            height={24}
+            src={saveSvg.src}
+            alt='Сохранить'
+            onClick={() => !isLoading && saveTemplate()}
+          />
+        ) : (
+          <></>
+        )}
+        <Image
+          width={24}
+          height={24}
+          src={reverseSvg.src}
+          alt='Очистить'
+          onClick={clearForm}
+        />
+        {existCargo ? (
+          <Image
+            width={24}
+            height={24}
+            src={trashSvg.src}
+            alt='Удалить'
+            onClick={removeCargoModal}
+          />
+        ) : (
+          <></>
+        )}
       </Space>
     </div>
   )

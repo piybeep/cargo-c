@@ -39,7 +39,6 @@ const Group: React.FC<GroupProps> = ({
   }, [])
 
   const { data, isLoading } = useGetAllCargo({
-    templates: false,
     groupId: group.id
   })
 

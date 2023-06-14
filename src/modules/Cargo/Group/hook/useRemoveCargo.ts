@@ -12,9 +12,15 @@ export const useRemoveCargo = ({
   return useMutation(['removeCargo'], CargoApi.removeCargo, {
     onSuccess() {
       if (template) {
-        queryClient.invalidateQueries(['getCargoTemplate', groupId, true])
+        queryClient.invalidateQueries({
+          queryKey: ['getCargoTemplate', groupId, true],
+          refetchInactive: true
+        })
       } else {
-        queryClient.invalidateQueries(['getCargo', groupId])
+        queryClient.invalidateQueries({
+          queryKey: ['getCargo', groupId, template],
+          refetchInactive: true
+        })
       }
     }
   })
