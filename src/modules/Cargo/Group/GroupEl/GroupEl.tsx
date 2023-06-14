@@ -29,7 +29,8 @@ const GroupEl: React.FC<GroupElProps> = ({
   createCargo,
   projectId,
   saveTemplate,
-  isLoadingDublicate
+  isLoadingDublicate,
+  windowWidth
 }) => {
   const router = useRouter()
 
@@ -76,9 +77,9 @@ const GroupEl: React.FC<GroupElProps> = ({
       <div
         className={s.cont + ' ' + `cont__` + groupIndex}
         onClick={() => handleClick()}
-        onTouchStart={(e) => handleTouchStart(e, elId)}
-        onTouchMove={(e) => handleTouchMove(e, elId)}
-        onTouchEnd={() => handleTouchEnd(elId)}
+        onTouchStart={(e) => windowWidth&&handleTouchStart(e, elId)}
+        onTouchMove={(e) => windowWidth&&handleTouchMove(e, elId)}
+        onTouchEnd={() => windowWidth&&handleTouchEnd(elId)}
         id={elId}
       >
         <div className={s.wrapper}>

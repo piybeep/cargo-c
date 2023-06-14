@@ -31,6 +31,13 @@ interface GroupProps {
 const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const [isHidden, setIsHidden] = useState(false)
   const [infoAboutGroup, setInfoAboutGroup] = useState('')
+  const [windowWidth, setWindowWidth] = useState(false)
+
+  useEffect(() => {
+    if (window) {
+      window.innerWidth > 660 ? setWindowWidth(false) : setWindowWidth(true)
+    }
+  }, [])
 
   const { data, isLoading } = useGetAllCargo({
     templates: false,
@@ -115,8 +122,6 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>()
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
-
-  console.log(checkedList)
 
   const saveTemplateArray = async () => {
     if (checkedList && data) {
@@ -232,6 +237,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 createCargo={createCargo}
                 saveTemplate={saveTemplate}
                 isLoadingDublicate={isLoadingDublicate}
+                windowWidth={windowWidth}
               />
             ))}
           </div>

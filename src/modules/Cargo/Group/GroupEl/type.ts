@@ -13,4 +13,5 @@ export interface GroupElProps {
   createCargo: (data: cargoEntity) => void
   isLoadingDublicate:boolean
   saveTemplate: (data: cargoEntity) => void
+  windowWidth: boolean
 }
