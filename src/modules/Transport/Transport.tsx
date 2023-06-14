@@ -40,7 +40,7 @@ export function Transport({ ...props }: TransportProps) {
   const {
     mutateAsync: deleteTransport,
     isLoading: isLoadingRemove
-  } = useRemoveTransport()
+  } = useRemoveTransport({template:false})
 
   const { mutateAsync: dublicateTransport } = useCreateTransport()
 
