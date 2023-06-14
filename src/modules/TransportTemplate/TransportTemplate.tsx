@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { Button, Pagination, Typography } from 'antd'
+import { Button, Modal, Pagination, Typography } from 'antd'
 import Icon from '@ant-design/icons/lib/components/Icon'
 
 import { TransportTemplateProps } from './TransportTemplate.types'
@@ -12,6 +12,8 @@ import s from './TransportTemplate.module.scss'
 import { useGetTransportTemplate } from './hook/useGetTransportTemplate'
 import { transportEntity } from '@/api/transport/type'
 import { useRouter } from 'next/router'
+import { useRemoveTransport } from '../Transport/hook/useRemoveTransport'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 export function TransportTemplate({ ...props }: TransportTemplateProps) {
   const { Title, Text } = Typography
@@ -22,6 +24,29 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
   const [windowSwipe, setWindowSwipe] = useState(false)
 
   const { data, fetchNextPage } = useGetTransportTemplate()
+
+  const { mutateAsync, isLoading: isLoadingRemove } = useRemoveTransport({
+    template: true
+  })
+
+  const handleRemove = (id: string) => {
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот груз?',
+      icon: <ExclamationCircleOutlined />,
+      onCancel: () => close(),
+      onOk: async () => {
+        await mutateAsync({ id })
+        setSaveCurrentIndex(undefined)
+        close()
+      },
+      maskClosable: true,
+      okText: 'Да',
+      cancelText: 'Отмена',
+      okButtonProps: {
+        loading: isLoadingRemove
+      }
+    })
+  }
 
   const {
     handleTouchStart,
@@ -37,10 +62,6 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
       window.innerWidth > 660 ? setWindowSwipe(false) : setWindowSwipe(true)
     }
   }, [])
-
-  const handleRemove = (id: any) => {
-    setSaveCurrentIndex(undefined)
-  }
 
   const currentPage =
     data?.pageParams.at(data.pageParams.length - 1) !== undefined
