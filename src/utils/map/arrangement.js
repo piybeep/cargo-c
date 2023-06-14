@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import LoadSpace from "./loadSpace";
 
-import { join } from "./tools";
+import { getSpace, join } from "./tools";
 export default class Arrangement {
   constructor({ scene, space, groups, cargos }) {
     // Сцена
@@ -84,8 +84,15 @@ export default class Arrangement {
     this.defaultPosition();
     this.cargos.sort(this.compare);
 
-    for (let i = 0, g = 0; i < this.cargos.length; i++) {
+    for (let i = 0, g = -1; i < this.cargos.length; i++) {
+      if (this.cargos[i].parameters.id === 0) {
+        g++;
+        this.groupsBuff.push([]);
+      }
+
+      this.groupsBuff[g].push(this.cargos[i]);
       this.cargosBuff.push(this.cargos[i]);
+
       // Получаем позицию предыдущего блока
       this.previous = this.cargos[i - 1] || this.cargos[i];
 
@@ -102,7 +109,7 @@ export default class Arrangement {
           (cargo) => cargo.parameters.group === this.cargos[i].parameters.group
         );
         // Сохраняем группу в буфер
-        this.groupsBuff.push(cargoGroup);
+        // this.groupsBuff.push(cargoGroup);
 
         // Сохраняем id группы
         const groupId = cargoGroup[0].parameters.groupId;
@@ -173,7 +180,6 @@ export default class Arrangement {
         this.fullLength = 0;
         this.fullLength += this.cargos[i].parameters.length;
         this.cargos[i].parameters.fullLength = this.fullLength;
-        g += 1;
       }
 
       // Ставим следующий блок, относительно предыдущего
@@ -443,26 +449,25 @@ export default class Arrangement {
     const cargoWidth = cargo.parameters.width;
     // Количество текущего груза
     const cargoCount = cargo.parameters.count;
-    // Предыдущий груз
-    const previousCargo = {
-      x: this.previous.block.position.x,
-      y: this.previous.block.position.y,
-      z: this.previous.block.position.z,
-      width: this.previous.parameters.width,
-      length: this.previous.parameters.length,
-      height: this.previous.parameters.height,
-      axiosPerZ: this.previous.parameters.axiosPerZ,
-    };
 
     // Предыдущая группа
     const prevGroup = this.groupList[this.lastIndexGroup];
     const currentGroup = this.groupList[this.lastIndexGroup + 1] || prevGroup;
 
     for (let i = this.groupsBuff.length - 2; i >= 0; i--) {
-      const targetCargoLast = this.groupsBuff[i][this.groupsBuff[i].length - 1];
+      console.log(getSpace(this.groupsBuff, this.spaceWidth));
+      if (cargo.parameters.width <= getSpace(this.groupsBuff, this.spaceWidth)) {
+        this.setPosition(cargo, join(this.previous, cargo, "z"), "z");
+        this.setPosition(cargo, join(this.previous, cargo, "x"), "x");
+        break;
+      }
 
-      this.setPosition(cargo, join(targetCargoLast, cargo, "z"), "z");
-      this.setPosition(cargo, join(targetCargoLast, cargo, "x"), "x");
+      // if (this.isOutwardsMaxZ(cargo)) {
+      this.setPosition(cargo, 0, "x");
+      this.setPosition(cargo, 0, "z");
+
+      // cargo.block.material.color.set("red");
+      // }
     }
 
     // if (freeSpace < 0 && false) {
@@ -594,66 +599,57 @@ export default class Arrangement {
       }
     }
 
-    if (!this.isOutwardsMaxZ(cargo) && !findDiffGroup) {
-      offsetPX = previousCargo.x;
-      offsetPZ = previousCargo.z + previousCargo.width / 2 + cargoWidth / 2;
-      this.setPosition(cargo, offsetPX, "x");
-      this.setPosition(cargo, offsetPZ, "z");
-    }
-
     // Если груз вышел за приделы контейнера
-    if (this.isOutwardsMaxZ(cargo)) {
-      this.setPosition(cargo, previousCargo.x + cargo.parameters.length, "x");
+    // if (this.isOutwardsMaxZ(cargo)) {
+    //   this.setPosition(cargo, previousCargo.x + cargo.parameters.length, "x");
 
-      // Если закончилось свободное пространство по Z, ставим в начало контейнера по Z
-      if (this.test) {
-        const index = this.groupColumn.length - 1;
-        const targetCargo = this.groupColumn[index][0];
+    //   // Если закончилось свободное пространство по Z, ставим в начало контейнера по Z
+    //   if (this.test) {
+    //     const index = this.groupColumn.length - 1;
+    //     const targetCargo = this.groupColumn[index][0];
 
-        // if (this.groupColumn) {
-        //   this.groupColumn[index]
-        //     .slice()
-        //     .reverse()
-        //     .forEach((item, id, arr) => {
-        //       if (item.parameters.length >= cargo.parameters.length * 2) {
-        //         this.setPosition(cargo, arr[id - 1].block.position.x + cargo.parameters.length, "x");
-        //         this.setPosition(
-        //           cargo,
-        //           item.block.position.z + item.parameters.width / 2 + cargo.parameters.width / 2,
-        //           "z"
-        //         );
-        //       }
-        //     });
-        //   this.test = false;
-        //   return;
-        // }
-        this.setPosition(
-          cargo,
-          targetCargo.block.position.x + targetCargo.parameters.length / 2 + cargo.parameters.length / 2,
-          "x"
-        );
-        this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
-        this.test = false;
-        return;
-      }
+    //     // if (this.groupColumn) {
+    //     //   this.groupColumn[index]
+    //     //     .slice()
+    //     //     .reverse()
+    //     //     .forEach((item, id, arr) => {
+    //     //       if (item.parameters.length >= cargo.parameters.length * 2) {
+    //     //         this.setPosition(cargo, arr[id - 1].block.position.x + cargo.parameters.length, "x");
+    //     //         this.setPosition(
+    //     //           cargo,
+    //     //           item.block.position.z + item.parameters.width / 2 + cargo.parameters.width / 2,
+    //     //           "z"
+    //     //         );
+    //     //       }
+    //     //     });
+    //     //   this.test = false;
+    //     //   return;
+    //     // }
+    //     this.setPosition(
+    //       cargo,
+    //       targetCargo.block.position.x + targetCargo.parameters.length / 2 + cargo.parameters.length / 2,
+    //       "x"
+    //     );
+    //     this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
+    //     this.test = false;
+    //     return;
+    //   }
 
-      if (currentGroup.save.z && !currentGroup.save.x) {
-        this.setPosition(cargo, currentGroup.save.z, "z");
+    //   if (currentGroup.save.z && !currentGroup.save.x) {
+    //     this.setPosition(cargo, currentGroup.save.z, "z");
 
-        return;
-      }
+    //     return;
+    //   }
 
-      if (currentGroup.save.z && currentGroup.save.x) {
-        this.setPosition(cargo, currentGroup.save.x, "x");
-        this.setPosition(cargo, currentGroup.save.z, "z");
+    //   if (currentGroup.save.z && currentGroup.save.x) {
+    //     this.setPosition(cargo, currentGroup.save.x, "x");
+    //     this.setPosition(cargo, currentGroup.save.z, "z");
 
-        return;
-      }
+    //     return;
+    //   }
 
-      this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
-
-      cargo.block.material.color.set("lime");
-    }
+    //   this.setPosition(cargo, this.spaceMinZ + cargoWidth / 2, "z");
+    // }
 
     // if (this.isOutwardsMaxZ(cargo) && this.forgottenGroups) {
     //   this.setPosition(cargo, this.saveStepPointPerX, "x");
