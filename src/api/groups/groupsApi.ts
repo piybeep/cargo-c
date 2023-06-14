@@ -35,5 +35,17 @@ export const groupsApi = {
       `projects/${projectId}/groups/${groupId}`
     )
     return res.data
+  },
+  async removeGroup({
+    groupId,
+    projectId
+  }: {
+    projectId: string
+    groupId: string
+  }) {
+    const res = await instance.delete(
+      `projects/${projectId}/groups/${groupId}`
+    )
+    return res.data
   }
 }

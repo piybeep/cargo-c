@@ -25,7 +25,7 @@ const GroupEl: React.FC<GroupElProps> = ({
   el,
   groupIndex,
   elId,
-  removeProject,
+  removeCargo,
   createCargo,
   projectId,
   saveTemplate,
@@ -140,7 +140,7 @@ const GroupEl: React.FC<GroupElProps> = ({
               height={24}
               onClick={(e) => {
                 e.stopPropagation()
-                removeProject({ id: el.id })
+                removeCargo({ id: el.id })
               }}
             />
           </div>
@@ -174,7 +174,7 @@ const GroupEl: React.FC<GroupElProps> = ({
           height={24}
           onClick={(e) => {
             e.stopPropagation()
-            removeProject({ id: el.id })
+            removeCargo({ id: el.id })
           }}
         />
       </div>

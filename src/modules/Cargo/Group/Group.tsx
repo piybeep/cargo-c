@@ -7,8 +7,6 @@ import Footer from './Footer/Footer'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { useSwipe } from '@/hook/useSwipe'
-import { editGroupProps, groupEntity } from '@/api/groups/type'
-import { UseMutateAsyncFunction } from 'react-query'
 import { useGetAllCargo } from './hook/useGetAllCargo'
 import { Typography, Space, Checkbox, Modal } from 'antd'
 import { CheckboxValueType } from 'antd/es/checkbox/Group'
@@ -17,18 +15,19 @@ import { useRemoveCargo } from './hook/useRemoveCargo'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useCreateCargo } from '@/modules/NewCargo/hook/useCreateCargo'
 import { cargoEntity } from '@/api/cargo/type'
+import { GroupProps } from './type'
 
 const { Title, Text } = Typography
 
 const CheckboxGroup = Checkbox.Group
 
-interface GroupProps {
-  group: groupEntity
-  indGroup: number
-  editGroup: UseMutateAsyncFunction<any, unknown, editGroupProps, unknown>
-}
-
-const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
+const Group: React.FC<GroupProps> = ({
+  group,
+  indGroup,
+  editGroup,
+  removeGroupHandle,
+  isLoadingRemove
+}) => {
   const [isHidden, setIsHidden] = useState(false)
   const [infoAboutGroup, setInfoAboutGroup] = useState('')
   const [windowWidth, setWindowWidth] = useState(false)
@@ -46,8 +45,8 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
 
   const {
     mutateAsync: removeCargo,
-    isLoading: isLoadingRemove
-  } = useRemoveCargo({ groupId: group.id,template:false })
+    isLoading: isLoadingRemoveCargo
+  } = useRemoveCargo({ groupId: group.id, template: false })
 
   const {
     mutateAsync: dublicateCargo,
@@ -101,7 +100,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
     }
   }, [isLoading])
 
-  const removeProject = ({ id }: { id: string }) => {
+  const removeCargoModal = ({ id }: { id: string }) => {
     Modal.confirm({
       title: 'Вы уверены, что хотите удалить этот груз?',
       icon: <ExclamationCircleOutlined />,
@@ -114,7 +113,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
       okText: 'Да',
       cancelText: 'Отмена',
       okButtonProps: {
-        loading: isLoadingRemove
+        loading: isLoadingRemoveCargo
       }
     })
   }
@@ -145,7 +144,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
   const removeArray = () => {
     if (checkedList && data) {
       checkedList.forEach(async (el) => {
-        if(typeof el==='string'){
+        if (typeof el === 'string') {
           await removeCargo({ cargoId: el, groupId: group.id })
         }
       })
@@ -187,6 +186,8 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
         group={group}
         indGroup={indGroup}
         editGroup={editGroup}
+        removeGroupHandle={removeGroupHandle}
+        isLoadingRemove={isLoadingRemove}
       />
       <motion.div
         className={classNames(s.hidden, { [s.hidden_mod]: isHidden })}
@@ -233,7 +234,7 @@ const Group: React.FC<GroupProps> = ({ group, indGroup, editGroup }) => {
                 handleClick={handleClick}
                 groupIndex={group.id}
                 projectId={group.projectId}
-                removeProject={removeProject}
+                removeCargo={removeCargoModal}
                 createCargo={createCargo}
                 saveTemplate={saveTemplate}
                 isLoadingDublicate={isLoadingDublicate}

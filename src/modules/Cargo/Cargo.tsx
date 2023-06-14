@@ -16,6 +16,7 @@ import { useRouter } from 'next/router'
 import { useCreateGroup } from './hook/useCreateGroup'
 import { useEditGroup } from './hook/useEditGroup'
 import { queryClient } from '@/provider/ReactQueryProvider'
+import { useRemoveGroup } from './hook/useRemoveGroup'
 
 export const Cargo = () => {
   const router = useRouter()
@@ -29,7 +30,7 @@ export const Cargo = () => {
             projectId
           }
         })
-      }else{
+      } else {
         router.replace('/')
       }
     }
@@ -75,14 +76,27 @@ export const Cargo = () => {
     projectId:
       typeof router.query.projectId === 'string' ? router.query.projectId : null
   })
+
   const {
     mutateAsync: createGroupAsync,
     isLoading: isLoadingCreate
   } = useCreateGroup()
 
+  const { mutateAsync, isLoading: isLoadingRemove } = useRemoveGroup({
+    projectId:
+      typeof router.query.projectId === 'string' ? router.query.projectId : null
+  })
+
   const createGroup = async () => {
     if (typeof router.query.projectId === 'string') {
       await createGroupAsync({ projectId: router.query.projectId })
+    }
+  }
+
+  const removeGroupHandle = async (groupId: string) => {
+    const projectId = router.query.projectId
+    if (projectId && typeof projectId === 'string') {
+      await mutateAsync({ projectId, groupId })
     }
   }
 
@@ -102,7 +116,13 @@ export const Cargo = () => {
       </div>
       {data?.map((el, ind) => (
         <React.Fragment key={el.id}>
-          <Group group={el} indGroup={ind + 1} editGroup={editGroup} />
+          <Group
+            group={el}
+            indGroup={ind + 1}
+            editGroup={editGroup}
+            removeGroupHandle={removeGroupHandle}
+            isLoadingRemove={isLoadingRemove}
+          />
           {data[ind + 1] ? (
             <motion.div className={s.replace}>
               <Image

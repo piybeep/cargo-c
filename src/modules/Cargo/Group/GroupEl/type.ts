@@ -9,7 +9,7 @@ export interface GroupElProps {
   groupIndex: string
   elId: string
   projectId: string
-  removeProject: ({ id }: { id: string }) => void
+  removeCargo: ({ id }: { id: string }) => void
   createCargo: (data: cargoEntity) => void
   isLoadingDublicate:boolean
   saveTemplate: (data: cargoEntity) => void

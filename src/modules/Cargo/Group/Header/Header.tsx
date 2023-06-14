@@ -23,13 +23,17 @@ interface HeaderProps {
   group: groupEntity
   indGroup: number
   editGroup: UseMutateAsyncFunction<any, unknown, editGroupProps, unknown>
+  removeGroupHandle: (groupId: string) => Promise<void>
+  isLoadingRemove: boolean
 }
 
 const Header: React.FC<HeaderProps> = ({
   setIsHidden,
   group,
   indGroup,
-  editGroup
+  editGroup,
+  removeGroupHandle,
+  isLoadingRemove
 }) => {
   const router = useRouter()
 
@@ -86,7 +90,9 @@ const Header: React.FC<HeaderProps> = ({
         ) : (
           <EyeInvisibleOutlined onClick={changeHiddenGroup} />
         )}
-        <CloseOutlined />
+        <CloseOutlined
+          onClick={() => !isLoadingRemove && removeGroupHandle(group.id)}
+        />
       </Space>
     </motion.div>
   )
