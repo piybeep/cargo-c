@@ -28,10 +28,12 @@ import { useEditTransport } from './hook/useEditTransport'
 
 export function TransportConfig({
   editTransport,
-  template
+  template,
+  edit
 }: {
   editTransport?: transportEntity
   template?: boolean
+  edit?: boolean
 }) {
   const router = useRouter()
 
@@ -40,7 +42,7 @@ export function TransportConfig({
   const {
     mutateAsync: changeTransport,
     isLoading: isLoadingEdit
-  } = useEditTransport()
+  } = useEditTransport({edit})
 
   const [width, setWidth] = useState<'м' | 'см' | 'мм'>('мм')
   const [height, setHeight] = useState<'тн' | 'кг'>('кг')
@@ -188,7 +190,7 @@ export function TransportConfig({
   const onSubmit = async (data: createTrasportInput) => {
     if (isSwitch) {
       if (editTransport) {
-        if (template) {
+        if (template && !edit) {
           await mutateAsync({
             ...data.main,
             weightUnit: height,
@@ -205,7 +207,7 @@ export function TransportConfig({
             transports: [null],
             autoDistribution: true,
             id: editTransport.id,
-            isTemplate: false
+            isTemplate: edit ? true : false
           })
         }
       } else {
@@ -221,7 +223,7 @@ export function TransportConfig({
     } else {
       if (transport === 0) {
         if (editTransport) {
-          if (template) {
+          if (template&&!edit) {
             await mutateAsync({
               ...data.main,
               weightUnit: height,
@@ -240,7 +242,7 @@ export function TransportConfig({
               sizeUnit: width,
               autoDistribution: false,
               id: editTransport.id,
-              isTemplate: false,
+              isTemplate: edit ? true : false,
               transports: [
                 { ...data.trailer, type: 'Тягач с полуприцепом' },
                 { ...data.tractor, type: 'Тягач с полуприцепом' }
@@ -262,7 +264,7 @@ export function TransportConfig({
         }
       } else {
         if (editTransport) {
-          if (template) {
+          if (template&&!edit) {
             await mutateAsync({
               ...data.main,
               weightUnit: height,
@@ -278,7 +280,7 @@ export function TransportConfig({
               sizeUnit: width,
               autoDistribution: false,
               id: editTransport.id,
-              isTemplate: false,
+              isTemplate: edit ? true : false,
               transports: [{ ...data.van, type: 'Фургон грузовой' }]
             })
           }

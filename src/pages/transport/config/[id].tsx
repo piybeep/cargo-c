@@ -7,14 +7,16 @@ import { transportEntity } from '@/api/transport/type'
 
 export default function TransportConfigEditPage({
   transport,
-  template
+  template,
+  edit
 }: {
   transport: transportEntity
   template: boolean
+  edit:boolean
 }) {
   return (
     <main>
-      <TransportConfig editTransport={transport} template={template}/>
+      <TransportConfig editTransport={transport} template={template} edit={edit}/>
     </main>
   )
 }
@@ -36,12 +38,14 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
     }
   } else if (typeof query.id === 'string') {
     try {
+      console.log(query.edit)
       const transport = await TransportApi.getTransportById(query.id)
       if (transport) {
         return {
           props: {
             transport,
-            template: query.template ? query.template : false
+            template: query.template ? query.template : false,
+            edit: query.edit ? true : false
           }
         }
       } else {

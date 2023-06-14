@@ -111,7 +111,10 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
         <span title='Удалить' className={s.menu__svg}>
           <svg
             className={s.menu__svg}
-            onClick={() => handleRemove(id)}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleRemove(id)
+            }}
             width='24'
             height='24'
             viewBox='0 0 24 24'
@@ -161,6 +164,11 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
     )
   }
 
+  const editTransportTemplate = (id: string) => {
+    handleClick()
+    rouer.push(`/transport/config/${id}?template=true&edit=true`)
+  }
+
   return (
     <div className={s.wrapper}>
       <div className={s.list}>
@@ -168,7 +176,7 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
           <div key={current.id} className={s.list__wrapper}>
             <div
               className={s.item}
-              onClick={() => handleClick()}
+              onClick={() => editTransportTemplate(current.id)}
               onTouchStart={(e) =>
                 windowSwipe && handleTouchStart(e, current.id)
               }
@@ -191,11 +199,12 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
               </div>
               <div className={s.item__menu}>
                 <span
-                  title='Добавить шаблон'
+                  title='Добавить транспорт из шаблона'
                   className={s.item__svg}
-                  onClick={() =>
+                  onClick={(e) => {
+                    e.stopPropagation()
                     rouer.push(`/transport/config/${current.id}?template=true`)
-                  }
+                  }}
                 >
                   <svg
                     className={s.item__svg}
