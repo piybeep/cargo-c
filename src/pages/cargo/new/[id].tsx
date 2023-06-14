@@ -11,12 +11,14 @@ export default function CargoEditPage({
   groupId,
   cargo,
   projectId,
-  template
+  template,
+  edit
 }: {
   groupId: string
   cargo: cargoEntityById
   projectId: string
   template: boolean
+  edit:boolean
 }) {
   return (
     <NewCargo
@@ -24,6 +26,7 @@ export default function CargoEditPage({
       cargo={cargo}
       projectId={projectId}
       template={template}
+      edit={edit}
     />
   )
 }
@@ -63,7 +66,8 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
             groupId: query.groupId,
             cargo,
             projectId: query.projectId,
-            template: query.template ? query.template : false
+            template: query.template ? query.template : false,
+            edit: query.projectId ? query.projectId : false
           }
         }
       } else {

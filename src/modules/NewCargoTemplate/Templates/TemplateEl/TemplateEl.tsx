@@ -74,7 +74,7 @@ const TemplateEl: React.FC<TemplateElProps> = ({
         id={el.name}
         onClick={() =>
           roter.push(
-            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}&template=true`
+            `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}&edit=true`
           )
         }
       >
@@ -101,7 +101,14 @@ const TemplateEl: React.FC<TemplateElProps> = ({
           ) : (
             <></>
           )}
-          <RightCircleTwoTone className={s.img} />
+          <RightCircleTwoTone
+            className={s.img}
+            onClick={() =>
+              roter.push(
+                `/cargo/new/${el.id}?groupId=${groupId}&projectId=${projectId}&template=true`
+              )
+            }
+          />
         </Space>
       </div>
       <div className={s.img_mod}>

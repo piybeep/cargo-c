@@ -13,18 +13,21 @@ export const NewCargo = ({
   groupId,
   cargo,
   projectId,
-  template
+  template,
+  edit
 }: {
   groupId: string
   cargo?: cargoEntityById
   projectId: string
   template?: boolean
+  edit?:boolean
 }) => {
   const { mutateAsync: createCargo, isLoading } = useCreateCargo({ groupId })
   const router = useRouter()
   const [color, setColor] = useState('#aabbcc')
   const { mutateAsync: editCargo, isLoading: isLoadingEdit } = useEditCargo({
-    groupId
+    groupId,
+    edit
   })
   const {
     handleSubmit,
@@ -66,7 +69,7 @@ export const NewCargo = ({
   const Submit = async (data: createCargo) => {
     if (cargo) {
       const { length, height, weight, width, load, ...newData } = data
-      if (template) {
+      if (template&&!edit) {
         await createCargo({
           ...newData,
           length: Number(length),
@@ -91,7 +94,7 @@ export const NewCargo = ({
           weightUnit,
           sizeUnit,
           color,
-          isTemplate: false,
+          isTemplate: edit?true:false,
           groupId,
           id: cargo.id
         })
