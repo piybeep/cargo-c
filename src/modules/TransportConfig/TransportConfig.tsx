@@ -14,7 +14,8 @@ import {
   Select,
   InputNumber,
   Switch,
-  Button
+  Button,
+  Modal
 } from 'antd'
 
 import s from './TransportConfig.module.scss'
@@ -25,6 +26,8 @@ import Header from './Header/Header'
 import { useCreateTransport } from './hook/useCreateTransport'
 import { transportEntity } from '@/api/transport/type'
 import { useEditTransport } from './hook/useEditTransport'
+import { useRemoveTransport } from '../Transport/hook/useRemoveTransport'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 export function TransportConfig({
   editTransport,
@@ -38,6 +41,13 @@ export function TransportConfig({
   const router = useRouter()
 
   const { mutateAsync, isLoading } = useCreateTransport()
+
+  const {
+    mutateAsync: removeTransport,
+    isLoading: isLoadingRemove
+  } = useRemoveTransport({
+    template: template ? true : false
+  })
 
   const {
     mutateAsync: changeTransport,
@@ -59,6 +69,26 @@ export function TransportConfig({
           isTemplate: true
         })
       }
+    }
+  }
+
+  const removeTransportHandle = () => {
+    if (editTransport) {
+      Modal.confirm({
+        title: 'Вы уверены, что хотите удалить этот транспорт?',
+        icon: <ExclamationCircleOutlined />,
+        onCancel: () => close(),
+        onOk: async () => {
+          await removeTransport({ id: editTransport.id })
+          router.push('/transport')
+        },
+        maskClosable: true,
+        okText: 'Да',
+        cancelText: 'Отмена',
+        okButtonProps: {
+          loading: isLoadingRemove
+        }
+      })
     }
   }
 
@@ -97,16 +127,16 @@ export function TransportConfig({
   } = useForm<createTrasportInput>({
     defaultValues: {
       main: {
-        type: 'Грузовой автомобиль',
+        type: 'Грузовой автомобиль'
       },
       tractor: {
-        axesCount: 2,
+        axesCount: 2
       },
       trailer: {
-        axesCount: 2,
+        axesCount: 2
       },
       van: {
-        axesCount: 2,
+        axesCount: 2
       }
     }
   })
@@ -318,6 +348,7 @@ export function TransportConfig({
         reset={reset}
         transportExist={editTransport ? true : false}
         saveTemplate={saveTemplate}
+        removeTransportHandle={removeTransportHandle}
       />
       <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={s.form__wrapper}>
@@ -425,10 +456,9 @@ export function TransportConfig({
                     onChange={onChange}
                     status={errors?.main?.length && 'error'}
                   />
-                  <Text
-                    className={s.item__text_bottom}
-                    type='secondary'
-                  >{`${value?value:0} / ${maxValue}`}</Text>
+                  <Text className={s.item__text_bottom} type='secondary'>{`${
+                    value ? value : 0
+                  } / ${maxValue}`}</Text>
                 </div>
               )}
             />
@@ -455,10 +485,9 @@ export function TransportConfig({
                     onChange={onChange}
                     status={errors?.main?.width && 'error'}
                   />
-                  <Text
-                    className={s.item__text_bottom}
-                    type='secondary'
-                  >{`${value?value:0} / ${maxValue / 10}`}</Text>
+                  <Text className={s.item__text_bottom} type='secondary'>{`${
+                    value ? value : 0
+                  } / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />
@@ -485,10 +514,9 @@ export function TransportConfig({
                     onChange={onChange}
                     status={errors?.main?.height && 'error'}
                   />
-                  <Text
-                    className={s.item__text_bottom}
-                    type='secondary'
-                  >{`${value?value:0} / ${maxValue / 10}`}</Text>
+                  <Text className={s.item__text_bottom} type='secondary'>{`${
+                    value ? value : 0
+                  } / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />

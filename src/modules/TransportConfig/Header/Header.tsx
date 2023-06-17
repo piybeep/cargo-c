@@ -10,12 +10,14 @@ interface HeaderProps {
   reset: UseFormReset<createTrasportInput>
   transportExist: boolean
   saveTemplate: () => void
+  removeTransportHandle: () => void
 }
 
 const Header: React.FC<HeaderProps> = ({
   reset,
   transportExist,
-  saveTemplate
+  saveTemplate,
+  removeTransportHandle
 }) => {
   return (
     <div className={s.header}>
@@ -67,7 +69,14 @@ const Header: React.FC<HeaderProps> = ({
         )}
 
         <span
-          onClick={() => reset({ main: {type:'Грузовой автомобиль'}, tractor: {}, trailer: {}, van: {} })}
+          onClick={() =>
+            reset({
+              main: { type: 'Грузовой автомобиль' },
+              tractor: {},
+              trailer: {},
+              van: {}
+            })
+          }
           title='Очистить поля'
           className={s.header__svg}
         >
@@ -99,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({
         </span>
 
         {transportExist ? (
-          <span title='Удалить' className={s.header__svg}>
+          <span title='Удалить' className={s.header__svg} onClick={removeTransportHandle}>
             <svg
               className={s.header__svg}
               width='24'
