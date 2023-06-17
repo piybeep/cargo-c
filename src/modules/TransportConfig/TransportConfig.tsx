@@ -98,37 +98,15 @@ export function TransportConfig({
     defaultValues: {
       main: {
         type: 'Грузовой автомобиль',
-        height: 10,
-        length: 10,
-        width: 10
       },
       tractor: {
         axesCount: 2,
-        axle1Max: 1,
-        axle1Min: 1,
-        axle2Max: 1,
-        axle2Min: 1,
-        length: 1,
-        length1: 1,
-        weight: 1
       },
       trailer: {
         axesCount: 2,
-        axle2Max: 1,
-        axle2Min: 1,
-        length2: 1,
-        length3: 1,
-        weight: 1
       },
       van: {
         axesCount: 2,
-        axle1Max: 1,
-        axle1Min: 1,
-        axle2Max: 1,
-        axle2Min: 1,
-        length: 1,
-        length1: 1,
-        weight: 1
       }
     }
   })
@@ -444,14 +422,13 @@ export function TransportConfig({
                     addonAfter={width}
                     min={minValue}
                     max={maxValue}
-                    defaultValue={minValue}
                     onChange={onChange}
                     status={errors?.main?.length && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${value} / ${maxValue}`}</Text>
+                  >{`${value?value:0} / ${maxValue}`}</Text>
                 </div>
               )}
             />
@@ -475,14 +452,13 @@ export function TransportConfig({
                     addonAfter={width}
                     min={minValue}
                     max={maxValue / 10}
-                    defaultValue={minValue}
                     onChange={onChange}
                     status={errors?.main?.width && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${value} / ${maxValue / 10}`}</Text>
+                  >{`${value?value:0} / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />
@@ -506,14 +482,13 @@ export function TransportConfig({
                     addonAfter={width}
                     min={minValue}
                     max={maxValue / 10}
-                    defaultValue={minValue}
                     onChange={onChange}
                     status={errors?.main?.height && 'error'}
                   />
                   <Text
                     className={s.item__text_bottom}
                     type='secondary'
-                  >{`${value} / ${maxValue / 10}`}</Text>
+                  >{`${value?value:0} / ${maxValue / 10}`}</Text>
                 </div>
               )}
             />
@@ -529,7 +504,6 @@ export function TransportConfig({
                   <InputNumber
                     className={s.item__input}
                     addonAfter={height}
-                    defaultValue={0}
                     value={value}
                     type='number'
                     status={errors.main?.weight && 'error'}

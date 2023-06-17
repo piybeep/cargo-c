@@ -12,7 +12,11 @@ interface HeaderProps {
   saveTemplate: () => void
 }
 
-const Header: React.FC<HeaderProps> = ({ reset, transportExist,saveTemplate }) => {
+const Header: React.FC<HeaderProps> = ({
+  reset,
+  transportExist,
+  saveTemplate
+}) => {
   return (
     <div className={s.header}>
       <Title className={s.header__title} level={5}>
@@ -20,7 +24,11 @@ const Header: React.FC<HeaderProps> = ({ reset, transportExist,saveTemplate }) =
       </Title>
       <div className={s.header__menu}>
         {transportExist ? (
-          <span title='Добавить в шаблон' className={s.header__svg} onClick={saveTemplate}>
+          <span
+            title='Добавить в шаблон'
+            className={s.header__svg}
+            onClick={saveTemplate}
+          >
             <svg
               className={s.header__svg}
               width='24'
@@ -59,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ reset, transportExist,saveTemplate }) =
         )}
 
         <span
-          onClick={() => reset()}
+          onClick={() => reset({ main: {type:'Грузовой автомобиль'}, tractor: {}, trailer: {}, van: {} })}
           title='Очистить поля'
           className={s.header__svg}
         >

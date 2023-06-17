@@ -62,7 +62,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                 className={s.list__input}
                 addonAfter={height}
                 value={value}
-                defaultValue={1}
                 min={1}
                 type='number'
                 status={error && 'error'}
@@ -88,7 +87,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                 <InputNumber
                   className={s.list__input_small}
                   addonAfter={width}
-                  defaultValue={1}
                   value={value}
                   min={1}
                   type='number'
@@ -120,7 +118,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                   className={s.list__input_small}
                   addonAfter={width}
                   value={value}
-                  defaultValue={1}
                   min={1}
                   type='number'
                   status={error && 'error'}
@@ -147,7 +144,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                 <InputNumber
                   className={s.list__input_small}
                   addonAfter={height}
-                  defaultValue={1}
                   value={value}
                   min={1}
                   type='number'
@@ -178,7 +174,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                 <InputNumber
                   className={s.list__input_small}
                   addonAfter={height}
-                  defaultValue={1}
                   value={value}
                   min={1}
                   type='number'
@@ -210,7 +205,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                   className={s.list__input_small}
                   addonAfter={height}
                   value={value}
-                  defaultValue={1}
                   min={1}
                   type='number'
                   status={error && 'error'}
@@ -240,7 +234,6 @@ const Tractor: React.FC<TractorTrailerProps> = ({ control, height, width }) => {
                 <InputNumber
                   className={s.list__input_small}
                   addonAfter={height}
-                  defaultValue={1}
                   value={value}
                   min={1}
                   type='number'
