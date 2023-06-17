@@ -42,7 +42,25 @@ export function TransportConfig({
   const {
     mutateAsync: changeTransport,
     isLoading: isLoadingEdit
-  } = useEditTransport({edit})
+  } = useEditTransport({ edit })
+
+  const saveTemplate = () => {
+    if (editTransport) {
+      if (isSwitch) {
+        mutateAsync({
+          ...editTransport,
+          autoDistribution: true,
+          isTemplate: true
+        })
+      } else {
+        mutateAsync({
+          ...editTransport,
+          autoDistribution: false,
+          isTemplate: true
+        })
+      }
+    }
+  }
 
   const [width, setWidth] = useState<'м' | 'см' | 'мм'>('мм')
   const [height, setHeight] = useState<'тн' | 'кг'>('кг')
@@ -223,7 +241,7 @@ export function TransportConfig({
     } else {
       if (transport === 0) {
         if (editTransport) {
-          if (template&&!edit) {
+          if (template && !edit) {
             await mutateAsync({
               ...data.main,
               weightUnit: height,
@@ -264,7 +282,7 @@ export function TransportConfig({
         }
       } else {
         if (editTransport) {
-          if (template&&!edit) {
+          if (template && !edit) {
             await mutateAsync({
               ...data.main,
               weightUnit: height,
@@ -318,7 +336,11 @@ export function TransportConfig({
 
   return (
     <div className={s.wrapper}>
-      <Header reset={reset} />
+      <Header
+        reset={reset}
+        transportExist={editTransport ? true : false}
+        saveTemplate={saveTemplate}
+      />
       <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={s.form__wrapper}>
           <div className={s.menu}>

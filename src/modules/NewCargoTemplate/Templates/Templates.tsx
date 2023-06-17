@@ -8,7 +8,12 @@ import { Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { TemplateProps } from './type'
 
-const Templates: React.FC<TemplateProps> = ({ groupId, projectId, data }) => {
+const Templates: React.FC<TemplateProps> = ({
+  groupId,
+  projectId,
+  data,
+  fetchPage
+}) => {
   const { handleTouchEnd, handleTouchMove, handleTouchStart } = useSwipe(
     style.cont
   )
@@ -25,6 +30,7 @@ const Templates: React.FC<TemplateProps> = ({ groupId, projectId, data }) => {
       onCancel: () => close(),
       onOk: async () => {
         await mutateAsync({ groupId, cargoId })
+        await fetchPage()
         close()
       },
       maskClosable: true,

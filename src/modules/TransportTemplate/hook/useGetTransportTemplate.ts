@@ -9,7 +9,7 @@ export const useGetTransportTemplate = () => {
     {
       getNextPageParam: (page, prevPage) => {
         if (page.data && page.data.length > 0) {
-          return (page.page + 1) as number
+          return Number(page.page) + 1
         }
       },
       keepPreviousData: true

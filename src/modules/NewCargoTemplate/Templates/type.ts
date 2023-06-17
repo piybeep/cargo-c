@@ -4,4 +4,5 @@ export interface TemplateProps {
   groupId: string
   projectId: string
   data: cargoEntity[] | undefined
+  fetchPage: () => Promise<void>
 }
