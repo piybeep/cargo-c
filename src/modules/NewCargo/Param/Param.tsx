@@ -40,7 +40,7 @@ const Param: React.FC<ParamProps> = ({
   const clearForm = () => {
     const resFields: any = {}
     if (existCargo && defaultValues) {
-      Object.keys(defaultValues).forEach((el: any) => {
+      Object.keys(defaultValues)?.forEach((el: any) => {
         resFields[el] = ''
       })
       reset({
@@ -51,7 +51,7 @@ const Param: React.FC<ParamProps> = ({
         tilting: true
       })
     } else {
-      Object.keys(dirtyFields).forEach((el: any) => {
+      Object.keys(dirtyFields)?.forEach((el: any) => {
         resFields[el] = ''
       })
       reset({ ...resFields, ...defaultValues })

@@ -73,7 +73,7 @@ const Group: React.FC<GroupProps> = ({
       let count = 0
       let weight = 0
       let volume = 0
-      data.forEach((el) => {
+      data?.forEach((el) => {
         count += el.count
         if (el.weightUnit === 'кг') {
           weight += el.count * el.weight
@@ -123,7 +123,7 @@ const Group: React.FC<GroupProps> = ({
 
   const saveTemplateArray = async () => {
     if (checkedList && data) {
-      data.forEach(async (el) => {
+      data?.forEach(async (el) => {
         const existEl = checkedList.find((elem) => elem == el.id)
         if (existEl) {
           const { id, ...newEl } = el
@@ -142,7 +142,7 @@ const Group: React.FC<GroupProps> = ({
 
   const removeArray = () => {
     if (checkedList && data) {
-      checkedList.forEach(async (el) => {
+      checkedList?.forEach(async (el) => {
         if (typeof el === 'string') {
           await removeCargo({ cargoId: el, groupId: group.id })
         }

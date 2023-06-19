@@ -66,7 +66,7 @@ export class MapCargo {
     this.groups = [];
 
     // Создаем грузы
-    cargos.forEach((cargo, id) => {
+    cargos?.forEach((cargo, id) => {
       // Создаем для каждой группы блоков отдельную группу
       this.groups.push(new THREE.Group());
       this.groups[id].name = `cargo-group-${id}`;
@@ -99,7 +99,7 @@ export class MapCargo {
     arrange.start();
 
     // После расстановки добавить все группы на сцену
-    this.groups.forEach((group) => this.scene.add(group));
+    this.groups?.forEach((group) => this.scene.add(group));
   }
 
   create() {
