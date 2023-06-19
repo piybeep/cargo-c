@@ -27,7 +27,6 @@ export function TransportTemplate({ ...props }: TransportTemplateProps) {
 
   const { mutateAsync, isLoading: isLoadingRemove } = useRemoveTransport({
     template: true,
-    page: data?.pageParams
   })
 
   const handleRemove = (id: string) => {
