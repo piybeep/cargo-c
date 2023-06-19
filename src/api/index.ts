@@ -13,15 +13,15 @@ instance.interceptors.response.use(
     if (
       error.response.status === 401 &&
       error.config &&
-      !originalRequest._isRetry
+      !error.config._isRetry
     ) {
       originalRequest._isRetry = true
       try {
-        const res = await axios.get(process.env.BASE_URL + 'auth/sessions')
+        await axios.get(process.env.BASE_URL + 'auth/sessions')
         return instance.request(originalRequest)
       } catch (e) {
         localStorage.clear()
-        document.location.replace('/login')
+        window.location.href = '/login'
       }
     }
     throw error

@@ -9,8 +9,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [init, setInit] = useState(false)
   const { id, setUser } = useUserStore()
   const { data, isLoading } = useQuery('refresh', AuthApi.refresh, {
-    async onError() {
-      await router.push('/login')
+    async onError(err:any) {
+      if(err.response.status != 401){
+        await router.push('/login')
+      }
       setInit(true)
       setUser({ email: null, id: null })
     }
