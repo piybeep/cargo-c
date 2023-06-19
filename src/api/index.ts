@@ -12,7 +12,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config
     const urlRequest = error.config.url
     if (
-      error.response.status === 500 &&
+      error.response.status === 401 &&
       error.config &&
       !error.config._isRetry &&
       urlRequest !== 'auth/sessions'
