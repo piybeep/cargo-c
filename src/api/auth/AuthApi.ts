@@ -9,11 +9,10 @@ export const AuthApi = {
     )
     return res.data
   },
-  //ПЕРЕДЕЛАТЬ
-  // async refresh() {
-  //   const res = await instance.get('auth/sessions')
-  //   return res.data
-  // },
+  async refresh() {
+    const res = await instance.get('auth/sessions')
+    return res.data
+  },
   async recovery({ email }: { email: string }) {
     const res = await instance.post('auth/recovery', { email })
     return res.data

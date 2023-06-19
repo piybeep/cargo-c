@@ -31,7 +31,7 @@ export const Auth = () => {
   } = useRecovery()
 
   if (isSuccess && !isError) {
-    router.replace('/projects')
+    router.replace('/')
   }
 
   const Submit = (data: AuthInputs) => {
