@@ -1,9 +1,11 @@
 import { CargoApi } from '@/api/cargo/CargoApi'
 import { cargoEntityById } from '@/api/cargo/type'
 import { groupsApi } from '@/api/groups/groupsApi'
+import { groupEntity } from '@/api/groups/type'
 import { Layout } from '@/layouts/BaseLayout'
 import { Header } from '@/modules'
 import { NewCargo } from '@/modules/NewCargo'
+import axios from 'axios'
 import { GetServerSidePropsContext } from 'next'
 import { ReactNode } from 'react'
 
@@ -18,7 +20,7 @@ export default function CargoEditPage({
   cargo: cargoEntityById
   projectId: string
   template: boolean
-  edit:boolean
+  edit: boolean
 }) {
   return (
     <NewCargo
@@ -38,7 +40,11 @@ CargoEditPage.getLayout = (page: ReactNode) => (
   </>
 )
 
-export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+export async function getServerSideProps({
+  query,
+  req
+}: GetServerSidePropsContext) {
+  const cookies = req.headers.cookie
   if (!query.groupId || !query.id || !query.projectId) {
     return {
       redirect: {
@@ -52,19 +58,25 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
     typeof query.projectId === 'string'
   ) {
     try {
-      const cargo = await CargoApi.getCargoById({
-        cargoId: query.id,
-        groupId: query.groupId
-      })
-      const group = await groupsApi.getGroupById({
-        groupId: query.groupId,
-        projectId: query.projectId
-      })
-      if (cargo && group) {
+      const cargo = await axios.get<cargoEntityById>(
+        `${process.env.BASE_URL}groups/${query.groupId}/cargos/${query.id}`,
+        {
+          withCredentials: true,
+          headers: { Cookie: cookies }
+        }
+      )
+      const group = await axios.get<groupEntity>(
+        `${process.env.BASE_URL}projects/${query.projectId}/groups/${query.groupId}`,
+        {
+          withCredentials: true,
+          headers: { Cookie: cookies }
+        }
+      )
+      if (cargo.data && group.data) {
         return {
           props: {
             groupId: query.groupId,
-            cargo,
+            cargo:cargo.data,
             projectId: query.projectId,
             template: query.template ? query.template : false,
             edit: query.edit ? true : false

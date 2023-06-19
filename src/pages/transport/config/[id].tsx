@@ -4,6 +4,7 @@ import { Header, TransportConfig } from '@/modules'
 import { GetServerSidePropsContext } from 'next'
 import { TransportApi } from '@/api/transport/TransportApi'
 import { transportEntity } from '@/api/transport/type'
+import axios from 'axios'
 
 export default function TransportConfigEditPage({
   transport,
@@ -12,11 +13,15 @@ export default function TransportConfigEditPage({
 }: {
   transport: transportEntity
   template: boolean
-  edit:boolean
+  edit: boolean
 }) {
   return (
     <main>
-      <TransportConfig editTransport={transport} template={template} edit={edit}/>
+      <TransportConfig
+        editTransport={transport}
+        template={template}
+        edit={edit}
+      />
     </main>
   )
 }
@@ -28,7 +33,11 @@ TransportConfigEditPage.getLayout = (page: ReactNode) => (
   </>
 )
 
-export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+export async function getServerSideProps({
+  query,
+  req
+}: GetServerSidePropsContext) {
+  const cookies = req.headers.cookie
   if (!query.id) {
     return {
       redirect: {
@@ -38,12 +47,17 @@ export async function getServerSideProps({ query }: GetServerSidePropsContext) {
     }
   } else if (typeof query.id === 'string') {
     try {
-      console.log(query.edit)
-      const transport = await TransportApi.getTransportById(query.id)
+      const transport = await axios.get<transportEntity>(
+        `${process.env.BASE_URL}loadspaces/${query.id}`,
+        {
+          withCredentials: true,
+          headers: { Cookie: cookies }
+        }
+      )
       if (transport) {
         return {
           props: {
-            transport,
+            transport: transport.data,
             template: query.template ? query.template : false,
             edit: query.edit ? true : false
           }
