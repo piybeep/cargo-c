@@ -110,12 +110,7 @@ export class MapCargo {
     this.camera = new THREE.PerspectiveCamera(75, this.#width / this.#height, 0.1, 1000);
 
     // Создание сетки
-    this.grid = new THREE.GridHelper(
-      this.#gridSize,
-      this.#gridSizeCell,
-      this.#gridColorLine,
-      this.#gridColorCell
-    );
+    this.grid = new THREE.GridHelper(this.#gridSize, this.#gridSizeCell, this.#gridColorLine, this.#gridColorCell);
     this.scene.add(this.grid);
 
     this.canvas = document.querySelector("#canvas");
@@ -161,10 +156,7 @@ export class MapCargo {
   }
 
   onPointerMove(event) {
-    this.pointer.set(
-      (event.clientX / this.#width) * 2 - 1,
-      -((event.clientY - 64) / this.#height) * 2 + 1
-    );
+    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
 
     this.#raycaster.setFromCamera(this.pointer, this.camera);
 
@@ -185,10 +177,7 @@ export class MapCargo {
   }
 
   onPointerDown(event) {
-    this.pointer.set(
-      (event.clientX / this.#width) * 2 - 1,
-      -((event.clientY - 64) / this.#height) * 2 + 1
-    );
+    this.pointer.set((event.clientX / this.#width) * 2 - 1, -((event.clientY - 64) / this.#height) * 2 + 1);
 
     this.#raycaster.setFromCamera(this.pointer, this.camera);
 
